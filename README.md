@@ -1,5 +1,5 @@
 # Resilience and Quercus pyrenaica
-In this repo we explore the resilience of *Q. pyrenaica* forests of Sierra Nevada. We evaluate the resilience of these forests for the productivity funtioning.
+In this repo we explore the resilience of *Q. pyrenaica* forests of Sierra Nevada. We evaluate the resilience of these forests for the productivity functioning.
 
 Several papers inspired this idea:
 
