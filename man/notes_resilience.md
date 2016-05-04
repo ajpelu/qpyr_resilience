@@ -20,5 +20,3 @@
 * ***Relative resilience*** is the resilience weighted by the damage experienced during disturbance, and it is estimated as: 
 RR = (post - dist) / pre 
 
-
-[]
