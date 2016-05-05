@@ -86,7 +86,7 @@ label_variables <- c('spei1' = '1-month',
                      'spei48' = '48-month')
 
 
-ggplot(spei_mean_melt, aes(x=date, y=value, fill=sign)) +  
+d <- ggplot(spei_mean_melt, aes(x=date, y=value, fill=sign)) +  
   geom_bar(stat = "identity") + 
   facet_wrap(~variable, ncol=1, labeller = as_labeller(label_variables)) + 
   scale_fill_manual(values = c("pos" = "darkblue", "neg" = "red")) +
@@ -96,6 +96,8 @@ ggplot(spei_mean_melt, aes(x=date, y=value, fill=sign)) +
     y='SPEI') +
   theme(strip.background = element_rect(fill = "white"),
         legend.position = "none") 
+
+d
 ```
 
     ## Warning: Removed 88 rows containing missing values (position_stack).
@@ -106,7 +108,7 @@ ggplot(spei_mean_melt, aes(x=date, y=value, fill=sign)) +
 
 ``` r
 # >2000
-ggplot(spei_mean_melt2000, aes(x=date, y=value, fill=sign)) +  
+d2000 <- ggplot(spei_mean_melt2000, aes(x=date, y=value, fill=sign)) +  
   geom_bar(stat = "identity") + 
   facet_wrap(~variable, ncol=1, labeller = as_labeller(label_variables)) + 
   scale_fill_manual(values = c("pos" = "darkblue", "neg" = "red")) +
@@ -116,8 +118,82 @@ ggplot(spei_mean_melt2000, aes(x=date, y=value, fill=sign)) +
     y='SPEI') +
   theme(strip.background = element_rect(fill = "white"),
         legend.position = "none") 
+
+d2000
 ```
 
     ## Warning: Stacking not well defined when ymin != 0
 
 ![](explore_drought_files/figure-markdown_github/unnamed-chunk-3-2.png)<!-- -->
+
+Explore 3, 6 months scales
+==========================
+
+``` r
+spei_mean_melt1995 <- spei_mean_melt %>% 
+  filter(year >= 1995) %>%
+  filter(variable %in% c('spei3', 'spei6'))
+
+
+d1995 <- ggplot(spei_mean_melt1995, aes(x=date, y=value, fill=sign)) +  
+  geom_bar(stat = "identity") + 
+  facet_wrap(~variable, ncol=1, labeller = as_labeller(label_variables)) + 
+  scale_fill_manual(values = c("pos" = "darkblue", "neg" = "red")) +
+  theme_bw()  + 
+  labs(title= 'Drought evolution for Sierra Nevada (From year 2000)',
+    x= '',
+    y='SPEI') +
+  theme(strip.background = element_rect(fill = "white"),
+        legend.position = "none") 
+
+d1995 
+```
+
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](explore_drought_files/figure-markdown_github/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+### Export all pdfs
+pdf(file=paste0(di, "/man/images/spei_sn_all.pdf"), height = 10, width =9)
+d 
+```
+
+    ## Warning: Removed 88 rows containing missing values (position_stack).
+
+    ## Warning: Stacking not well defined when ymin != 0
+
+``` r
+dev.off() 
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+pdf(file=paste0(di, "/man/images/spei_sn_all_2000.pdf"), height = 10, width =9)
+d2000
+```
+
+    ## Warning: Stacking not well defined when ymin != 0
+
+``` r
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+pdf(file=paste0(di, "/man/images/spei_sn_all_1995.pdf"), height = 5, width =9)
+d1995
+```
+
+    ## Warning: Stacking not well defined when ymin != 0
+
+``` r
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
