@@ -15,5 +15,10 @@
 * It is a multiscalar index 
 * 
 
+## Examples of drought in Iberian Peninsula
+* [images comparison](http://earthobservatory.nasa.gov/NaturalHazards/view.php?id=14717) 
+
+
+
 
 
