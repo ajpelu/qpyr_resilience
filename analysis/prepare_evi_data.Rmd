@@ -1,0 +1,531 @@
+---
+title: "EVI resilience"
+author: "AJ Perez-Luque (@ajpelu)"
+date: "2016 May"
+output:  
+  md_document:
+    variant: markdown_github
+---
+  
+## Read data 
+  
+```{r wd, echo=FALSE}
+#---------------------------------
+# machine <- 'ajpelu'
+machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
+#---------------------------------
+```
+
+```{r packages, warning=FALSE}
+library("dplyr")
+library("lubridate")
+library("ggplot2")
+```
+
+```{r}
+# Read data
+rawdata <- read.csv(file=paste(di, "/data_raw/evi/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+
+
+
+evi <- read.csv(file=paste(di, "/data/evi_attributes_all.csv", sep= ""), header = TRUE, sep = ',')
+rawdata <- read.csv(file=paste(di, "/data/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+```
+
+```{r}
+
+# Read data
+rawdata <- read.csv(file=paste(di, "/data/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+
+# Create variables of year and month 
+# Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
+rawdata <- rawdata %>% 
+  mutate(myevi = evi * 0.0001,
+         year = lubridate::year(fecha),
+         month = lubridate::month(fecha))
+
+
+
+#------------------------ test
+# Pixels with negative evi values?
+# Pixels with positive evi values?
+rawdata %>% 
+  summarise(pixel_pos=sum(myevi >= 0),
+            pixel_neg=sum(myevi < 0),
+            pixels=n())
+#------------------------ End test
+
+
+# Prepare data
+# Get coordinates and pob 
+evi_aux <- rawdata %>% select(iv_malla_modi_id, lng, lat, poblacion) %>%
+  group_by(iv_malla_modi_id) %>% unique()
+
+
+# Join dataframes 
+evi <- evi %>% inner_join(evi_aux, by="iv_malla_modi_id") 
+
+```
+
+# Explore EVI mean 
+
+```{r}
+ggplot(evi, aes(x=year, y=evi_mean, group=year)) + geom_boxplot() + facet_wrap(~poblacion)
+
+
+# Create mean values by pob and year
+mydf <- evi %>% 
+  select(year, poblacion, evi_mean_all) %>%
+  group_by(year, poblacion) %>% 
+  summarise(media = mean(evi_mean_all), 
+            sd = sd(evi_mean_all), 
+            se = sd(evi_mean_all) / sqrt(length(evi_mean_all))) 
+                                         
+  
+
+ggplot(mydf, aes(x=year, y=media, group=year)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin=media - sd, ymax= media + sd)) +
+  facet_wrap(~poblacion) + 
+  geom_line(aes(group=1))
+
+
+
+# dr = 2005, 2006 
+# pre = 2000 - 2004 
+# post = 2006 - 2010 
+
+# Resistance 
+# rt = dr / pre 
+# Recovery 
+# rc = post / dr 
+# Resilience 
+# rs = post /pre 
+
+
+df <- evi %>%
+  mutate(myperiod = ifelse(year %in% c(2003,2004), 
+                         'pre', 
+                         ifelse( 
+                           year %in% c(2005), 
+                           'dr',
+                           ifelse(
+                             year %in% c(2006,2007), 
+                             'post', 'out'))))
+
+df <- df %>% filter(myperiod != 'out') %>%
+  select(iv_malla_modi_id, poblacion, evi_mean_all, myperiod) %>%
+  group_by(iv_malla_modi_id, myperiod) %>% 
+  summarise(media = mean(evi_mean_all))
+
+
+# long to wide 
+library(reshape2)
+df_aux <- dcast(df, iv_malla_modi_id ~ myperiod, value.var = 'media')
+
+# Resistance rt = dr / pre 
+# Recoveryrc = post / dr 
+# Resilience rs = post /pre 
+
+
+
+df_aux <- df_aux %>% 
+  mutate(rt = dr / pre,
+         rc = post / dr,
+         rs = post / pre) %>% 
+  inner_join(evi_aux, by="iv_malla_modi_id") 
+
+
+ggplot(df_aux, aes(x=year, y=evi_mean, group=year)) + geom_boxplot() + facet_wrap(~poblacion)
+
+
+
+
+
+
+
+
+
+
+# PCA
+```{r}
+# Get 
+# Select variables and mean value
+df_pca_evi <- evi %>% 
+  select(iv_malla_modi_id, poblacion, evi_mean, evi_min, evi_max, jd_min, jd_max, evi_cv) %>%
+  group_by(iv_malla_modi_id) %>%
+  summarise_each(funs(mean(.))) %>% 
+  filter(poblacion != 9) %>% 
+  mutate(pop_group=ifelse(poblacion < 2, 'A', 
+                          ifelse(poblacion < 6, 'B', 'C')))
+
+
+df_pca_evi <- as.data.frame(df_pca_evi[c(9,1:8)])
+
+
+# PCA evi 
+pca_evi <- prcomp(df_pca_evi[,-c(1:3)], scale=TRUE)
+
+# Eigenvalues 
+# Los eigenvalues es sd^2 
+ev <- (pca_evi$sdev)^2
+
+
+# Obtener tabla de importancia de los ejes
+summary(pca_evi)
+
+
+## 
+# Plot 
+colores <- c("black", "red", "green3", "blue","cyan", "magenta", "yellow", "gray")
+library("pca3d")
+pca3d(pca_evi, group = df_pca_evi[,"poblacion"], 
+      palette =colores, show.ellipses=TRUE,
+      ellipse.ci=0.75, show.plane=TRUE)
+
+pca2d(pca_evi, group = df_pca_evi[,"poblacion"], components = c(1,2),
+      show.ellipses=TRUE, ellipse.ci=0.75, palette =colores)
+
+, show.ellipses=TRUE,
+      ellipse.ci=0.75, show.plane=TRUE)
+
+
+
+library(MASS)
+df <- df_pca_evi[,c(3:9)]
+lda.evi <- lda(as.factor(poblacion)~.,data=df)
+
+
+# Valores predichos
+prelda <- predict(lda.evi, dim=3)
+
+# Creo un dataframe con puntuaciones en cada LDA y poblaciones 
+pp.evi <- as.data.frame(cbind(prelda$x, prelda$class))
+names(pp.evi) <- c('lda1','lda2','lda3','pop')
+
+
+
+
+# lattice 
+library(lattice)
+trellis.device(pdf, file=paste(di, '/3_LDA/LDA_3d.pdf', sep=''), width=6, height=6) 
+ldaplot3d <- cloud(lda2~lda1*lda3, groups=pop, data=pp.evi, pch=19, 
+                   screen=list(z=-40,x=-70,y=25), 
+                   scales = list(arrows = FALSE),
+                   alpha=.5, auto.key=list(space='top',title='l',cex=.4),
+                   par.settings=list(superpose.symbol=list(col=c("black", "red", "green3", "blue","cyan", "magenta", "yellow", "gray"))))
+print(ldaplot3d)
+dev.off()
+
+
+
+
+
+
+
+## Second approach 
+
+Use several attributes of EVI and not the EFTs classification (after Domingo meeting). See Dionisio et al. 
+
+```{r}
+
+u <- evi %>% group_by(year) %>%
+  mutate(q_evi_mean=ntile(evi_mean, 4),
+         q_evi_cv=ntile(evi_cv, 4),
+         n=n(), 
+         jday=lubridate::yday(date_max)) %>%
+  select(iv_malla_modi_id, year, q_evi_mean, q_evi_cv, n, date_max, jday) %>% 
+  mutate(q_max = ifelse(jday > 81 & jday <= 173, 1,
+                        ifelse(jday > 173 & jday <= 265, 2, 
+                               ifelse(jday > 265 & jday <= 356, 3, 4))))  
+
+
+
+
+
+Create raster
+
+```{r}
+library(sp)
+x <- read.csv(file=paste(di, "/data/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+
+aux <- x %>% 
+  group_by(iv_malla_modi_id) %>%
+  dplyr::select(iv_malla_modi_id, lng, lat, poblacion) 
+
+df <- as.data.frame(dplyr::inner_join(aux, eft_final, by="iv_malla_modi_id"))
+
+
+## definimos las coordenadas de los puntos
+coordinates(df) <- ~lng+lat
+## definimos el sistema de coordenadas WGS84
+proj4string(df) <- CRS("+init=epsg:4326")
+
+# Create empty raster
+dd <- raster()
+extent(dd) <- extent(df)
+# Rasterize mq_evi_mean
+evi_mean <- rasterize(df, dd, res=c(250,250), 'mq_evi_mean')
+evi_cv <- rasterize(df, dd, 'mq_evi_cv')
+evi_dmax <- rasterize(df, dd, 'mq_max')
+
+xxx <- stack(evi_mean, evi_cv, evi_dmax)
+plot(xxx)
+
+
+library(rasterVis)
+library(ggplot2)
+
+pdf
+gplot(evi_mean) +
+    geom_raster(aes(fill = factor(value))) 
+
+pdf(file=paste(di, '/evi_mean.pdf', sep=''), height = 8, width= 10)
+gplot(evi_mean) +
+  geom_raster(aes(fill = factor(value))) +
+  scale_fill_manual(values=c('red','green', 'blue','black'),
+                    'legend',labels = c("1", "2", "3", "4")) + 
+  coord_equal() +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) 
+dev.off()  
+
+
+
+
+
+mq_evi_meanL
+
+
+# df_puntos <- SpatialPoints(df[,c("lng", "lat")], df[,c("clu")])
+
+
+## Ok a partir de aqui 
+
+# Son las 1.27 de la mañana y estoy hasta los jjj
+# Read centroid of all ndvi data 
+pixel_all <- read.csv(file=paste(di, "/data/geoinfo/coordinates_iv_modis.csv", sep= ""), header = TRUE, sep = ',')
+names(pixel_all) <- c("iv_malla_modi_id", "x", "y")
+coordinates(pixel_all) <- ~x+y
+proj4string(pixel_all) <- CRS("+init=epsg:4326")
+
+
+# Create empty raster
+r <- raster()
+extent(r) <- extent(pixel_all)
+# Rasterize
+myr <- rasterize(pixel_all, r, 'z')
+
+
+
+
+rr <- mask(myr, sn_ll)
+plot(rr)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+plot(myr)
+
+
+# test
+pixel_all$z <- 1
+
+
+r <- rasterize(pixel_all, r, 'z')
+plot(r)
+
+projection(r)
+extent(r) <- extent(pixel_all)
+plot(r)
+
+
+
+pixel_all
+
+pixel_all <- SpatialPointsDataFrame(coords=pixel_all[, c("x","y")], data=pixel_all, 
+                                    proj4string = CRS("+proj=utm +zone=30"))
+
+head(pixel_all)
+
+
+# with a SpatialPointsDataFrame
+vals <- 1:n
+p <- data.frame(xy, name=vals)
+coordinates(p) <- ~x+y
+r <- rasterize(p, r, '', fun=min)
+#r2 <- rasterize(p, r, 'name', fun=max)
+#plot(r, r2, cex=0.5)
+
+
+
+r <- raster()
+
+xx <- rasterize(pixel_all@data[c('x','y')], field=pixel_all@data[c('z')], r)
+
+pixel_all$z <- 1
+p <- pixel_all@data[c('x','y','z')]
+
+ra <- rasterFromXYZ(p, res = c(250,250))
+
+                                      C
+
+proj4string=
+
+# Set projection
+pixel_all <- spTransform(pixel_all, CRS("+init=epsg:23030"))
+
+
+## Read Sierra Nevada limits
+enp <- rgdal::readOGR(dsn=paste(di, "/data/geoinfo/EENNPP/InfGeografica/InfVectorial/Shapes/ED50_30", sep=""),
+                      layer = "EENNPP", verbose = FALSE)
+# Subset limits of SN                      
+sn <- subset(enp, NOMBRE == 'SIERRA NEVADA' & FIGURA == 'Espacio Natural')
+
+# Retain only a field
+sn <- sn[,c('FIGURA')]
+
+# reproject naamp to lat/lon WGS84 ("geographic projection")
+sn_ll <- spTransform(sn, CRS("+proj=longlat"))
+sn_ll <- spTransform(sn_ll, CRS("+init=epsg:4326"))
+
+
+# Extract (Overlay) point within sierranevada 
+# https://cran.r-project.org/web/packages/sp/vignettes/over.pdf 
+# pixel_sn <- pixel_all[!is.na(over(pixel_all,sn_ll)),]
+pixel_sn <- pixel_all[complete.cases(over(pixel_all, sn_ll)), ] 
+pixel_sn$a <- 1
+
+
+ex <- as.data.frame(pixel_sn)[, c("x", "y", "a")]
+
+gridded(pixel_all) <- TRUE
+r <- raster()
+library(raster)
+
+
+f <- rasterize(ex, r)
+
+head(pixel_sn)
+
+pixel_all$a <- 1
+head(pixel_all@data)
+
+p <- pixel_all@data[,c('x','y','a')]
+
+
+myr <- rasterFromXYZ(p)
+r <- raster() 
+
+myr <- rasterize(p, r)
+
+
+
+coordinates(pix_all) <- ~x+y
+xx <- points2grid(pixel_sn)
+
+library(plotKML)
+Rast2 <- vect2rast(pixel_all)
+
+dd <- spDists(pixel_all)
+
+
+
+
+
+
+
+0.678661
+points <- SpatialPoints(s100_ras[,c('x','y')], s100_ras[,c('z')]
+pixels <- SpatialPixelsDataFrame(points, tolerance = 0.916421, points@data)
+raster <- raster(pixels[,'z'])
+
+
+
+
+
+library(maptools)
+coordinates(df) <- ~lng+lat
+xx <- points2grid(df)
+
+
+library(sp)
+library(plotKML)
+
+# Create spatial point dataframe 
+dfsp <- SpatialPointsDataFrame(coords = df[,c("lng", "lat")],
+                               data=df)
+plot(dfsp)
+
+# Convert into 
+pixels <- SpatialPixelsDataFrame(dfsp, tolerance = 0.0678661, dfsp@data)
+
+r <- raster(pixels[,"clu"])
+plot(r)
+
+head(pixels)
+
+vect2rast(df)
+
+
+delmepol <- as(delmepx,"SpatialPolygonsDataFrame")
+> delmepx2 <- SpatialPixelsDataFrame(coordinates(delmepol), delmepol at data)
+> suggested tolerance minimum: 0.000635728
+
+
+df <- as(df, "SpatialGridDataFrame")
+
+
+points <- SpatialPoints(s100_ras[,c('x','y')], s100_ras[,c('z')]
+pixels <- SpatialPixelsDataFrame(points, tolerance = 0.916421, points@data)
+raster <- raster(pixels[,'z'])
+
+
+
+
+
+
+df <- SpatialPixelsDataFrame(coordinates())
+
+grd.pts = SpatialPixels(SpatialPoints(df))
+
+
+auxr <- df [, c("lat", "lng", "clu")]
+names(auxr) <- 
+
+myr <-rasterFromXYZ(auxr)
+
+# Create empty raster
+r <- raster() 
+
+# Specify function 
+extent(r) <- extent(dfsp)
+myr <- rasterize(dfsp, r, "clu", fun='first')
+
+
+
+# VAS POR AQUI CANTINFLAS 
+library(raster)
+
+```
+
