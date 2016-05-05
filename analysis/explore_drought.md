@@ -1,37 +1,13 @@
----
-title: "SPEI drought SN"
-author: "AJ Perez-Luque (@ajpelu)"
-date: "2016 March"
-output:  
-    md_document:
-      variant: markdown_github
-      
----
-# Drought data
+Drought data
+============
 
-* Obtain data of drought index SPEI from [SPEI Global Drought Monitor](http://sac.csic.es/spei/map/maps.html)
-* Query data from Sierra Nevada [36.75, -3.75], [37.25, -3.25] 
+-   Obtain data of drought index SPEI from [SPEI Global Drought Monitor](http://sac.csic.es/spei/map/maps.html)
+-   Query data from Sierra Nevada \[36.75, -3.75\], \[37.25, -3.25\]
 
-```{r metadata, echo=FALSE}
-# Set working directory 
+Prepare data
+------------
 
-# machine <- 'ajpelu'
-machine <- 'ajpeluLap'
-di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
-```
-
-```{r packages, warning=FALSE, echo=FALSE, message=FALSE}
-# Load packages 
-library("dplyr")
-library("stringr")
-library("lubridate")
-library("reshape2")
-library("ggplot2")
-```
-
-## Prepare data
-```{r}
-
+``` r
 # Get file names
 myfiles <- list.files(path = paste(di, "/data_raw/spei", sep=""), pattern = "\\.csv$")
 
@@ -72,9 +48,9 @@ for (j in myfiles){
 }
 ```
 
-Select data for SPEI_1, SPEI_3, SPEI_6, SPEI_12, SPEI_24, and SPEI_48 and compute the mean of the 6 cells (0.5º size)
+Select data for SPEI\_1, SPEI\_3, SPEI\_6, SPEI\_12, SPEI\_24, and SPEI\_48 and compute the mean of the 6 cells (0.5º size)
 
-```{r}
+``` r
 spei <- mydf %>% 
   select(SPEI_1,SPEI_3,SPEI_6,SPEI_12,SPEI_24, SPEI_48, lat, long, year, months) 
 
@@ -99,9 +75,9 @@ spei_mean_melt2000 <- spei_mean_melt %>%
   filter(year >= 2000)
 ```
 
+### Plot
 
-### Plot 
-```{r}
+``` r
 label_variables <- c('spei1' = '1-month',
                      'spei3' = '3-month',
                      'spei6' = '6-month',
@@ -120,9 +96,15 @@ ggplot(spei_mean_melt, aes(x=date, y=value, fill=sign)) +
     y='SPEI') +
   theme(strip.background = element_rect(fill = "white"),
         legend.position = "none") 
-  
+```
 
+    ## Warning: Removed 88 rows containing missing values (position_stack).
 
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](explore_drought_files/figure-markdown_github/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
 # >2000
 ggplot(spei_mean_melt2000, aes(x=date, y=value, fill=sign)) +  
   geom_bar(stat = "identity") + 
@@ -134,9 +116,8 @@ ggplot(spei_mean_melt2000, aes(x=date, y=value, fill=sign)) +
     y='SPEI') +
   theme(strip.background = element_rect(fill = "white"),
         legend.position = "none") 
-
 ```
 
+    ## Warning: Stacking not well defined when ymin != 0
 
-
-
+![](explore_drought_files/figure-markdown_github/unnamed-chunk-3-2.png)<!-- -->
