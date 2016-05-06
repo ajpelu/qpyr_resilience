@@ -25,10 +25,12 @@ library("ggplot2")
 ## Read and prepare evi data
 
 We created two datasets: 
+
 * annual evi by pixel
 * seasonal evi by pixel 
 
 Each dataframe has the following fields: 
+
 * `iv_malla_modi_id`: the identifier of the modis cell
 * `year`
 * `evi_mean`: the value of the evi (cumulative value for each season)

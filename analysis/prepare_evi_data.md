@@ -31,9 +31,26 @@ library("ggplot2")
 Read and prepare evi data
 -------------------------
 
-We created two datasets: \* annual evi by pixel \* seasonal evi by pixel
+We created two datasets:
 
-Each dataframe has the following fields: \* `iv_malla_modi_id`: the identifier of the modis cell \* `year` \* `evi_mean`: the value of the evi (cumulative value for each season) \* `season`: the season of cumulative evi: \* `0` annual value \* `1` spring value \* `2` summer value \* `3` autumn value \* `4` winter value \* `seasonF`: the season coded as factor \* `lng`: longitude coordinates \* `lat`: latitute coordinates \* `poblacion`: numeric code of the *Q. pyrenaica* population
+-   annual evi by pixel
+-   seasonal evi by pixel
+
+Each dataframe has the following fields:
+
+-   `iv_malla_modi_id`: the identifier of the modis cell
+-   `year`
+-   `evi_mean`: the value of the evi (cumulative value for each season)
+-   `season`: the season of cumulative evi:
+-   `0` annual value
+-   `1` spring value
+-   `2` summer value
+-   `3` autumn value
+-   `4` winter value
+-   `seasonF`: the season coded as factor
+-   `lng`: longitude coordinates
+-   `lat`: latitute coordinates
+-   `poblacion`: numeric code of the *Q. pyrenaica* population
 
 ``` r
 # Read and prepare data
