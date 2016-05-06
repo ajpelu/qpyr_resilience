@@ -42,7 +42,6 @@ Each dataframe has the following fields:
 -   `year`
 -   `evi_mean`: the value of the evi (cumulative value for each season)
 -   `season`: the season of cumulative evi:
-
 -   `0` annual value
 -   `1` spring value
 -   `2` summer value

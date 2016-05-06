@@ -35,12 +35,11 @@ Each dataframe has the following fields:
 * `year`
 * `evi_mean`: the value of the evi (cumulative value for each season)
 * `season`: the season of cumulative evi:
-
- * `0` annual value
- * `1` spring value
- * `2` summer value 
- * `3` autumn value 
- * `4` winter value 
+  * `0` annual value
+  * `1` spring value
+  * `2` summer value 
+  * `3` autumn value 
+  * `4` winter value 
 * `seasonF`: the season coded as factor 
 * `lng`: longitude coordinates
 * `lat`: latitute coordinates 
