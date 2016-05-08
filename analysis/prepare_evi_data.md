@@ -66,7 +66,7 @@ rawdata <- rawdata %>%
 # Create annual evi by pixel 
 eviyear <- rawdata %>% 
   group_by(iv_malla_modi_id, year) %>%
-  summarise(evi_mean = sum(myevi[myevi >=0])) %>%
+  summarise(evi = sum(myevi[myevi >=0])) %>%
   mutate(season=0)
 
 
@@ -91,7 +91,7 @@ eviseason <- rawdata %>%
                         ifelse(jday > 173 & jday <= 265, 2, 
                                ifelse(jday > 265 & jday <= 356, 3, 4)))) %>%
   group_by(iv_malla_modi_id, year, season) %>%
-  summarise(evi_mean= sum(myevi[myevi >=0]))
+  summarise(evi = sum(myevi[myevi >=0]))
 
 
 evidf <- rbind(eviyear, eviseason)
