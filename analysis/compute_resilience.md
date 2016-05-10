@@ -47,9 +47,9 @@ ggplot(evidf, aes(x=year, y=evi, group=year)) +
 Define the drought period
 -------------------------
 
--   Another key step is to define the time span of the drought event. For this purpose we review some literature ([1]; )
+-   Another key step is to define the number of drought events and the **time span** of the events. For this purpose we review some literature ([1], \[^Trigo\_et\_al\], [2]). Some notes:
 
-> Note: Drougths events. According to García-Herrera et al. 2007, the 6 greater droughts events recorded in Granada station from 1941 to 2005 were: 44-45, 48-49, 49-50, 92-93, 94-95, and 98-99. Trigo et al. 2013 reported a winter drought event for souther Iberian in 2011-2012. During the hydrological years of 2004/2005 and 2011/2012, Iberia was hit by two of the worst drought episodes ever recording in this semi-arid region (Garcia-Herrera at al., 2007; Trigo et al., 2013)
+> Note: Drougths events. According to García-Herrera et al. 2007 ([3]), the 6 greater droughts events recorded in Granada station from 1941 to 2005 were: 44-45, 48-49, 49-50, 92-93, 94-95, and 98-99. Trigo et al. 2013 (\[^Trigo\_et\_al\_2013\]) reported a winter drought event for souther Iberian in 2011-2012. During the hydrological years of 2004/2005 and 2011/2012, Iberia was hit by two of the worst drought episodes ever recording in this semi-arid region ([4])
 
 We filter 2000-2002 and &gt; 2010, to revmoe the potential bias produced by this drougt events.
 
@@ -127,4 +127,12 @@ write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names
 
 ### Footnotes
 
-[1] test\_note
+-   -   -   \[Trigo\_et\_al\_2013\]: Trigo RM, Añel J, Barriopedro D, García-Herrera R, Gimeno L, Nieto R, Castillo R, Allen MR, Massey N (2013). The record Winter drought of 2011-12 in the Iberian Peninsula \[in *"Explaining Extreme Events of 2012 from a Climate Perspective"*. \[Peterson TC, Hoerling MP, Stott PA Herring S (Eds.)\]. *Bulletin of the American Meteorological Society*, 94 (9): S41-S45.
+
+[1] Garcia-Herrera R, Paredes D, Trigo RM, Trigo IF, Hernandez E, Barriopedro D, Mendes MA (2007). The Outstanding 2004/05 Drought in the Iberian Peninsula: Associated Atmospheric Circulation. *Journal of Hydrometeorology*, 8: 483–498.
+
+[2] Gouveia CM and Trigo RM (2014) The 2005 and 2012 major drought events in Iberia: monitoring vegetation dynamics and crop yields using satellite data. EGU General Assembly Conference. Vol 16, EGU2014-15179-1. <http://meetingorganizer.copernicus.org/EGU2014/EGU2014-15179-1.pdf>
+
+[3] Garcia-Herrera R, Paredes D, Trigo RM, Trigo IF, Hernandez E, Barriopedro D, Mendes MA (2007). The Outstanding 2004/05 Drought in the Iberian Peninsula: Associated Atmospheric Circulation. *Journal of Hydrometeorology*, 8: 483–498.
+
+[4] Gouveia CM and Trigo RM (2014) The 2005 and 2012 major drought events in Iberia: monitoring vegetation dynamics and crop yields using satellite data. EGU General Assembly Conference. Vol 16, EGU2014-15179-1. <http://meetingorganizer.copernicus.org/EGU2014/EGU2014-15179-1.pdf>
