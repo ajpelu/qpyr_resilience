@@ -35,7 +35,7 @@ evidf <- read.csv(file=paste(di, "/data/evi_attributes_all.csv", sep=""), header
 
 * First we explore the evolution of EVI by season. We want to ask the question: *¿Which temporal scale does capture better the impacts of the drought event?*  
 
-```{r, fig.width=12, fig.height=8, fig.cap="Evolution of seasonal and annual EVI for *Q. pyrenaica* forests in S.Nevada"}
+```{r, fig.width=12, fig.height=8, fig.cap="Evolution of seasonal and annual EVI for Q. pyrenaica forests in S.Nevada (2000-2014)"}
 ggplot(evidf, aes(x=year, y=evi, group=year)) + 
   geom_boxplot() + 
   facet_wrap(~seasonF, scales = "free_y") + 
@@ -88,7 +88,7 @@ label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
 * Plot the evolution of EVI summer 
 * Categorize summer EVI value into `pre`, `dr` and `post` leveles according to drought events defined above
 
-```{r, fig.width=12, fig.height=10, fig.cap="Evolution of summer EVI for *Q. pyrenaica* forests in S.Nevada, from 2003 to 2010"}
+```{r, fig.width=12, fig.height=10, fig.cap="Evolution of summer EVI for Q. pyrenaica forests in S.Nevada, from 2003 to 2010"}
 # Choose season
 myseason <- 'summer'
 

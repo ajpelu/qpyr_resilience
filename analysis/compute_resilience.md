@@ -31,9 +31,9 @@ ggplot(evidf, aes(x=year, y=evi, group=year)) +
   ylab('EVI')
 ```
 
-<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png" alt="Evolution of seasonal and annual EVI for *Q. pyrenaica* forests in S.Nevada"  />
+<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png" alt="Evolution of seasonal and annual EVI for Q. pyrenaica forests in S.Nevada (2000-2014)"  />
 <p class="caption">
-Evolution of seasonal and annual EVI for *Q. pyrenaica* forests in S.Nevada
+Evolution of seasonal and annual EVI for Q. pyrenaica forests in S.Nevada (2000-2014)
 </p>
 
 Define the drought period
@@ -101,9 +101,9 @@ ggplot(evisummer, aes(x=year, y=evi, group=year)) +
   theme(strip.background=element_rect(fill='white'))
 ```
 
-<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png" alt="Evolution of summer EVI for *Q. pyrenaica* forests in S.Nevada, from 2003 to 2010"  />
+<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png" alt="Evolution of summer EVI for Q. pyrenaica forests in S.Nevada, from 2003 to 2010"  />
 <p class="caption">
-Evolution of summer EVI for *Q. pyrenaica* forests in S.Nevada, from 2003 to 2010
+Evolution of summer EVI for Q. pyrenaica forests in S.Nevada, from 2003 to 2010
 </p>
 
 Compute resilience components
