@@ -1,0 +1,25 @@
+[general]
+creator=R package 'raster'
+created=2016-05-10 20:04:38
+[georeference]
+nrows=115
+ncols=130
+xmin=456209.351310983
+ymin=4088146.47115851
+xmax=488709.351310983
+ymax=4116896.47115851
+projection=+init=epsg:23030 +proj=utm +zone=30 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs
+[data]
+datatype=FLT8S
+byteorder=little
+nbands=3
+bandorder=BIL
+minvalue=0.873883609318883:0.662368539793829:0.643706709578115
+maxvalue=1.38217890001216:1.1112856411132:1.08064316635745
+nodatavalue=-1.7e+308
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=rc:rs:rt

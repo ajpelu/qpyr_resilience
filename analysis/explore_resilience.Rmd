@@ -36,15 +36,67 @@ eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header =
 
 # Maps 
 
-```{r}
-# Explore 
+* Create raster maps
 
+```{r}
 # Create a spatial dataframe 
 eviresi_sp <- SpatialPointsDataFrame(coords = eviresi[,c('lng','lat')], data = eviresi,
                                proj4string = CRS("+init=epsg:4326"))
 
-
+# Transform 
 eviresi_sp <- spTransform(eviresi_sp, CRS("+init=epsg:23030"))
+
+# Loop to create raster map 
+resilience_indicators <- c('rs','rt', 'rc')
+
+for (i in resilience_indicators) { 
+
+  aux_spatial <- eviresi_sp 
+  
+  # raster auxiliar 
+  aux_rast <- raster(aux_spatial, resolution=250)
+
+  # variable z
+  zvar <- i
+
+  # raster_layer 
+  r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
+  names(r_resi) <- i 
+
+  # assign 
+  name_raster <- paste("r_",i, sep="")
+  assign(name_raster, r_resi)
+  
+  writeRaster(r_resi, file=paste(di, "/data/raster/r_", i, ".asc", sep=""), overwrite=TRUE)
+  }
+
+
+# Create stack of 
+stack_resi <- stack(r_rc, r_rs, r_rt) 
+
+# Export stack 
+temp <- getwd()
+setwd(paste(di, "/data/raster/", sep=""))
+writeRaster(stack_resi, filename = 'r_tau_stack', overwrite =TRUE) 
+setwd(temp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
