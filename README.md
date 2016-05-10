@@ -7,4 +7,5 @@ Several papers inspired this idea:
 * **Lloret F, Keeling EG, Sala A (2011)**. Components of tree resilience: effects of successive low-growth episodes in old ponderosa pine forests. Oikos 120: 1909–1920. doi: [10.1111/j.1600-0706.2011.19372.x](http://dx.doi.org/10.1111/j.1600-0706.2011.19372.x)
 
 
-
+# License 
+This repository is licenced as Creative Commons Attribution 4.0 ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)). You can find more info [here](/LICENSE). 
