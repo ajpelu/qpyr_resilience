@@ -34,7 +34,7 @@ evidf <- read.csv(file=paste(di, "/data/evi_attributes_all.csv", sep=""), header
 
 * First we explore the evolution of EVI by season. We want to ask the question: *¿Which temporal scale does capture better the impacts of the drought event?*  
 
-```{r, fig.width=12}
+```{r, fig.width=12, fig.height=8, fig.cap="Evolution of seasonal and annual EVI for *Q. pyrenaica* forests in S.Nevada"}
 ggplot(evidf, aes(x=year, y=evi, group=year)) + 
   geom_boxplot() + 
   facet_wrap(~seasonF, scales = "free_y") + 
@@ -87,7 +87,7 @@ label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
 * Plot the evolution of EVI summer 
 * Categorize summer EVI value into `pre`, `dr` and `post` leveles according to drought events defined above
 
-```{r}
+```{r, fig.width=12, fig.height=10, fig.cap="Evolution of summer EVI for *Q. pyrenaica* forests in S.Nevada, from 2003 to 2010"}
 # Choose season
 myseason <- 'summer'
 
@@ -109,13 +109,13 @@ ggplot(evisummer, aes(x=year, y=evi, group=year)) +
 
 ## Compute resilience components 
 
-* Compute the resiliencie components according to [^Lloret_et_al] (see also this [notes](/man/notes_drought_in.md)): 
+* Compute the resiliencie components according to (Lloret et al. 2011)[^Lloret_et_al] (see also this [notes](/man/notes_drought_in.md)): 
+ 
  * ***Resistence*** (`rt`)
  * ***Resilience*** (`rs`) 
  * ***Recovery*** (`rc`)
  
-* These inidcators were computed at pixel scale. For this purpose we aggregated the values of each period by pixel (*i.e.*: mean values of summer EVI for several years)
-
+* These inidcators were computed at pixel scale. For this purpose we aggregated the values of each period by pixel (*i.e.*: mean values of summer EVI for several years) 
 * We also retain the attributes of `population` and coordinates (`lat` and `lng`) 
 * Finally we export the dataframe generate ([`/data/evi_resilience.csv`](/data/evi_resilience.csv))
 
@@ -148,6 +148,8 @@ write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names
 * [^Gouveia_and_Trigo]: Gouveia CM and Trigo RM (2014) The 2005 and 2012 major drought events in Iberia: monitoring vegetation dynamics and crop yields using satellite data. EGU General Assembly Conference. Vol 16, EGU2014-15179-1. http://meetingorganizer.copernicus.org/EGU2014/EGU2014-15179-1.pdf 
 
 * [^Trigo_et_al_2013]: Trigo RM, Añel J, Barriopedro D, García-Herrera R, Gimeno L, Nieto R, Castillo R, Allen MR, Massey N (2013). The record Winter drought of 2011-12 in the Iberian Peninsula [in *"Explaining Extreme Events of 2012 from a Climate Perspective"*. [Peterson TC, Hoerling MP, Stott PA Herring S (Eds.)]. *Bulletin of the American Meteorological Society*, 94 (9): S41-S45.
+
+* [^Lloret_et_al]: Lloret F, Keeling EG, Sala A (2011) Components of tree resilience: effects of successive low-growth episodes in old ponderosa pine forests. *Oikos* 120: 1909–1920. 
 
 
 

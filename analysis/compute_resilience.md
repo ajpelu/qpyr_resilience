@@ -28,7 +28,10 @@ ggplot(evidf, aes(x=year, y=evi, group=year)) +
   ylab('EVI')
 ```
 
-![](compute_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png)<!-- -->
+<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png" alt="Evolution of seasonal and annual EVI for *Q. pyrenaica* forests in S.Nevada"  />
+<p class="caption">
+Evolution of seasonal and annual EVI for *Q. pyrenaica* forests in S.Nevada
+</p>
 
 Define the drought period
 -------------------------
@@ -94,18 +97,21 @@ ggplot(evisummer, aes(x=year, y=evi, group=year)) +
   theme(strip.background=element_rect(fill='white'))
 ```
 
-![](compute_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png)<!-- -->
+<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png" alt="Evolution of summer EVI for *Q. pyrenaica* forests in S.Nevada, from 2003 to 2010"  />
+<p class="caption">
+Evolution of summer EVI for *Q. pyrenaica* forests in S.Nevada, from 2003 to 2010
+</p>
 
 Compute resilience components
 -----------------------------
 
--   Compute the resiliencie components according to \[^Lloret\_et\_al\] (see also this [notes](/man/notes_drought_in.md)):
+-   Compute the resiliencie components according to (Lloret et al. 2011)[4] (see also this [notes](/man/notes_drought_in.md)):
+
 -   ***Resistence*** (`rt`)
 -   ***Resilience*** (`rs`)
 -   ***Recovery*** (`rc`)
 
 -   These inidcators were computed at pixel scale. For this purpose we aggregated the values of each period by pixel (*i.e.*: mean values of summer EVI for several years)
-
 -   We also retain the attributes of `population` and coordinates (`lat` and `lng`)
 -   Finally we export the dataframe generate ([`/data/evi_resilience.csv`](/data/evi_resilience.csv))
 
@@ -132,10 +138,12 @@ write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names
 
 ### Footnotes
 
--   -   -   
+-   -   -   -   
 
 [1] Garcia-Herrera R, Paredes D, Trigo RM, Trigo IF, Hernandez E, Barriopedro D, Mendes MA (2007). The Outstanding 2004/05 Drought in the Iberian Peninsula: Associated Atmospheric Circulation. *Journal of Hydrometeorology*, 8: 483–498.
 
 [2] Trigo RM, Añel J, Barriopedro D, García-Herrera R, Gimeno L, Nieto R, Castillo R, Allen MR, Massey N (2013). The record Winter drought of 2011-12 in the Iberian Peninsula \[in *"Explaining Extreme Events of 2012 from a Climate Perspective"*. \[Peterson TC, Hoerling MP, Stott PA Herring S (Eds.)\]. *Bulletin of the American Meteorological Society*, 94 (9): S41-S45.
 
 [3] Gouveia CM and Trigo RM (2014) The 2005 and 2012 major drought events in Iberia: monitoring vegetation dynamics and crop yields using satellite data. EGU General Assembly Conference. Vol 16, EGU2014-15179-1. <http://meetingorganizer.copernicus.org/EGU2014/EGU2014-15179-1.pdf>
+
+[4] Lloret F, Keeling EG, Sala A (2011) Components of tree resilience: effects of successive low-growth episodes in old ponderosa pine forests. *Oikos* 120: 1909–1920.
