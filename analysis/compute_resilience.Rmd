@@ -110,11 +110,7 @@ ggplot(evisummer, aes(x=year, y=evi, group=year)) +
 
 ## Compute resilience components 
 
-* Compute the resiliencie components according to (Lloret et al. 2011)([^Lloret_et_al]) (see also this [notes](/man/notes_drought_in.md)): 
-  + ***Resistence*** (`rt`)
-  + ***Resilience*** (`rs`) 
-  + ***Recovery*** (`rc`)
- 
+* Compute the resiliencie components according to (Lloret et al. 2011)([^Lloret_et_al]) (see also this [notes](/man/notes_drought_in.md)): ***Resistence*** (`rt`); ***Resilience*** (`rs`) and ***Recovery*** (`rc`). 
 * These inidcators were computed at pixel scale. For this purpose we aggregated the values of each period by pixel (*i.e.*: mean values of summer EVI for several years) 
 * We also retain the attributes of `population` and coordinates (`lat` and `lng`) 
 * Finally we export the dataframe generate ([`/data/evi_resilience.csv`](/data/evi_resilience.csv))
