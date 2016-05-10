@@ -1,3 +1,6 @@
+Compute resilience values of *Q. pyrenaica* for EVI values
+==========================================================
+
 ``` r
 library("dplyr")
 library("ggplot2")
@@ -5,7 +8,7 @@ library("reshape2")
 ```
 
 Introduction
-============
+------------
 
 -   Read data of EVI attributes (see this [script](/analysis/prepare_evi_data.md))
 
@@ -70,7 +73,8 @@ label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
                       '7' = 'Poqueira', '8' = 'Trevelez', '9' = 'Cadiar')
 ```
 
-### Explore evolution of summer EVI
+Explore evolution of summer EVI
+-------------------------------
 
 -   Explore evolution of EVI summer
 -   Filter data to period consider (`min(pre)` - `max(post)`)
@@ -105,8 +109,7 @@ Evolution of summer EVI for *Q. pyrenaica* forests in S.Nevada, from 2003 to 201
 Compute resilience components
 -----------------------------
 
--   Compute the resiliencie components according to (Lloret et al. 2011)[4] (see also this [notes](/man/notes_drought_in.md)):
-
+-   Compute the resiliencie components according to (Lloret et al. 2011)([4]) (see also this [notes](/man/notes_drought_in.md)):
 -   ***Resistence*** (`rt`)
 -   ***Resilience*** (`rs`)
 -   ***Recovery*** (`rc`)
@@ -136,7 +139,8 @@ eviresi <- df_aux %>%
 write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names = FALSE)
 ```
 
-### Footnotes
+References
+----------
 
 -   -   -   -   
 

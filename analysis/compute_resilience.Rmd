@@ -6,7 +6,8 @@ output:
   md_document:
     variant: markdown_github
 ---
-  
+# Compute resilience values of *Q. pyrenaica* for EVI values 
+
 ```{r wd, echo=FALSE}
 #---------------------------------
 # machine <- 'ajpelu'
@@ -21,7 +22,7 @@ library("ggplot2")
 library("reshape2")
 ```
 
-# Introduction 
+## Introduction 
 
 * Read data of EVI attributes (see this [script](/analysis/prepare_evi_data.md)) 
 
@@ -80,7 +81,7 @@ label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
                       '7' = 'Poqueira', '8' = 'Trevelez', '9' = 'Cadiar')
 ```
 
-### Explore evolution of summer EVI
+## Explore evolution of summer EVI
 
 * Explore evolution of EVI summer 
 * Filter data to period consider (`min(pre)` - `max(post)`)
@@ -109,11 +110,10 @@ ggplot(evisummer, aes(x=year, y=evi, group=year)) +
 
 ## Compute resilience components 
 
-* Compute the resiliencie components according to (Lloret et al. 2011)[^Lloret_et_al] (see also this [notes](/man/notes_drought_in.md)): 
- 
- * ***Resistence*** (`rt`)
- * ***Resilience*** (`rs`) 
- * ***Recovery*** (`rc`)
+* Compute the resiliencie components according to (Lloret et al. 2011)([^Lloret_et_al]) (see also this [notes](/man/notes_drought_in.md)): 
+  + ***Resistence*** (`rt`)
+  + ***Resilience*** (`rs`) 
+  + ***Recovery*** (`rc`)
  
 * These inidcators were computed at pixel scale. For this purpose we aggregated the values of each period by pixel (*i.e.*: mean values of summer EVI for several years) 
 * We also retain the attributes of `population` and coordinates (`lat` and `lng`) 
@@ -141,7 +141,7 @@ write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names
 ```
 
 
-### Footnotes
+## References
 
 * [^Garcia_Herrera]: Garcia-Herrera R, Paredes D, Trigo RM, Trigo IF, Hernandez E, Barriopedro D, Mendes MA (2007). The Outstanding 2004/05 Drought in the Iberian Peninsula: Associated Atmospheric Circulation. *Journal of Hydrometeorology*, 8: 483–498.
 
