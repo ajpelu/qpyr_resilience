@@ -130,7 +130,8 @@ df_aux <- dcast(eviperiod, iv_malla_modi_id + poblacion + lng + lat ~ myperiod, 
 eviresi <- df_aux %>% 
   mutate(rt = dr / pre,
          rc = post / dr,
-         rs = post / pre) 
+         rs = post / pre) %>%
+  mutate(rrs = ((post - dr) / pre))
 
 # Export data
 write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names = FALSE)
