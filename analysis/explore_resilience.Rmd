@@ -99,7 +99,7 @@ setwd(temp)
 ## Spatial explorarion of the resilience components 
 
 ### Resilience
-```{r, fig.cap='Resilience', fig.height=8, fig.width=10}
+```{r, fig.cap='Resilience', fig.height=7, fig.width=10}
 # Resilience 
 
 # Select a palette http://colorbrewer2.org/
@@ -120,7 +120,7 @@ exportpdf(mypdf=paste0(di, '/man/images/raster_rs.pdf'), lp)
 ```
 
 ### Resistance 
-```{r, fig.cap='Resistance', fig.height=8, fig.width=10}
+```{r, fig.cap='Resistance', fig.height=7, fig.width=10}
 # Resistance  
 
 # Select a palette http://colorbrewer2.org/
@@ -142,7 +142,7 @@ exportpdf(mypdf=paste0(di, '/man/images/raster_rt.pdf'), lp)
 
 
 ### Recovery 
-```{r, fig.cap='Recovery', fig.height=8, fig.width=10}
+```{r, fig.cap='Recovery', fig.height=7, fig.width=10}
 # Recovery 
 
 # Select a palette http://colorbrewer2.org/
@@ -164,7 +164,7 @@ exportpdf(mypdf=paste0(di, '/man/images/raster_rc.pdf'), lp)
 
 
 ### Relative Resilience
-```{r, fig.cap='Relative Resilience', fig.height=8, fig.width=10}
+```{r, fig.cap='Relative Resilience', fig.height=7, fig.width=10}
 # Relative Resilience 
 
 # Select a palette http://colorbrewer2.org/
@@ -295,7 +295,7 @@ dev.off()
 
 
 # Explore pattern by population (cluster)
-```{r, fig.cap='Resilience components by cluster (populations)', fig.width=10, fig.height=10}
+```{r, fig.cap='Resilience components by cluster (populations)', fig.width=8, fig.height=8}
 gpop <- ggplot(df_aux, aes(x=clu_pop, y=value)) + 
   geom_boxplot() + 
   facet_wrap(~variable, scales = 'free_y', labeller = as_labeller(label_variable)) + 
