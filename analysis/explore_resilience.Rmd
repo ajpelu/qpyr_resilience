@@ -17,11 +17,13 @@ di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', s
 ```
 
 ```{r packages, warning=FALSE, message=FALSE}
-library('sp')
-library('raster')
+library("rgdal")
+library("sp")
+library("raster")
+library("rasterVis")
+source(paste0(di,"/R/exportpdf.R")) # function to export raster levelplots maps as pdf
 library("dplyr")
 library("ggplot2")
-# library("reshape2")
 ```
 
 ## Read and prepare data 
@@ -29,14 +31,13 @@ library("ggplot2")
 ```{r}
 # Read data
 eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
-
-
 ```
 
 
 # Maps 
 
-* Create raster maps
+* Create raster maps (two projections: `epsg:4326` and `epsg:23030`)
+* Export raster maps and stacks (see `/data/raster/`)
 
 ```{r}
 # Create a spatial dataframe 
@@ -62,108 +63,129 @@ for (i in resilience_indicators) {
   # raster_layer 
   r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
   names(r_resi) <- i 
-
+  
+  # reprojected raster
+  r_resi_re <- projectRaster(r_resi, crs=crs("+init=epsg:4326"))
+  names(r_resi_re) <- i 
+  
   # assign 
   name_raster <- paste("r_",i, sep="")
+  name_raster_re <- paste("r_",i,"_re", sep="")
+  
   assign(name_raster, r_resi)
+  assign(name_raster_re, r_resi_re)
+  
   
   writeRaster(r_resi, file=paste(di, "/data/raster/r_", i, ".asc", sep=""), overwrite=TRUE)
+  writeRaster(r_resi_re, file=paste(di, "/data/raster/r_", i, "_re", ".tif", sep=""), overwrite=TRUE)
+  
   }
 
 
-# Create stack of 
+# Create stack of raster 
 stack_resi <- stack(r_rc, r_rs, r_rt) 
+stack_resi_re <- stack(r_rc_re, r_rs_re, r_rt_re)
 
 # Export stack 
 temp <- getwd()
 setwd(paste(di, "/data/raster/", sep=""))
-writeRaster(stack_resi, filename = 'r_tau_stack', overwrite =TRUE) 
+writeRaster(stack_resi, filename = 'r_resi_stack', overwrite =TRUE) 
+writeRaster(stack_resi_re, filename = 'r_resi_re_stack', overwrite =TRUE) 
 setwd(temp)
+```
 
 
+## Spatial explorarion of the resilience components 
 
+### Resilience
+```{r, fig.cap='Resilience', fig.height=8, fig.width=10}
+# Resilience 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-aux_rast <- raster(eviresi_sp, resolution=250)
-
-r_rs <- rasterize(eviresi_sp, aux_rast, 'rs', fun=mean)
-names(r_rs) <- 'rs'
-
-# Select a palette
-# http://colorbrewer2.org/
-mypal <- brewer.pal(9, "Greens")
-# Add a colour for 0 value
-mypal <- c("#D2D2D2", mypal)
+# Select a palette http://colorbrewer2.org/
+mypal <- brewer.pal(9, "RdYlGn")
 # Specify the color palette
 myTheme=rasterTheme(region=mypal)
 
-library(rasterVis)
-levelplot(r_rs, 
+lp <- levelplot(stack_resi_re, 
           margin=FALSE,
           layer='rs', 
           par.settings=myTheme,
           pretty=TRUE,
-          contour=TRUE,  
-          at=seq(minValue(r_rs), maxValue(r_rs), by=.025))
-
-
-
-,
-          main= 'Taus of Snow-cover indicators') 
-
-, 
-          layout=c(1,3)) + layer(sp.polygons(sn_re))
-
+          main='Resilience (rs)', xlab=NULL, ylab=NULL)
 
 print(lp)
 
+exportpdf(mypdf=paste0(di, '/man/images/raster_rs.pdf'), lp) 
+```
+
+### Resistance 
+```{r, fig.cap='Resistance', fig.height=8, fig.width=10}
+# Resistance  
+
+# Select a palette http://colorbrewer2.org/
+mypal <- brewer.pal(9, "RdYlGn")
+# Specify the color palette
+myTheme=rasterTheme(region=mypal)
+
+lp <- levelplot(stack_resi_re, 
+          margin=FALSE,
+          layer='rt', 
+          par.settings=myTheme,
+          pretty=TRUE,
+          main='Resistance (rt)', xlab=NULL, ylab=NULL)
+
+print(lp)
+
+exportpdf(mypdf=paste0(di, '/man/images/raster_rt.pdf'), lp) 
+```
+
+
+### Recovery 
+```{r, fig.cap='Recovery', fig.height=8, fig.width=10}
+# Recovery 
+
+# Select a palette http://colorbrewer2.org/
+mypal <- brewer.pal(9, "RdYlGn")
+# Specify the color palette
+myTheme=rasterTheme(region=mypal)
+
+lp <- levelplot(stack_resi_re, 
+          margin=FALSE,
+          layer='rc', 
+          par.settings=myTheme, 
+          pretty=TRUE,
+          main='Recovery (rc)', xlab=NULL, ylab=NULL)
+
+print(lp)
+
+exportpdf(mypdf=paste0(di, '/man/images/raster_rc.pdf'), lp) 
+```
+
+
+# Elevation pattern 
+
+```{r}
+# Prepare data
+elev <- read.csv(file=paste(di, "/data/elev.csv", sep=""), header = TRUE, sep = ',')
+
+eviresi <- eviresi %>% 
+  dplyr::inner_join(elev, by='iv_malla_modi_id')
 
 
 
-# Create a empty raster
-aux_r <- raster()
-
-# Define extension 
-extent(aux_r) <- extent(eviresi_sp)
-
-# Rasterize mq_evi_mean
-r_rs <- rasterize(eviresi_sp, aux_r, res=c(250,250), 'rs')
-
-
-library(ggplot2)
-
-pdf
-ggplot(r_rs) +
-    geom_raster(aes(fill = factor(value))) 
 
 
 
 
-evi_cv <- rasterize(df, dd, 'mq_evi_cv')
-evi_dmax <- rasterize(df, dd, 'mq_max')
-
-xxx <- stack(evi_mean, evi_cv, evi_dmax)
-plot(xxx)
 
 
-library(rasterVis)
-library(ggplot2)
+
+
+
+
+
+
+
 
 
 
