@@ -26,188 +26,45 @@ Maps
 -   Create raster maps (two projections: `epsg:4326` and `epsg:23030`)
 -   Export raster maps and stacks (see `/data/raster/`)
 
-``` r
-# Create a spatial dataframe 
-eviresi_sp <- SpatialPointsDataFrame(coords = eviresi[,c('lng','lat')], data = eviresi,
-                               proj4string = CRS("+init=epsg:4326"))
-
-# Transform 
-eviresi_sp <- spTransform(eviresi_sp, CRS("+init=epsg:23030"))
-
-# Loop to create raster map 
-resilience_indicators <- c('rs','rt', 'rc', 'rrs')
-
-for (i in resilience_indicators) { 
-
-  aux_spatial <- eviresi_sp 
-  
-  # raster auxiliar 
-  aux_rast <- raster(aux_spatial, resolution=250)
-
-  # variable z
-  zvar <- i
-
-  # raster_layer 
-  r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
-  names(r_resi) <- i 
-  
-  # reprojected raster
-  r_resi_re <- projectRaster(r_resi, crs=crs("+init=epsg:4326"))
-  names(r_resi_re) <- i 
-  
-  # assign 
-  name_raster <- paste("r_",i, sep="")
-  name_raster_re <- paste("r_",i,"_re", sep="")
-  
-  assign(name_raster, r_resi)
-  assign(name_raster_re, r_resi_re)
-  
-  
-  writeRaster(r_resi, file=paste(di, "/data/raster/r_", i, ".asc", sep=""), overwrite=TRUE)
-  writeRaster(r_resi_re, file=paste(di, "/data/raster/r_", i, "_re", ".tif", sep=""), overwrite=TRUE)
-  
-  }
-
-
-# Create stack of raster 
-stack_resi <- stack(r_rc, r_rs, r_rt, r_rrs) 
-stack_resi_re <- stack(r_rc_re, r_rs_re, r_rt_re, r_rrs_re)
-
-# Export stack 
-temp <- getwd()
-setwd(paste(di, "/data/raster/", sep=""))
-writeRaster(stack_resi, filename = 'r_resi_stack', overwrite =TRUE) 
-writeRaster(stack_resi_re, filename = 'r_resi_re_stack', overwrite =TRUE) 
-setwd(temp)
-```
-
-Spatial explorarion of the resilience components
+Spatial exploration of the resilience components
 ------------------------------------------------
 
 ### Resilience
-
-``` r
-# Resilience 
-
-# Select a palette http://colorbrewer2.org/
-mypal <- brewer.pal(9, "RdYlGn")
-# Specify the color palette
-myTheme=rasterTheme(region=mypal)
-
-lp <- levelplot(stack_resi_re, 
-          margin=FALSE,
-          layer='rs', 
-          par.settings=myTheme,
-          pretty=TRUE,
-          main='Resilience (rs)', xlab=NULL, ylab=NULL)
-
-print(lp)
-```
 
 <img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-3-1.png" alt="Resilience"  />
 <p class="caption">
 Resilience
 </p>
 
-``` r
-exportpdf(mypdf=paste0(di, '/man/images/raster_rs.pdf'), lp) 
-```
-
     ## quartz_off_screen 
     ##                 2
 
 ### Resistance
-
-``` r
-# Resistance  
-
-# Select a palette http://colorbrewer2.org/
-mypal <- brewer.pal(9, "RdYlGn")
-# Specify the color palette
-myTheme=rasterTheme(region=mypal)
-
-lp <- levelplot(stack_resi_re, 
-          margin=FALSE,
-          layer='rt', 
-          par.settings=myTheme,
-          pretty=TRUE,
-          main='Resistance (rt)', xlab=NULL, ylab=NULL)
-
-print(lp)
-```
 
 <img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-4-1.png" alt="Resistance"  />
 <p class="caption">
 Resistance
 </p>
 
-``` r
-exportpdf(mypdf=paste0(di, '/man/images/raster_rt.pdf'), lp) 
-```
-
     ## quartz_off_screen 
     ##                 2
 
 ### Recovery
-
-``` r
-# Recovery 
-
-# Select a palette http://colorbrewer2.org/
-mypal <- brewer.pal(9, "RdYlGn")
-# Specify the color palette
-myTheme=rasterTheme(region=mypal)
-
-lp <- levelplot(stack_resi_re, 
-          margin=FALSE,
-          layer='rc', 
-          par.settings=myTheme, 
-          pretty=TRUE,
-          main='Recovery (rc)', xlab=NULL, ylab=NULL)
-
-print(lp)
-```
 
 <img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png" alt="Recovery"  />
 <p class="caption">
 Recovery
 </p>
 
-``` r
-exportpdf(mypdf=paste0(di, '/man/images/raster_rc.pdf'), lp) 
-```
-
     ## quartz_off_screen 
     ##                 2
 
 ### Relative Resilience
 
-``` r
-# Relative Resilience 
-
-# Select a palette http://colorbrewer2.org/
-mypal <- brewer.pal(9, "RdYlGn")
-# Specify the color palette
-myTheme=rasterTheme(region=mypal)
-
-lp <- levelplot(stack_resi_re, 
-          margin=FALSE,
-          layer='rrs', 
-          par.settings=myTheme,
-          pretty=TRUE,
-          main='Relative Resilience (rs)', xlab=NULL, ylab=NULL)
-
-print(lp)
-```
-
 <img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-6-1.png" alt="Relative Resilience"  />
 <p class="caption">
 Relative Resilience
 </p>
-
-``` r
-exportpdf(mypdf=paste0(di, '/man/images/raster_rrs.pdf'), lp) 
-```
 
     ## quartz_off_screen 
     ##                 2

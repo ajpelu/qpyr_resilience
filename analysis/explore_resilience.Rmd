@@ -40,7 +40,7 @@ eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header =
 * Create raster maps (two projections: `epsg:4326` and `epsg:23030`)
 * Export raster maps and stacks (see `/data/raster/`)
 
-```{r}
+```{r, echo=FALSE}
 # Create a spatial dataframe 
 eviresi_sp <- SpatialPointsDataFrame(coords = eviresi[,c('lng','lat')], data = eviresi,
                                proj4string = CRS("+init=epsg:4326"))
@@ -96,10 +96,10 @@ setwd(temp)
 ```
 
 
-## Spatial explorarion of the resilience components 
+## Spatial exploration of the resilience components 
 
 ### Resilience
-```{r, fig.cap='Resilience', fig.height=7, fig.width=10}
+```{r, echo=FALSE, fig.cap='Resilience', fig.height=7, fig.width=10}
 # Resilience 
 
 # Select a palette http://colorbrewer2.org/
@@ -120,7 +120,7 @@ exportpdf(mypdf=paste0(di, '/man/images/raster_rs.pdf'), lp)
 ```
 
 ### Resistance 
-```{r, fig.cap='Resistance', fig.height=7, fig.width=10}
+```{r, echo=FALSE, fig.cap='Resistance', fig.height=7, fig.width=10}
 # Resistance  
 
 # Select a palette http://colorbrewer2.org/
@@ -142,7 +142,7 @@ exportpdf(mypdf=paste0(di, '/man/images/raster_rt.pdf'), lp)
 
 
 ### Recovery 
-```{r, fig.cap='Recovery', fig.height=7, fig.width=10}
+```{r, echo=FALSE, fig.cap='Recovery', fig.height=7, fig.width=10}
 # Recovery 
 
 # Select a palette http://colorbrewer2.org/
@@ -164,7 +164,7 @@ exportpdf(mypdf=paste0(di, '/man/images/raster_rc.pdf'), lp)
 
 
 ### Relative Resilience
-```{r, fig.cap='Relative Resilience', fig.height=7, fig.width=10}
+```{r, echo=FALSE, fig.cap='Relative Resilience', fig.height=7, fig.width=10}
 # Relative Resilience 
 
 # Select a palette http://colorbrewer2.org/
