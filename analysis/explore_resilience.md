@@ -1,22 +1,7 @@
----
-title: "Explore resilience patterns"
-author: "AJ Perez-Luque (@ajpelu)"
-date: "2016 May"
-output:  
-  md_document:
-    variant: markdown_github
----
-# Explore resilience patterns of the different *Q. pyrenaica* patches
+Explore resilience patterns of the different *Q. pyrenaica* patches
+===================================================================
 
-```{r wd, echo=FALSE}
-#---------------------------------
-# machine <- 'ajpelu'
-machine <- 'ajpeluLap'
-di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
-#---------------------------------
-```
-
-```{r packages, warning=FALSE, message=FALSE}
+``` r
 library("rgdal")
 library("sp")
 library("raster")
@@ -27,20 +12,21 @@ library("ggplot2")
 library("reshape2")
 ```
 
-## Read and prepare data 
+Read and prepare data
+---------------------
 
-```{r}
+``` r
 # Read data
 eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
 ```
 
+Maps
+====
 
-# Maps 
+-   Create raster maps (two projections: `epsg:4326` and `epsg:23030`)
+-   Export raster maps and stacks (see `/data/raster/`)
 
-* Create raster maps (two projections: `epsg:4326` and `epsg:23030`)
-* Export raster maps and stacks (see `/data/raster/`)
-
-```{r}
+``` r
 # Create a spatial dataframe 
 eviresi_sp <- SpatialPointsDataFrame(coords = eviresi[,c('lng','lat')], data = eviresi,
                                proj4string = CRS("+init=epsg:4326"))
@@ -95,11 +81,12 @@ writeRaster(stack_resi_re, filename = 'r_resi_re_stack', overwrite =TRUE)
 setwd(temp)
 ```
 
-
-## Spatial explorarion of the resilience components 
+Spatial explorarion of the resilience components
+------------------------------------------------
 
 ### Resilience
-```{r, fig.cap='Resilience', fig.height=8, fig.width=10}
+
+``` r
 # Resilience 
 
 # Select a palette http://colorbrewer2.org/
@@ -115,12 +102,23 @@ lp <- levelplot(stack_resi_re,
           main='Resilience (rs)', xlab=NULL, ylab=NULL)
 
 print(lp)
+```
 
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-3-1.png" alt="Resilience"  />
+<p class="caption">
+Resilience
+</p>
+
+``` r
 exportpdf(mypdf=paste0(di, '/man/images/raster_rs.pdf'), lp) 
 ```
 
-### Resistance 
-```{r, fig.cap='Resistance', fig.height=8, fig.width=10}
+    ## quartz_off_screen 
+    ##                 2
+
+### Resistance
+
+``` r
 # Resistance  
 
 # Select a palette http://colorbrewer2.org/
@@ -136,13 +134,23 @@ lp <- levelplot(stack_resi_re,
           main='Resistance (rt)', xlab=NULL, ylab=NULL)
 
 print(lp)
+```
 
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-4-1.png" alt="Resistance"  />
+<p class="caption">
+Resistance
+</p>
+
+``` r
 exportpdf(mypdf=paste0(di, '/man/images/raster_rt.pdf'), lp) 
 ```
 
+    ## quartz_off_screen 
+    ##                 2
 
-### Recovery 
-```{r, fig.cap='Recovery', fig.height=8, fig.width=10}
+### Recovery
+
+``` r
 # Recovery 
 
 # Select a palette http://colorbrewer2.org/
@@ -158,13 +166,23 @@ lp <- levelplot(stack_resi_re,
           main='Recovery (rc)', xlab=NULL, ylab=NULL)
 
 print(lp)
+```
 
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png" alt="Recovery"  />
+<p class="caption">
+Recovery
+</p>
+
+``` r
 exportpdf(mypdf=paste0(di, '/man/images/raster_rc.pdf'), lp) 
 ```
 
+    ## quartz_off_screen 
+    ##                 2
 
 ### Relative Resilience
-```{r, fig.cap='Relative Resilience', fig.height=8, fig.width=10}
+
+``` r
 # Relative Resilience 
 
 # Select a palette http://colorbrewer2.org/
@@ -180,17 +198,26 @@ lp <- levelplot(stack_resi_re,
           main='Relative Resilience (rs)', xlab=NULL, ylab=NULL)
 
 print(lp)
+```
 
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-6-1.png" alt="Relative Resilience"  />
+<p class="caption">
+Relative Resilience
+</p>
+
+``` r
 exportpdf(mypdf=paste0(di, '/man/images/raster_rrs.pdf'), lp) 
 ```
 
+    ## quartz_off_screen 
+    ##                 2
 
+Elevation pattern
+=================
 
-# Elevation pattern 
+-   We remove population `Cadiar`
 
-* We remove population `Cadiar`
-
-```{r}
+``` r
 # Prepare data
 elev <- read.csv(file=paste(di, "/data/elev.csv", sep=""), header = TRUE, sep = ',')
 
@@ -206,9 +233,10 @@ eviresi <- eviresi %>%
 eviresi_f <- eviresi %>% filter(clu_pop != 'out')
 ```
 
-## Explore elevation pattern general and by cluster of populations
+Explore elevation pattern general and by cluster of populations
+---------------------------------------------------------------
 
-```{r}
+``` r
 # Change format of the dataset (wide to long)
 df_melt <- melt(eviresi_f, id.vars = c('iv_malla_modi_id', 'poblacion',
                                       'lng', 'lat', 'elev', 'clu_pop'))
@@ -225,9 +253,9 @@ label_cluster <- c('a' = 'Camarate',
                    'c' = 'Southern slope')
 ```
 
-### General pattern 
-```{r, fig.cap='Resilience components vs. elevation', fig.width=12, fig.height=8}
+### General pattern
 
+``` r
 g <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) + 
   geom_point(col='gray') + 
   geom_smooth(method = 'lm') + 
@@ -240,8 +268,10 @@ g
 dev.off() 
 ```
 
+    ## quartz_off_screen 
+    ##                 2
 
-```{r, fig.cap='Relative Resilience vs. elevation'}
+``` r
 gr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) + 
   geom_point(col='gray') + 
   theme_bw() +
@@ -249,16 +279,25 @@ gr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) +
   ggtitle('Relative Resilience')
 
 gr
+```
 
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-10-1.png" alt="Relative Resilience vs. elevation"  />
+<p class="caption">
+Relative Resilience vs. elevation
+</p>
+
+``` r
 pdf(file=paste0(di, "/man/images/plot_resi_rel_elev.pdf"), height = 5, width = 5)
 gr
 dev.off() 
 ```
 
+    ## quartz_off_screen 
+    ##                 2
 
-### Elevational pattern by population 
-```{r, fig.cap='Resilience components vs. elevation (grouped by cluster) ', fig.width=12, fig.height=10}
+### Elevational pattern by population
 
+``` r
 gp <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) +
   geom_point(col='gray') + 
   geom_smooth(method = 'lm') + 
@@ -269,16 +308,23 @@ gp <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) +
   theme_bw() + 
   theme(strip.background = element_rect(fill = "white")) 
 gp 
+```
 
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-11-1.png" alt="Resilience components vs. elevation (grouped by cluster) "  />
+<p class="caption">
+Resilience components vs. elevation (grouped by cluster)
+</p>
+
+``` r
 pdf(file=paste0(di, "/man/images/plot_resicomp_elev_grouped.pdf"), height = 8, width = 8)
 gp
 dev.off() 
 ```
 
+    ## quartz_off_screen 
+    ##                 2
 
-
-```{r, fig.cap='Relative resilience vs. elevation (grouped by cluster) ', fig.width=12, fig.height=7}
-
+``` r
 gpr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) +
   geom_point(col='gray') + 
   geom_smooth(method = 'lm') + 
@@ -286,15 +332,26 @@ gpr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) +
   theme_bw() + 
   theme(strip.background = element_rect(fill = "white")) 
 gpr 
+```
 
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-12-1.png" alt="Relative resilience vs. elevation (grouped by cluster) "  />
+<p class="caption">
+Relative resilience vs. elevation (grouped by cluster)
+</p>
+
+``` r
 pdf(file=paste0(di, "/man/images/plot_resi_rel_elev_grouped.pdf"), height = 6, width = 12)
 gpr
 dev.off()
 ```
 
+    ## quartz_off_screen 
+    ##                 2
 
-# Explore pattern by population (cluster)
-```{r, fig.cap='Resilience components by cluster (populations)', fig.width=10, fig.height=10}
+Explore pattern by population (cluster)
+=======================================
+
+``` r
 gpop <- ggplot(df_aux, aes(x=clu_pop, y=value)) + 
   geom_boxplot() + 
   facet_wrap(~variable, scales = 'free_y', labeller = as_labeller(label_variable)) + 
@@ -307,14 +364,5 @@ gpop
 dev.off()
 ```
 
-
-  
-
-
-
-
-
-
-
-
-
+    ## quartz_off_screen 
+    ##                 2

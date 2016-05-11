@@ -1,6 +1,6 @@
 [general]
 creator=R package 'raster'
-created=2016-05-11 07:45:24
+created=2016-05-11 13:37:03
 [georeference]
 nrows=128
 ncols=140
@@ -12,14 +12,14 @@ projection=+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +tow
 [data]
 datatype=FLT8S
 byteorder=little
-nbands=3
+nbands=4
 bandorder=BIL
-minvalue=0.903049993761567:0.71619014593193:0.66447953348831
-maxvalue=1.3279382628828:1.10486974840984:1.04968053534541
+minvalue=0.903049993761567:0.71619014593193:0.66447953348831:-0.10040232498799
+maxvalue=1.3279382628828:1.10486974840984:1.04968053534541:0.243230030432878
 nodatavalue=-1.7e+308
 [legend]
 legendtype=
 values=
 color=
 [description]
-layername=rc:rs:rt
+layername=rc:rs:rt:rrs

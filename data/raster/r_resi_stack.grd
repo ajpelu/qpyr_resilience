@@ -1,6 +1,6 @@
 [general]
 creator=R package 'raster'
-created=2016-05-11 07:45:24
+created=2016-05-11 13:37:03
 [georeference]
 nrows=115
 ncols=130
@@ -12,14 +12,14 @@ projection=+init=epsg:23030 +proj=utm +zone=30 +ellps=intl +towgs84=-87,-98,-121
 [data]
 datatype=FLT8S
 byteorder=little
-nbands=3
+nbands=4
 bandorder=BIL
-minvalue=0.873883609318883:0.662368539793829:0.643706709578115
-maxvalue=1.38217890001216:1.1112856411132:1.08064316635745
+minvalue=0.873883609318883:0.662368539793829:0.643706709578115:-0.135385035313385
+maxvalue=1.38217890001216:1.1112856411132:1.08064316635745:0.287695264827923
 nodatavalue=-1.7e+308
 [legend]
 legendtype=
 values=
 color=
 [description]
-layername=rc:rs:rt
+layername=rc:rs:rt:rrs
