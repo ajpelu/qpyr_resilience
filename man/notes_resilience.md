@@ -20,3 +20,6 @@
 * ***Relative resilience*** is the resilience weighted by the damage experienced during disturbance, and it is estimated as: 
 RR = (post - dist) / pre 
 
+* The rationale for this index is that the ability to achieve the levels of pre-disturbance performance depends on the impact  during the disturbance. 
+* Values lower than 1 indicates that the effect of the event persists after disturbance, with lower values indicating decreasing resilience. High resistance to the disturbance (low levels of damage) reduce the relative resilience, while low resistance increases it. Relative resilience may have negative values if post-disturbance performance is lower than performance during the disturbance event.
+
