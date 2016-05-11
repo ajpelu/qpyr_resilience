@@ -263,6 +263,15 @@ g <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) +
   theme_bw() + 
   theme(strip.background = element_rect(fill = "white")) 
 
+g
+```
+
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-9-1.png" alt="Resilience components vs. elevation"  />
+<p class="caption">
+Resilience components vs. elevation
+</p>
+
+``` r
 pdf(file=paste0(di, "/man/images/plot_resicomp_elev.pdf"), height = 5, width = 8)
 g
 dev.off() 
@@ -359,6 +368,15 @@ gpop <- ggplot(df_aux, aes(x=clu_pop, y=value)) +
   theme(strip.background = element_rect(fill = "white")) +  
   scale_x_discrete(labels = label_cluster)
 
+gpop
+```
+
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-13-1.png" alt="Resilience components by cluster (populations)"  />
+<p class="caption">
+Resilience components by cluster (populations)
+</p>
+
+``` r
 pdf(file=paste0(di, "/man/images/plot_resicomp_by_cluster.pdf"), height = 7, width = 8)
 gpop
 dev.off()
