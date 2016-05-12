@@ -25,6 +25,9 @@ source(paste0(di,"/R/exportpdf.R")) # function to export raster levelplots maps 
 library("dplyr")
 library("ggplot2")
 library("reshape2")
+library("purrr")
+library("pander")
+library("knitr")
 ```
 
 ## Read and prepare data 
@@ -310,9 +313,100 @@ dev.off()
 ```
 
 
+# Exploring relationships 
+
+```{r}
+# https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html
+
+# Regresssion models resilience component ~ elevation by cluster pop 
+
+# 'rs' 
+myformula <- as.formula(rs ~ elev) 
+
+# Get coef
+reg_coef_rs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rs')
+# Get stat regression
+reg_summ_rs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rs')
+
+
+# 'rt' 
+myformula <- as.formula(rt ~ elev) 
+
+# Get coef
+reg_coef_rt <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rt')
+# Get stat regression
+reg_summ_rt <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rt')
+
+
+# 'rc' 
+myformula <- as.formula(rc ~ elev) 
+
+# Get coef
+reg_coef_rc <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rc')
+# Get stat regression
+reg_summ_rc <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rc')
+
+
+# 'rrs' 
+myformula <- as.formula(rrs ~ elev) 
+
+# Get coef
+reg_coef_rrs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rrs')
+# Get stat regression
+reg_summ_rrs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
+    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rrs')
+
+
+
+# Create table with all regressions output 
+
+reg_coef <- rbind(reg_coef_rs, reg_coef_rt, reg_coef_rc, reg_coef_rrs)
+reg_summ <- rbind(reg_summ_rs, reg_summ_rt, reg_summ_rc, reg_summ_rrs)
+
+pandoc.table(reg_coef, caption = "Coefficients of Regression")
+
+kable(reg_coef, caption = "Coefficients of Regression")
+
+kable(reg_summ, caption = "Coefficients of Regression")
+```
+
+
+
+```{r, echo=FALSE, eval=FALSE} 
+m <- eviresi_f %>% 
+  split(.$clu_pop) %>% 
+  map(~ lm(rs ~ elev, data =.)) %>% 
+  map(broom::tidy) 
+
+mm <- m %>% unlist()
   
+  flatten(.)
+
+eviresi_f %>% 
+  slice_rows("clu_pop") %>% 
+  map(~ lm(rs ~ elev, data =.)) 
+
+%>% 
+  map(broom::tidy)
 
 
+mtcars %>%
+  slice_rows("cyl") %>%
+  by_slice(partial(lm, mpg ~ disp), .labels = FALSE) %>%
+  map(coef)
+
+
+%>%
+  # map_dbl(c("r.squared")) 
+  map_dbl(c(2, 1))
+```
 
 
 
