@@ -374,7 +374,7 @@ pandoc.table(reg_coef, caption = "Coefficients of Regression")
 
 kable(reg_coef, caption = "Coefficients of Regression")
 
-kable(reg_summ, caption = "Coefficients of Regression")
+kable(reg_summ[,c(1:3,6,13)], caption = "Coefficients of Regression")
 ```
 
 
