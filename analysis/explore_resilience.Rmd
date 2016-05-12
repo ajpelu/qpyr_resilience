@@ -315,7 +315,7 @@ dev.off()
 
 # Exploring relationships 
 
-```{r}
+```{r, echo=FALSE}
 # https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html
 
 # Regresssion models resilience component ~ elevation by cluster pop 
@@ -369,9 +369,9 @@ reg_summ_rrs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
 
 reg_coef <- rbind(reg_coef_rs, reg_coef_rt, reg_coef_rc, reg_coef_rrs)
 reg_summ <- rbind(reg_summ_rs, reg_summ_rt, reg_summ_rc, reg_summ_rrs)
+```
 
-pandoc.table(reg_coef, caption = "Coefficients of Regression")
-
+```{r}
 kable(reg_coef, caption = "Coefficients of Regression")
 
 kable(reg_summ[,c(1:3,6,13)], caption = "Coefficients of Regression")
