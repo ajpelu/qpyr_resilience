@@ -11,7 +11,7 @@ library("dplyr")
 library("ggplot2")
 library("reshape2")
 library("purrr")
-library("pander")
+# library("pander")
 library("knitr")
 ```
 
@@ -238,6 +238,44 @@ Resilience components by cluster (populations)
 
 ``` r
 pdf(file=paste0(di, "/man/images/plot_resicomp_by_cluster.pdf"), height = 7, width = 8)
+gpop
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+# Bar plot 
+variables <- c('rs','rc','rt','rrs')
+auxdf <- data.frame() 
+
+for (i in variables){ 
+aux <- eviresi_f %>% 
+  dplyr::group_by(clu_pop) %>% 
+  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+
+auxdf <- rbind(auxdf, aux) }
+
+gpop_bar <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_pop, y=mean)) + 
+  geom_bar(stat='identity', fill='black', colour='black') + 
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), 
+                width=.2, position=position_dodge(.9))  +
+  facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
+  theme_bw() + xlab('')+
+  theme(strip.background = element_rect(fill = "white")) +  
+  scale_x_discrete(labels = label_cluster)
+
+gpop_bar
+```
+
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-13-2.png" alt="Resilience components by cluster (populations)"  />
+<p class="caption">
+Resilience components by cluster (populations)
+</p>
+
+``` r
+pdf(file=paste0(di, "/man/images/plot_resicomp_bar_by_cluster.pdf"), height = 7, width = 8)
 gpop
 dev.off()
 ```
