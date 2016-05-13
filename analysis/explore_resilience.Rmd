@@ -10,8 +10,8 @@ output:
 
 ```{r wd, echo=FALSE}
 #---------------------------------
-# machine <- 'ajpelu'
-machine <- 'ajpeluLap'
+machine <- 'ajpelu'
+# machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -310,9 +310,9 @@ gpop
 pdf(file=paste0(di, "/man/images/plot_resicomp_by_cluster.pdf"), height = 7, width = 8)
 gpop
 dev.off()
+```
 
-
-
+```{r, fig.cap='Resilience components by cluster (populations)', fig.width=10, fig.height=4}
 # Bar plot 
 variables <- c('rs','rc','rt','rrs')
 auxdf <- data.frame() 

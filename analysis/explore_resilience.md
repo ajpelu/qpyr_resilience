@@ -269,7 +269,7 @@ gpop_bar <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_pop, y=mean)) +
 gpop_bar
 ```
 
-<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-13-2.png" alt="Resilience components by cluster (populations)"  />
+<img src="explore_resilience_files/figure-markdown_github/unnamed-chunk-14-1.png" alt="Resilience components by cluster (populations)"  />
 <p class="caption">
 Resilience components by cluster (populations)
 </p>
