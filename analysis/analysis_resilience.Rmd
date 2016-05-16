@@ -27,6 +27,7 @@ library("knitr")
 source("http://www.highstat.com/Book2/HighstatLibV6.R")
 library("multcomp")
 library("broom")
+library("effects")
 ```
 
 ## Read and prepare data 
@@ -49,27 +50,102 @@ eviresi <- eviresi %>%
 # Filter out cluster 
 eviresi_f <- eviresi %>% filter(clu_pop != 'out')
 
-str(eviresi_f)
-
-
 ```
 
 # Model 
+
+## Resilience 
+
 ```{r}
-mod1 <- aov(rs~elev + clu_pop + elev:clu_pop, data=eviresi_f) 
+
+variable <- 'rs'
 
 
-drop1(mod1, test="Chi")
+# Model 
+myformula <- as.formula(paste0(variable, " ~ elev + clu_pop + elev:clu_pop"))
+mymodel <- aov(myformula, data=eviresi_f)
+
+## Summary model 
+broom::tidy(mymodel)
+
+## Effects 
+# Population 
+plot(allEffects("elev:clu_pop",mymodel)) 
+
+
+
+## Multiple comparison 
+tuk <- glht(mymodel, linfct = mcp(clu_pop = "Tukey"))
+summary(tuk)
+
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(clu_pop = as.factor(lhs),
+         tukey_clu_pop = letters) %>%
+  mutate(variable = variable)
+
+
+effect("neuroticism*extraversion", mod.cowles)
+
+
+plot(effect("clu_pop", mymodel))
+
+
+     x.var='Q. pyrenaica cluster'))
+plot(effect("clu_pop", mymodel), style='lines')
+
+mye <- allEffects(mymodel)
+mye
+as.data.frame(mye[[1]])
+
+mymodel <- mod_res
+
+drop1(mymodel, test="Chi")
 
 
 
 # Para ver el plot de los efectos 
-adjustedMeans <- allEffects("clu_pop", mod1)
-plot(Effect("clu_pop",mod1))
+aa <- effect("clu_pop", mymodel)
+plot(allEffects("elev:clu_pop",mymodel))
+
+plot(aa, x.var="clu_pop")
 
 
-ph <- glht(mod1, linfct=mcp(clu_pop = "Tukey"))
+
+# Interplot 
+lm_mymodel <- lm(myformula, data=eviresi_f)
+interplot(m=lm_mymodel, var1="elev", var2 = "clu_pop")
+
+
+
+
+# Multiple comparison 
+
+
+tuk <- glht(mymodel, linfct=mcp(clu_pop = "Tukey"))
 summary(ph)
+
+
+## Multiple comparisons 
+tuk <- glht(mod, linfct = mcp(basin_name = "Tukey"))
+
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(basin_name = as.factor(lhs),
+         tukey_basin_name = letters) %>%
+  mutate(variable = variable)
+
+df_letter_aux <- rbind(df_letter_aux, df_letter)
+
+## ANOVA plots
+ggplot(df, aes_string(x='basin_name', y=variable)) + 
+  geom_boxplot() +
+  geom_text(data=df_letter, aes(label = tukey_basin_name, x=basin_name, y=0.5),
+           position = position_dodge(width=0.9)) +
+  theme_bw() + mythemeggplot + 
+  ylab(my_ylab) + xlab('')
+
+
 
 
 
