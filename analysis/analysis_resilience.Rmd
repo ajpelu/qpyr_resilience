@@ -59,7 +59,7 @@ eviresi_f <- eviresi %>%
 
 ## Resilience 
 
-```{r, echo=FALSE}
+```{r}
 variable <- 'rs'
 
 # Model 

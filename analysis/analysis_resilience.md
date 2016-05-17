@@ -32,16 +32,36 @@ Models
 Resilience
 ----------
 
+``` r
+variable <- 'rs'
+
+# Model 
+myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
+mymodel <- aov(myformula, data=eviresi_f)
+
+## Summary model 
+broom::tidy(mymodel)
+```
+
     ##            term   df      sumsq      meansq statistic       p.value
     ## 1          elev    1 1.51753347 1.517533471 672.05719 8.953259e-126
     ## 2      clu_popf    2 0.43274242 0.216371209  95.82248  3.150863e-40
     ## 3 elev:clu_popf    2 0.07127572 0.035637860  15.78264  1.608526e-07
     ## 4     Residuals 1760 3.97415421 0.002258042        NA            NA
 
+``` r
+broom::glance(mymodel)
+```
+
     ##   r.squared adj.r.squared      sigma statistic      p.value df   logLik
     ## 1 0.3371666     0.3352835 0.04751886  179.0535 2.64913e-154  6 2877.506
     ##         AIC       BIC deviance df.residual
     ## 1 -5741.011 -5702.676 3.974154        1760
+
+``` r
+## Evaluate terms 
+drop1(mymodel, test="Chi")
+```
 
     ## Single term deletions
     ## 
@@ -53,16 +73,49 @@ Resilience
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
+``` r
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(variable, ' vs. Cluster population'),
+     xlab='Cluster population')
+```
+
     ## NOTE: clu_popf is not a high-order term in the model
 
 ![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png)<!-- -->
 
+``` r
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(variable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+```
+
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-2.png)<!-- -->![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-3.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-2.png)<!-- -->
+
+``` r
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',variable, ')'),
+     xlab='Elevation (m)')
+```
+
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-3.png)<!-- -->
+
+``` r
+## Multiple comparison 
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
+```
 
     ## Warning in mcp2matrix(model, linfct = linfct): covariate interactions found
     ## -- default contrast might be inappropriate
+
+``` r
+summary(tuk)
+```
 
     ## 
     ##   Simultaneous Tests for General Linear Hypotheses
@@ -79,11 +132,22 @@ Resilience
     ## Southern slopes - Northern slopes == 0  0.04766    0.01857   2.567
     ##                                        Pr(>|t|)    
     ## Northern slopes - Camarate == 0         < 1e-04 ***
-    ## Southern slopes - Camarate == 0         0.00275 ** 
-    ## Southern slopes - Northern slopes == 0  0.02637 *  
+    ## Southern slopes - Camarate == 0         0.00274 ** 
+    ## Southern slopes - Northern slopes == 0  0.02639 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
+
+``` r
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(clu_popf = as.factor(lhs),
+         tukey = letters) %>%
+  mutate(variable = variable)
+
+aux_name <- paste0('df_tuk_', variable)
+assign(aux_name, df_letter)
+```
 
 Resistence
 ----------
@@ -186,8 +250,8 @@ summary(tuk)
     ## Southern slopes - Northern slopes == 0  0.05953    0.01963   3.033
     ##                                        Pr(>|t|)   
     ## Northern slopes - Camarate == 0         0.88328   
-    ## Southern slopes - Camarate == 0         0.35828   
-    ## Southern slopes - Northern slopes == 0  0.00653 **
+    ## Southern slopes - Camarate == 0         0.35827   
+    ## Southern slopes - Northern slopes == 0  0.00654 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -305,9 +369,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.20388    0.04215  -4.837
     ## Southern slopes - Northern slopes == 0 -0.03197    0.02550  -1.254
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000242 ***
+    ## Northern slopes - Camarate == 0        0.000244 ***
     ## Southern slopes - Camarate == 0         < 1e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.412213    
+    ## Southern slopes - Northern slopes == 0 0.412205    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -425,9 +489,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.14482    0.03282  -4.413
     ## Southern slopes - Northern slopes == 0 -0.01187    0.01986  -0.598
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000273 ***
-    ## Southern slopes - Camarate == 0        3.25e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.816451    
+    ## Northern slopes - Camarate == 0        0.000272 ***
+    ## Southern slopes - Camarate == 0        3.19e-05 ***
+    ## Southern slopes - Northern slopes == 0 0.816450    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
