@@ -51,6 +51,66 @@ kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
 | Residuals      |  1760|  3.9741542|  0.0022580|         NA|     NA|
 
 ``` r
+pander(aov(mymodel))
+```
+
+<table style="width:89%;">
+<caption>Analysis of Variance Model</caption>
+<colgroup>
+<col width="27%" />
+<col width="6%" />
+<col width="12%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Df</th>
+<th align="center">Sum Sq</th>
+<th align="center">Mean Sq</th>
+<th align="center">F value</th>
+<th align="center">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>elev</strong></td>
+<td align="center">1</td>
+<td align="center">1.518</td>
+<td align="center">1.518</td>
+<td align="center">672.1</td>
+<td align="center">8.953e-126</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>clu_popf</strong></td>
+<td align="center">2</td>
+<td align="center">0.4327</td>
+<td align="center">0.2164</td>
+<td align="center">95.82</td>
+<td align="center">3.151e-40</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>elev:clu_popf</strong></td>
+<td align="center">2</td>
+<td align="center">0.07128</td>
+<td align="center">0.03564</td>
+<td align="center">15.78</td>
+<td align="center">1.609e-07</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>Residuals</strong></td>
+<td align="center">1760</td>
+<td align="center">3.974</td>
+<td align="center">0.002258</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+</tbody>
+</table>
+
+``` r
 broom::glance(mymodel)
 ```
 
@@ -134,7 +194,7 @@ summary(tuk)
     ##                                        Pr(>|t|)    
     ## Northern slopes - Camarate == 0         < 1e-04 ***
     ## Southern slopes - Camarate == 0         0.00275 ** 
-    ## Southern slopes - Northern slopes == 0  0.02638 *  
+    ## Southern slopes - Northern slopes == 0  0.02639 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -252,7 +312,7 @@ summary(tuk)
     ##                                        Pr(>|t|)   
     ## Northern slopes - Camarate == 0         0.88328   
     ## Southern slopes - Camarate == 0         0.35827   
-    ## Southern slopes - Northern slopes == 0  0.00652 **
+    ## Southern slopes - Northern slopes == 0  0.00653 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -370,9 +430,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.20388    0.04215  -4.837
     ## Southern slopes - Northern slopes == 0 -0.03197    0.02550  -1.254
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000245 ***
+    ## Northern slopes - Camarate == 0        0.000243 ***
     ## Southern slopes - Camarate == 0         < 1e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.412204    
+    ## Southern slopes - Northern slopes == 0 0.412202    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -490,9 +550,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.14482    0.03282  -4.413
     ## Southern slopes - Northern slopes == 0 -0.01187    0.01986  -0.598
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000279 ***
-    ## Southern slopes - Camarate == 0        3.08e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.816451    
+    ## Northern slopes - Camarate == 0         0.00027 ***
+    ## Southern slopes - Camarate == 0        3.02e-05 ***
+    ## Southern slopes - Northern slopes == 0  0.81645    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)

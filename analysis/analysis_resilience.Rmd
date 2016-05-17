@@ -22,7 +22,7 @@ library("dplyr")
 library("ggplot2")
 library("reshape2")
 library("purrr")
-# library("pander")
+library("pander")
 library("knitr")
 source("http://www.highstat.com/Book2/HighstatLibV6.R")
 library("multcomp")
@@ -68,6 +68,8 @@ mymodel <- aov(myformula, data=eviresi_f)
 
 ## Summary model 
 kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
+
+pander(aov(mymodel))
 
 broom::glance(mymodel)
 
