@@ -10,13 +10,13 @@ output:
 
 ```{r wd, echo=FALSE}
 #---------------------------------
-machine <- 'ajpelu'
-# machine <- 'ajpeluLap'
+#machine <- 'ajpelu'
+machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
 #---------------------------------
 ```
 
-```{r packages, warning=FALSE, message=FALSE}
+```{r packages, warning=FALSE, message=FALSE, echo=FALSE}
 source(paste0(di,"/R/exportpdf.R")) # function to export raster levelplots maps as pdf
 library("dplyr")
 library("ggplot2")
@@ -48,360 +48,258 @@ eviresi <- eviresi %>%
                                  ifelse(poblacion %in% c(6,7,8), 'c', 'out')))))
 
 # Filter out cluster 
-eviresi_f <- eviresi %>% filter(clu_pop != 'out')
+eviresi_f <- eviresi %>% 
+  filter(clu_pop != 'out') %>%
+  mutate(clu_popf = as.factor(ifelse(clu_pop == 'a', 'Camarate',
+                           ifelse(clu_pop == 'b','Northern slopes', 'Southern slopes'))))
 
 ```
 
-# Model 
+# Models 
 
 ## Resilience 
 
-```{r}
-
+```{r, echo=FALSE}
 variable <- 'rs'
 
-
 # Model 
-myformula <- as.formula(paste0(variable, " ~ elev + clu_pop + elev:clu_pop"))
+myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
 mymodel <- aov(myformula, data=eviresi_f)
 
 ## Summary model 
 broom::tidy(mymodel)
+broom::glance(mymodel)
 
-## Effects 
-# Population 
-plot(allEffects("elev:clu_pop",mymodel)) 
+## Evaluate terms 
+drop1(mymodel, test="Chi")
 
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(variable, ' vs. Cluster population'),
+     xlab='Cluster population')
+
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(variable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',variable, ')'),
+     xlab='Elevation (m)')
 
 
 ## Multiple comparison 
-tuk <- glht(mymodel, linfct = mcp(clu_pop = "Tukey"))
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
 summary(tuk)
 
 # Convert comparisons into letters 
 df_letter <- fortify(cld(tuk)) %>%
-  transmute(clu_pop = as.factor(lhs),
-         tukey_clu_pop = letters) %>%
+  transmute(clu_popf = as.factor(lhs),
+         tukey = letters) %>%
   mutate(variable = variable)
 
+aux_name <- paste0('df_tuk_', variable)
+assign(aux_name, df_letter)
+```
 
-effect("neuroticism*extraversion", mod.cowles)
+## Resistence
 
+```{r}
+variable <- 'rt'
 
-plot(effect("clu_pop", mymodel))
+# Model 
+myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
+mymodel <- aov(myformula, data=eviresi_f)
 
+## Summary model 
+broom::tidy(mymodel)
+broom::glance(mymodel)
 
-     x.var='Q. pyrenaica cluster'))
-plot(effect("clu_pop", mymodel), style='lines')
-
-mye <- allEffects(mymodel)
-mye
-as.data.frame(mye[[1]])
-
-mymodel <- mod_res
-
+## Evaluate terms 
 drop1(mymodel, test="Chi")
 
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(variable, ' vs. Cluster population'),
+     xlab='Cluster population')
+
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(variable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',variable, ')'),
+     xlab='Elevation (m)')
 
 
-# Para ver el plot de los efectos 
-aa <- effect("clu_pop", mymodel)
-plot(allEffects("elev:clu_pop",mymodel))
-
-plot(aa, x.var="clu_pop")
-
-
-
-# Interplot 
-lm_mymodel <- lm(myformula, data=eviresi_f)
-interplot(m=lm_mymodel, var1="elev", var2 = "clu_pop")
-
-
-
-
-# Multiple comparison 
-
-
-tuk <- glht(mymodel, linfct=mcp(clu_pop = "Tukey"))
-summary(ph)
-
-
-## Multiple comparisons 
-tuk <- glht(mod, linfct = mcp(basin_name = "Tukey"))
+## Multiple comparison 
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
+summary(tuk)
 
 # Convert comparisons into letters 
 df_letter <- fortify(cld(tuk)) %>%
-  transmute(basin_name = as.factor(lhs),
-         tukey_basin_name = letters) %>%
+  transmute(clu_popf = as.factor(lhs),
+         tukey = letters) %>%
   mutate(variable = variable)
 
-df_letter_aux <- rbind(df_letter_aux, df_letter)
-
-## ANOVA plots
-ggplot(df, aes_string(x='basin_name', y=variable)) + 
-  geom_boxplot() +
-  geom_text(data=df_letter, aes(label = tukey_basin_name, x=basin_name, y=0.5),
-           position = position_dodge(width=0.9)) +
-  theme_bw() + mythemeggplot + 
-  ylab(my_ylab) + xlab('')
+aux_name <- paste0('df_tuk_', variable)
+assign(aux_name, df_letter)
+```
 
 
-
-
-
-
-tidy(mod1)
-glance(mod1)
-
-
-
-# 
-myvar <- c('elev','clu_pop')
-cc <- corvif(eviresi_f[, myvar])
-
-
-
-
-
-
-
-
-n <- nrow(eviresi_f)
-p <- length(coef(mod1))
-e1 <- resid(mod1, type = 'pearson')
-disp <- sum(e1^2) / (n-p)
-
-
-e1 <- resid(mod1, type = 'pearson')
-f1 <- fitted(mod1)
-
-plot(x=f1, y=e1)
-
-
-
-
-
-
-broom::glance(mod1)
-pR2(mod1)
-
-
-## Explore elevation pattern general and by cluster of populations
+## Recovery
 
 ```{r}
-# Change format of the dataset (wide to long)
-df_melt <- melt(eviresi_f, id.vars = c('iv_malla_modi_id', 'poblacion',
-                                      'lng', 'lat', 'elev', 'clu_pop'))
+variable <- 'rc'
 
-df_aux <- df_melt %>% filter(variable %in% c('rs','rt','rc', 'rrs'))
+# Model 
+myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
+mymodel <- aov(myformula, data=eviresi_f)
 
-  
-label_variable <- c('rt' = 'Resistance', 
-                    'rc' = 'Recovery',
-                    'rs' = 'Resilience',
-                    'rrs' = 'Relative Resilience')
-label_cluster <- c('a' = 'Camarate',
-                   'b' = 'Northern slope',
-                   'c' = 'Southern slope')
-```
+## Summary model 
+broom::tidy(mymodel)
+broom::glance(mymodel)
 
-### General pattern 
-```{r, fig.cap='Resilience components vs. elevation', fig.width=12, fig.height=8}
+## Evaluate terms 
+drop1(mymodel, test="Chi")
 
-g <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) + 
-  geom_point(col='gray') + 
-  geom_smooth(method = 'lm') + 
-  facet_wrap(~variable, nrow=1, labeller = as_labeller(label_variable)) + 
-  theme_bw() + 
-  theme(strip.background = element_rect(fill = "white")) 
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(variable, ' vs. Cluster population'),
+     xlab='Cluster population')
 
-g
-pdf(file=paste0(di, "/man/images/plot_resicomp_elev.pdf"), height = 5, width = 8)
-g
-dev.off() 
-```
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(variable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',variable, ')'),
+     xlab='Elevation (m)')
 
 
-```{r, fig.cap='Relative Resilience vs. elevation'}
-gr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) + 
-  geom_point(col='gray') + 
-  theme_bw() +
-  geom_smooth(method = 'lm') + 
-  ggtitle('Relative Resilience')
+## Multiple comparison 
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
+summary(tuk)
 
-gr
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(clu_popf = as.factor(lhs),
+         tukey = letters) %>%
+  mutate(variable = variable)
 
-pdf(file=paste0(di, "/man/images/plot_resi_rel_elev.pdf"), height = 5, width = 5)
-gr
-dev.off() 
+aux_name <- paste0('df_tuk_', variable)
+assign(aux_name, df_letter)
 ```
 
 
-### Elevational pattern by population 
-```{r, fig.cap='Resilience components vs. elevation (grouped by cluster) ', fig.width=12, fig.height=10}
+## Relative resilience
 
-gp <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) +
-  geom_point(col='gray') + 
-  geom_smooth(method = 'lm') + 
-  facet_grid(variable ~clu_pop, scales = 'free_y',
-             labeller = labeller(.rows = label_variable,
-                                 .cols = label_cluster)) +
-  # facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
-  theme_bw() + 
-  theme(strip.background = element_rect(fill = "white")) 
-gp 
+```{r}
+variable <- 'rrs'
 
-pdf(file=paste0(di, "/man/images/plot_resicomp_elev_grouped.pdf"), height = 8, width = 8)
-gp
-dev.off() 
+# Model 
+myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
+mymodel <- aov(myformula, data=eviresi_f)
+
+## Summary model 
+broom::tidy(mymodel)
+broom::glance(mymodel)
+
+## Evaluate terms 
+drop1(mymodel, test="Chi")
+
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(variable, ' vs. Cluster population'),
+     xlab='Cluster population')
+
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(variable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',variable, ')'),
+     xlab='Elevation (m)')
+
+
+## Multiple comparison 
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
+summary(tuk)
+
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(clu_popf = as.factor(lhs),
+         tukey = letters) %>%
+  mutate(variable = variable)
+
+aux_name <- paste0('df_tuk_', variable)
+assign(aux_name, df_letter)
 ```
 
 
-
-```{r, fig.cap='Relative resilience vs. elevation (grouped by cluster) ', fig.width=12, fig.height=7}
-
-gpr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) +
-  geom_point(col='gray') + 
-  geom_smooth(method = 'lm') + 
-  facet_wrap(~clu_pop, labeller = as_labeller(label_cluster)) +
-  theme_bw() + 
-  theme(strip.background = element_rect(fill = "white")) 
-gpr 
-
-pdf(file=paste0(di, "/man/images/plot_resi_rel_elev_grouped.pdf"), height = 6, width = 12)
-gpr
-dev.off()
-```
-
-
-# Explore pattern by population (cluster)
-```{r, fig.cap='Resilience components by cluster (populations)', fig.width=8, fig.height=8}
-gpop <- ggplot(df_aux, aes(x=clu_pop, y=value)) + 
-  geom_boxplot() + 
-  facet_wrap(~variable, scales = 'free_y', labeller = as_labeller(label_variable)) + 
-  theme_bw() + xlab('')+
-  theme(strip.background = element_rect(fill = "white")) +  
-  scale_x_discrete(labels = label_cluster)
-
-gpop
-pdf(file=paste0(di, "/man/images/plot_resicomp_by_cluster.pdf"), height = 7, width = 8)
-gpop
-dev.off()
-```
-
-```{r, fig.cap='Resilience components by cluster (populations)', fig.width=10, fig.height=4}
-# Bar plot 
+```{r}
 variables <- c('rs','rc','rt','rrs')
 auxdf <- data.frame() 
 
 for (i in variables){ 
 aux <- eviresi_f %>% 
-  dplyr::group_by(clu_pop) %>% 
+  dplyr::group_by(clu_popf) %>% 
   summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
 
 auxdf <- rbind(auxdf, aux) }
 
-gpop_bar <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_pop, y=mean)) + 
+label_variable <- c('rt' = 'Resistance', 
+                    'rc' = 'Recovery',
+                    'rs' = 'Resilience',
+                    'rrs' = 'Relative Resilience')
+
+
+df_all_letters <- rbind(df_tuk_rs, df_tuk_rt, df_tuk_rc, df_tuk_rrs)
+
+auxdf <- auxdf %>% 
+  inner_join(df_all_letters, by=c('clu_popf', 'variable')) 
+
+
+gpop_bar_letter <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_popf, y=mean)) + 
   geom_bar(stat='identity', fill='black', colour='black') + 
   geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), 
                 width=.2, position=position_dodge(.9))  +
   facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
-  theme_bw() + xlab('')+
-  theme(strip.background = element_rect(fill = "white")) +  
-  scale_x_discrete(labels = label_cluster)
+  theme_bw() + xlab('') + ylab('') + 
+  geom_text(aes(label = tukey, 
+                y=(mean+1.7*sd)),
+           position = position_dodge(width=0.9)) +
+  theme(strip.background = element_rect(fill = "white"))
 
-gpop_bar
-pdf(file=paste0(di, "/man/images/plot_resicomp_bar_by_cluster.pdf"), height = 7, width = 8)
-gpop
+gpop_bar_letter
+pdf(file=paste0(di, "/man/images/plot_resicomp_bar_tukey_by_cluster.pdf"), height = 7, width = 8)
+gpop_bar_letter
 dev.off()
 
 
+gpop_bar_letter_rrs <- ggplot(auxdf[auxdf$variable == 'rrs',], aes(x=clu_popf, y=mean)) + 
+  geom_bar(stat='identity', fill='black', colour='black') + 
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), 
+                width=.2, position=position_dodge(.9))  +
+  theme_bw() + xlab('') + ylab('Relative resilience') + 
+  geom_text(aes(label = tukey, 
+                y=(mean+1.7*sd)),
+           position = position_dodge(width=0.9)) +
+  theme(strip.background = element_rect(fill = "white"))
+
+gpop_bar_letter_rrs
+pdf(file=paste0(di, "/man/images/plot_rrs_bar_tukey_by_cluster.pdf"), height = 7, width = 8)
+gpop_bar_letter_rrs
+dev.off()
 ```
-
-
-# Exploring relationships 
-
-```{r, echo=FALSE}
-# https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html
-
-# Regresssion models resilience component ~ elevation by cluster pop 
-
-# 'rs' 
-myformula <- as.formula(rs ~ elev) 
-
-# Get coef
-reg_coef_rs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rs')
-# Get stat regression
-reg_summ_rs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rs')
-
-
-# 'rt' 
-myformula <- as.formula(rt ~ elev) 
-
-# Get coef
-reg_coef_rt <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rt')
-# Get stat regression
-reg_summ_rt <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rt')
-
-
-# 'rc' 
-myformula <- as.formula(rc ~ elev) 
-
-# Get coef
-reg_coef_rc <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rc')
-# Get stat regression
-reg_summ_rc <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rc')
-
-
-# 'rrs' 
-myformula <- as.formula(rrs ~ elev) 
-
-# Get coef
-reg_coef_rrs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>% broom::tidy(fit) %>% mutate(variable = 'rrs')
-# Get stat regression
-reg_summ_rrs <- eviresi_f %>% dplyr::group_by(clu_pop) %>%
-    do(fit = lm(myformula, data =.)) %>%  broom::glance(fit) %>% mutate(variable = 'rrs')
-
-
-
-# Create table with all regressions output 
-
-reg_coef <- rbind(reg_coef_rs, reg_coef_rt, reg_coef_rc, reg_coef_rrs)
-reg_summ <- rbind(reg_summ_rs, reg_summ_rt, reg_summ_rc, reg_summ_rrs)
-```
-
-```{r}
-kable(reg_coef, caption = "Coefficients of Regression")
-
-kable(reg_summ[,c(1:3,6,13)], caption = "Coefficients of Regression")
-```
-
-
-
-```{r, echo=FALSE, eval=FALSE} 
-m <- 
-  eviresi_f %>% 
-  split(.$clu_pop) %>% 
-  map(~ lm(rs ~ elev, data =.)) %>% 
-  map_df(broom::tidy, .id="i") 
-
-
-
-
-
-
-```
-
-
-
-
-
-
-
