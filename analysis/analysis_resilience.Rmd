@@ -67,7 +67,7 @@ myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
 mymodel <- aov(myformula, data=eviresi_f)
 
 ## Summary model 
-kable(broom::tidy(mymodel), digits = 3, col.names = c("Source", "df", "SS", "MS", "F", "p"))
+kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
 
 broom::glance(mymodel)
 

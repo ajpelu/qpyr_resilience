@@ -40,15 +40,15 @@ myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
 mymodel <- aov(myformula, data=eviresi_f)
 
 ## Summary model 
-kable(broom::tidy(mymodel), digits = 3, col.names = c("Source", "df", "SS", "MS", "F", "p"))
+kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
 ```
 
-| Source         |    df|     SS|     MS|        F|    p|
-|:---------------|-----:|------:|------:|--------:|----:|
-| elev           |     1|  1.518|  1.518|  672.057|    0|
-| clu\_popf      |     2|  0.433|  0.216|   95.822|    0|
-| elev:clu\_popf |     2|  0.071|  0.036|   15.783|    0|
-| Residuals      |  1760|  3.974|  0.002|       NA|   NA|
+| Source         |    df|         SS|         MS|          F|      p|
+|:---------------|-----:|----------:|----------:|----------:|------:|
+| elev           |     1|  1.5175335|  1.5175335|  672.05719|  0e+00|
+| clu\_popf      |     2|  0.4327424|  0.2163712|   95.82248|  0e+00|
+| elev:clu\_popf |     2|  0.0712757|  0.0356379|   15.78264|  2e-07|
+| Residuals      |  1760|  3.9741542|  0.0022580|         NA|     NA|
 
 ``` r
 broom::glance(mymodel)
@@ -252,7 +252,7 @@ summary(tuk)
     ##                                        Pr(>|t|)   
     ## Northern slopes - Camarate == 0         0.88328   
     ## Southern slopes - Camarate == 0         0.35827   
-    ## Southern slopes - Northern slopes == 0  0.00653 **
+    ## Southern slopes - Northern slopes == 0  0.00652 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -370,9 +370,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.20388    0.04215  -4.837
     ## Southern slopes - Northern slopes == 0 -0.03197    0.02550  -1.254
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000246 ***
+    ## Northern slopes - Camarate == 0        0.000245 ***
     ## Southern slopes - Camarate == 0         < 1e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.412203    
+    ## Southern slopes - Northern slopes == 0 0.412204    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -490,8 +490,8 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.14482    0.03282  -4.413
     ## Southern slopes - Northern slopes == 0 -0.01187    0.01986  -0.598
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000278 ***
-    ## Southern slopes - Camarate == 0        3.06e-05 ***
+    ## Northern slopes - Camarate == 0        0.000279 ***
+    ## Southern slopes - Camarate == 0        3.08e-05 ***
     ## Southern slopes - Northern slopes == 0 0.816451    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
