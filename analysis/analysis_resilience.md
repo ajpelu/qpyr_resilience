@@ -1,3 +1,7 @@
+    ## Loading required package: knitr
+
+    ## Warning: package 'knitr' was built under R version 3.2.5
+
 Exploring patterns of resilience components
 ===========================================
 
@@ -7,14 +11,12 @@ Models
 Resilience
 ----------
 
-``` r
-auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption='Mean values') 
-```
+### Mean values (Cluster population)
 
-<table style="width:85%;">
+<table style="width:83%;">
 <caption>Mean values</caption>
 <colgroup>
-<col width="22%" />
+<col width="20%" />
 <col width="13%" />
 <col width="15%" />
 <col width="16%" />
@@ -38,14 +40,14 @@ auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption='Mean 
 <td align="center">rs</td>
 </tr>
 <tr class="even">
-<td align="center">Northern slopes</td>
+<td align="center">Northern slope</td>
 <td align="center">0.9265084</td>
 <td align="center">0.06251420</td>
 <td align="center">0.002467239</td>
 <td align="center">rs</td>
 </tr>
 <tr class="odd">
-<td align="center">Southern slopes</td>
+<td align="center">Southern slope</td>
 <td align="center">0.9308963</td>
 <td align="center">0.05909947</td>
 <td align="center">0.002005967</td>
@@ -53,6 +55,8 @@ auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption='Mean 
 </tr>
 </tbody>
 </table>
+
+### Summary ANCOVA model
 
 <table style="width:79%;">
 <caption>ANOVA table</caption>
@@ -109,14 +113,6 @@ auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption='Mean 
 </tr>
 </tbody>
 </table>
-
-``` r
-gm <- broom::glance(mymodel)
-gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
-colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
-rownames(gm) <- "Statistic"
-pander(t(gm))
-```
 
 <table style="width:49%;">
 <colgroup>
@@ -177,6 +173,10 @@ pander(t(gm))
 </tbody>
 </table>
 
+### Effects plot
+
+#### . ~ Cluster population
+
 ``` r
 ## Effects plots 
 ### Population 
@@ -187,7 +187,9 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-1.png)
+<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+
+#### . ~ Elevation
 
 ``` r
 ### Elevation
@@ -198,7 +200,9 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-1.png)
+<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+
+#### . ~ Cluster population:Elevation
 
 ``` r
 ### Both 
@@ -207,19 +211,21 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-1.png)
+<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+
+### Post-hoc comparison
 
     ## Warning in mcp2matrix(model, linfct = linfct): covariate interactions found
     ## -- default contrast might be inappropriate
 
-<table>
+<table style="width:100%;">
 <caption>Post hoc comparison (Tukey, alpha = 0.05)</caption>
 <colgroup>
 <col width="42%" />
 <col width="14%" />
-<col width="16%" />
-<col width="12%" />
-<col width="12%" />
+<col width="17%" />
+<col width="13%" />
+<col width="13%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -232,21 +238,21 @@ plot(effect("elev:clu_popf",mymodel),
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><strong>Northern slopes - Camarate</strong></td>
+<td align="center"><strong>Northern slope - Camarate</strong></td>
 <td align="center">-0.1487</td>
 <td align="center">0.0318</td>
 <td align="center">-4.67</td>
 <td align="center"><strong>0</strong></td>
 </tr>
 <tr class="even">
-<td align="center"><strong>Southern slopes - Camarate</strong></td>
+<td align="center"><strong>Southern slope - Camarate</strong></td>
 <td align="center">-0.101</td>
 <td align="center">0.0307</td>
 <td align="center">-3.292</td>
 <td align="center"><strong>0.0027</strong></td>
 </tr>
 <tr class="odd">
-<td align="center"><strong>Southern slopes - Northern slopes</strong></td>
+<td align="center"><strong>Southern slope - Northern slope</strong></td>
 <td align="center">0.0477</td>
 <td align="center">0.0186</td>
 <td align="center">2.567</td>

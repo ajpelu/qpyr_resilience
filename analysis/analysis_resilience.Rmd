@@ -6,6 +6,12 @@ output:
   md_document:
     variant: markdown_github
 ---
+```{r, echo=FALSE}
+require(knitr)
+opts_chunk$set(fig.align='center') 
+```
+
+
 # Exploring patterns of resilience components
 
 ```{r wd, echo=FALSE}
@@ -52,7 +58,7 @@ eviresi <- eviresi %>%
 eviresi_f <- eviresi %>% 
   filter(clu_pop != 'out') %>%
   mutate(clu_popf = as.factor(ifelse(clu_pop == 'a', 'Camarate',
-                           ifelse(clu_pop == 'b','Northern slopes', 'Southern slopes'))))
+                           ifelse(clu_pop == 'b','Northern slope', 'Southern slope'))))
 
 
 # Obtain means values by cluster population
@@ -78,6 +84,7 @@ label_variable <- c('rt' = 'Resistance',
 
 ## Resilience 
 
+### Mean values (Cluster population)
 ```{r, echo=FALSE}
 mivariable <- 'rs'
 
@@ -86,11 +93,11 @@ myformula <- as.formula(paste0(mivariable, " ~ elev + clu_popf + elev:clu_popf")
 mymodel <- aov(myformula, data=eviresi_f)
 ```
 
-```{r}
+```{r, echo=FALSE}
 auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption='Mean values') 
 ```
 
-
+### Summary ANCOVA model
 ```{r, echo=FALSE}
 ## Summary model 
 tm <- broom::tidy(mymodel)
@@ -101,7 +108,7 @@ pander(tm, round=5,caption = "ANOVA table", missing = '',
                which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
 ```             
 
-```{r} 
+```{r, echo=FALSE} 
 gm <- broom::glance(mymodel)
 gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
 colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
@@ -109,6 +116,8 @@ rownames(gm) <- "Statistic"
 pander(t(gm))
 ```
 
+### Effects plot 
+#### . ~ Cluster population 
 ```{r}
 ## Effects plots 
 ### Population 
@@ -117,6 +126,7 @@ plot(effect("clu_popf",mymodel),
      xlab='Cluster population')
 ```
 
+#### . ~ Elevation
 ```{r}
 ### Elevation
 plot(effect("elev",mymodel), 
@@ -124,6 +134,7 @@ plot(effect("elev",mymodel),
      xlab='Elevation (m)')
 ```
 
+#### . ~ Cluster population:Elevation  
 ```{r} 
 ### Both 
 plot(effect("elev:clu_popf",mymodel), 
@@ -131,7 +142,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-
+### Post-hoc comparison 
 ```{r, echo=FALSE}
 ## Multiple comparison 
 
