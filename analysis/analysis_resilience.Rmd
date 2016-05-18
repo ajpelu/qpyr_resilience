@@ -6,9 +6,9 @@ output:
   md_document:
     variant: markdown_github
 ---
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 require(knitr)
-opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE) 
+opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE, warning = FALSE) 
 ```
 
 

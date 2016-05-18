@@ -1,5 +1,3 @@
-    ## Loading required package: knitr
-
     ## Warning: package 'knitr' was built under R version 3.2.5
 
 Exploring patterns of resilience components
@@ -189,9 +187,6 @@ Resilience
 
 ### Post-hoc comparison
 
-    ## Warning in mcp2matrix(model, linfct = linfct): covariate interactions found
-    ## -- default contrast might be inappropriate
-
 <table style="width:100%;">
 <caption>Post hoc comparison (Tukey, alpha = 0.05)</caption>
 <colgroup>
@@ -223,7 +218,7 @@ Resilience
 <td align="center">-0.101</td>
 <td align="center">0.0307</td>
 <td align="center">-3.292</td>
-<td align="center"><strong>0.0027</strong></td>
+<td align="center"><strong>0.0028</strong></td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>Southern slope - Northern slope</strong></td>
