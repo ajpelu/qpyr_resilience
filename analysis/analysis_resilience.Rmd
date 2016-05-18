@@ -59,7 +59,7 @@ eviresi_f <- eviresi %>%
 
 ## Resilience 
 
-```{r}
+```{r, echo=FALSE}
 variable <- 'rs'
 
 # Model 
@@ -67,33 +67,24 @@ myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
 mymodel <- aov(myformula, data=eviresi_f)
 
 ## Summary model 
-# kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
-
 tm <- broom::tidy(mymodel)
-pander(tm, 
-       round=5,
-       caption = "ANOVA table", 
+```
+
+```{r, echo=FALSE}
+pander(tm, round=5,caption = "ANOVA table", 
        missing = '', 
        emphasize.strong.cells = 
                which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
-             
- 
+```             
+
+```{r} 
 gm <- broom::glance(mymodel)
 gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
-colnames(gm) <- paste0("$",
-                       c("R^2",
-                         "\\mathrm{adj}R^2",
-                         "\\sigma_e",
-                         "F",
-                         "p",
-                         "df_m",
-                         "\\mathrm{logLik}",
-                         "AIC",
-                         "BIC",
-                         "\\mathrm{dev}",
-                         "df_e"),"$")
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
 rownames(gm) <- "Statistic"
 pander(t(gm))
+
+
 
 ## Evaluate terms 
 drop1(mymodel, test="Chi")
