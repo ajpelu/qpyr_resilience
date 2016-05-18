@@ -13,7 +13,7 @@ opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE, warning = FALS
 ```
 
 
-# Exploring patterns of resilience components
+# Exploring patterns of resilience components (models)
 
 ```{r}
 #---------------------------------
@@ -81,11 +81,10 @@ label_variable <- c('rt' = 'Resistance',
 
 ```
 
-# Models 
 
-## Resilience 
+# Resilience 
 
-### Mean values (Cluster population)
+## Mean values (Cluster population)
 ```{r}
 mivariable <- 'rs'
 
@@ -95,10 +94,10 @@ mymodel <- aov(myformula, data=eviresi_f)
 ```
 
 ```{r}
-auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption='Mean values') 
+auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
 ```
 
-### Summary ANCOVA model
+## Summary ANCOVA model
 ```{r}
 ## Summary model 
 tm <- broom::tidy(mymodel)
@@ -117,8 +116,8 @@ rownames(gm) <- "Statistic"
 pander(t(gm))
 ```
 
-### Effects plot 
-#### . ~ Cluster population 
+## Effects plot 
+### . ~ Cluster population 
 ```{r}
 ## Effects plots 
 ### Population 
@@ -127,7 +126,7 @@ plot(effect("clu_popf",mymodel),
      xlab='Cluster population')
 ```
 
-#### . ~ Elevation
+### . ~ Elevation
 ```{r}
 ### Elevation
 plot(effect("elev",mymodel), 
@@ -135,7 +134,7 @@ plot(effect("elev",mymodel),
      xlab='Elevation (m)')
 ```
 
-#### . ~ Cluster population:Elevation  
+### . ~ Cluster population:Elevation  
 ```{r} 
 ### Both 
 plot(effect("elev:clu_popf",mymodel), 
@@ -143,7 +142,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-### Post-hoc comparison 
+## Post-hoc comparison 
 ```{r}
 ## Multiple comparison 
 
@@ -165,3 +164,84 @@ pander(mymult, round=4,caption = "Post hoc comparison (Tukey, alpha = 0.05)", mi
                which(mymult < 0.05 & mymult == mymult[,4], arr.ind = T))
 ```
 
+# Resistence 
+
+## Mean values (Cluster population)
+```{r}
+mivariable <- 'rt'
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ elev + clu_popf + elev:clu_popf"))
+mymodel <- aov(myformula, data=eviresi_f)
+```
+
+```{r}
+auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
+```
+
+## Summary ANCOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,caption = "ANOVA table", missing = '', 
+       emphasize.strong.cells = 
+         which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+## Effects plot 
+### . ~ Cluster population 
+```{r}
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(mivariable, ' vs. Cluster population'),
+     xlab='Cluster population')
+```
+
+### . ~ Elevation
+```{r}
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(mivariable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+```
+
+### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ')'),
+     xlab='Elevation (m)')
+```
+
+## Post-hoc comparison 
+```{r}
+## Multiple comparison 
+
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
+
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(clu_popf = as.factor(lhs),
+            tukey = letters) %>%
+  mutate(variable = mivariable)
+
+aux_name <- paste0('df_tuk_', mivariable)
+assign(aux_name, df_letter)
+
+# Get table 
+mymult <- as.data.frame(table_glht(tuk))
+pander(mymult, round=4,caption = "Post hoc comparison (Tukey, alpha = 0.05)", missing = '', 
+       emphasize.strong.cells = 
+         which(mymult < 0.05 & mymult == mymult[,4], arr.ind = T))
+```
