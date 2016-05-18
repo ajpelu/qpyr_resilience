@@ -177,41 +177,15 @@ Resilience
 
 #### . ~ Cluster population
 
-``` r
-## Effects plots 
-### Population 
-plot(effect("clu_popf",mymodel), 
-     main=paste0(mivariable, ' vs. Cluster population'),
-     xlab='Cluster population')
-```
-
-    ## NOTE: clu_popf is not a high-order term in the model
-
-<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 #### . ~ Elevation
 
-``` r
-### Elevation
-plot(effect("elev",mymodel), 
-     main=paste0(mivariable, ' vs. Elevation'),
-     xlab='Elevation (m)')
-```
-
-    ## NOTE: elev is not a high-order term in the model
-
-<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 #### . ~ Cluster population:Elevation
 
-``` r
-### Both 
-plot(effect("elev:clu_popf",mymodel), 
-     main=paste0('Interaction plot (',mivariable, ')'),
-     xlab='Elevation (m)')
-```
-
-<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 ### Post-hoc comparison
 

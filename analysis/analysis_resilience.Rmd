@@ -8,13 +8,13 @@ output:
 ---
 ```{r, echo=FALSE}
 require(knitr)
-opts_chunk$set(fig.align='center') 
+opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE) 
 ```
 
 
 # Exploring patterns of resilience components
 
-```{r wd, echo=FALSE}
+```{r}
 #---------------------------------
 #machine <- 'ajpelu'
 machine <- 'ajpeluLap'
@@ -22,7 +22,7 @@ di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', s
 #---------------------------------
 ```
 
-```{r packages, warning=FALSE, message=FALSE, echo=FALSE}
+```{r packages, warning=FALSE, message=FALSE}
 source(paste0(di,"/R/exportpdf.R")) # function to export raster levelplots maps as pdf
 library("dplyr")
 library("ggplot2")
@@ -39,7 +39,7 @@ source_gist("https://gist.github.com/ajpelu/194e721077ec045a2b864088908e7aca") #
 ```
 
 
-```{r, echo=FALSE}
+```{r}
 # Read data
 eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
 
@@ -85,7 +85,7 @@ label_variable <- c('rt' = 'Resistance',
 ## Resilience 
 
 ### Mean values (Cluster population)
-```{r, echo=FALSE}
+```{r}
 mivariable <- 'rs'
 
 # Model 
@@ -93,12 +93,12 @@ myformula <- as.formula(paste0(mivariable, " ~ elev + clu_popf + elev:clu_popf")
 mymodel <- aov(myformula, data=eviresi_f)
 ```
 
-```{r, echo=FALSE}
+```{r}
 auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption='Mean values') 
 ```
 
 ### Summary ANCOVA model
-```{r, echo=FALSE}
+```{r}
 ## Summary model 
 tm <- broom::tidy(mymodel)
 
@@ -108,7 +108,7 @@ pander(tm, round=5,caption = "ANOVA table", missing = '',
                which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
 ```             
 
-```{r, echo=FALSE} 
+```{r} 
 gm <- broom::glance(mymodel)
 gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
 colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
@@ -143,7 +143,7 @@ plot(effect("elev:clu_popf",mymodel),
 ```
 
 ### Post-hoc comparison 
-```{r, echo=FALSE}
+```{r}
 ## Multiple comparison 
 
 tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
