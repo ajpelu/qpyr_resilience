@@ -40,84 +40,150 @@ myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
 mymodel <- aov(myformula, data=eviresi_f)
 
 ## Summary model 
-kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
+# kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
+
+tm <- broom::tidy(mymodel)
+pander(tm, 
+       round=5,
+       caption = "ANOVA table", 
+       missing = '', 
+       emphasize.strong.cells = 
+               which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
 ```
 
-| Source         |    df|         SS|         MS|          F|      p|
-|:---------------|-----:|----------:|----------:|----------:|------:|
-| elev           |     1|  1.5175335|  1.5175335|  672.05719|  0e+00|
-| clu\_popf      |     2|  0.4327424|  0.2163712|   95.82248|  0e+00|
-| elev:clu\_popf |     2|  0.0712757|  0.0356379|   15.78264|  2e-07|
-| Residuals      |  1760|  3.9741542|  0.0022580|         NA|     NA|
-
-``` r
-pander(aov(mymodel))
-```
-
-<table style="width:89%;">
-<caption>Analysis of Variance Model</caption>
+<table style="width:79%;">
+<caption>ANOVA table</caption>
 <colgroup>
-<col width="27%" />
+<col width="19%" />
 <col width="6%" />
+<col width="11%" />
 <col width="12%" />
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
+<col width="16%" />
+<col width="12%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="center"> </th>
-<th align="center">Df</th>
-<th align="center">Sum Sq</th>
-<th align="center">Mean Sq</th>
-<th align="center">F value</th>
-<th align="center">Pr(&gt;F)</th>
+<th align="center">term</th>
+<th align="center">df</th>
+<th align="center">sumsq</th>
+<th align="center">meansq</th>
+<th align="center">statistic</th>
+<th align="center">p.value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><strong>elev</strong></td>
+<td align="center">elev</td>
 <td align="center">1</td>
 <td align="center">1.518</td>
 <td align="center">1.518</td>
 <td align="center">672.1</td>
-<td align="center">8.953e-126</td>
+<td align="center"><strong>0</strong></td>
 </tr>
 <tr class="even">
-<td align="center"><strong>clu_popf</strong></td>
+<td align="center">clu_popf</td>
 <td align="center">2</td>
 <td align="center">0.4327</td>
 <td align="center">0.2164</td>
 <td align="center">95.82</td>
-<td align="center">3.151e-40</td>
+<td align="center"><strong>0</strong></td>
 </tr>
 <tr class="odd">
-<td align="center"><strong>elev:clu_popf</strong></td>
+<td align="center">elev:clu_popf</td>
 <td align="center">2</td>
 <td align="center">0.07128</td>
 <td align="center">0.03564</td>
 <td align="center">15.78</td>
-<td align="center">1.609e-07</td>
+<td align="center"><strong>0</strong></td>
 </tr>
 <tr class="even">
-<td align="center"><strong>Residuals</strong></td>
+<td align="center">Residuals</td>
 <td align="center">1760</td>
 <td align="center">3.974</td>
-<td align="center">0.002258</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center">0.00226</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 </tbody>
 </table>
 
 ``` r
-broom::glance(mymodel)
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",
+                       c("R^2",
+                         "\\mathrm{adj}R^2",
+                         "\\sigma_e",
+                         "F",
+                         "p",
+                         "df_m",
+                         "\\mathrm{logLik}",
+                         "AIC",
+                         "BIC",
+                         "\\mathrm{dev}",
+                         "df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
 ```
 
-    ##   r.squared adj.r.squared      sigma statistic      p.value df   logLik
-    ## 1 0.3371666     0.3352835 0.04751886  179.0535 2.64913e-154  6 2877.506
-    ##         AIC       BIC deviance df.residual
-    ## 1 -5741.011 -5702.676 3.974154        1760
+<table style="width:49%;">
+<colgroup>
+<col width="33%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Statistic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.34</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>a</em><em>d</em><em>j</em><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.34</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>σ</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">0.05</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>F</em></span></strong></td>
+<td align="center">179.05</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>p</em></span></strong></td>
+<td align="center">0.00</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>m</em></sub></span></strong></td>
+<td align="center">6.00</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>l</em><em>o</em><em>g</em><em>L</em><em>i</em><em>k</em></span></strong></td>
+<td align="center">2877.51</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>A</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-5741.01</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>B</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-5702.68</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>e</em><em>v</em></span></strong></td>
+<td align="center">3.97</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">1760.00</td>
+</tr>
+</tbody>
+</table>
 
 ``` r
 ## Evaluate terms 
@@ -144,7 +210,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 ``` r
 ### Elevation
@@ -155,7 +221,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-2.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-2.png)
 
 ``` r
 ### Both 
@@ -164,7 +230,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-3.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-2-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -193,8 +259,8 @@ summary(tuk)
     ## Southern slopes - Northern slopes == 0  0.04766    0.01857   2.567
     ##                                        Pr(>|t|)    
     ## Northern slopes - Camarate == 0         < 1e-04 ***
-    ## Southern slopes - Camarate == 0         0.00275 ** 
-    ## Southern slopes - Northern slopes == 0  0.02639 *  
+    ## Southern slopes - Camarate == 0         0.00274 ** 
+    ## Southern slopes - Northern slopes == 0  0.02638 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -262,7 +328,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-3-1.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 ``` r
 ### Elevation
@@ -273,7 +339,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-3-2.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-3-2.png)
 
 ``` r
 ### Both 
@@ -282,7 +348,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-3-3.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-3-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -312,7 +378,7 @@ summary(tuk)
     ##                                        Pr(>|t|)   
     ## Northern slopes - Camarate == 0         0.88328   
     ## Southern slopes - Camarate == 0         0.35827   
-    ## Southern slopes - Northern slopes == 0  0.00653 **
+    ## Southern slopes - Northern slopes == 0  0.00654 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -382,7 +448,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-1.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ``` r
 ### Elevation
@@ -393,7 +459,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-2.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-2.png)
 
 ``` r
 ### Both 
@@ -402,7 +468,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-3.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -430,9 +496,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.20388    0.04215  -4.837
     ## Southern slopes - Northern slopes == 0 -0.03197    0.02550  -1.254
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000243 ***
+    ## Northern slopes - Camarate == 0        0.000251 ***
     ## Southern slopes - Camarate == 0         < 1e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.412202    
+    ## Southern slopes - Northern slopes == 0 0.412210    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -502,7 +568,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
 ### Elevation
@@ -513,7 +579,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-2.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
 ``` r
 ### Both 
@@ -522,7 +588,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-3.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -550,9 +616,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.14482    0.03282  -4.413
     ## Southern slopes - Northern slopes == 0 -0.01187    0.01986  -0.598
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0         0.00027 ***
+    ## Northern slopes - Camarate == 0        0.000272 ***
     ## Southern slopes - Camarate == 0        3.02e-05 ***
-    ## Southern slopes - Northern slopes == 0  0.81645    
+    ## Southern slopes - Northern slopes == 0 0.816451    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -605,7 +671,7 @@ gpop_bar_letter <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_popf, y=mea
 gpop_bar_letter
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-1.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 pdf(file=paste0(di, "/man/images/plot_resicomp_bar_tukey_by_cluster.pdf"), height = 7, width = 8)
@@ -630,7 +696,7 @@ gpop_bar_letter_rrs <- ggplot(auxdf[auxdf$variable == 'rrs',], aes(x=clu_popf, y
 gpop_bar_letter_rrs
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-2.png)<!-- -->
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-2.png)
 
 ``` r
 pdf(file=paste0(di, "/man/images/plot_rrs_bar_tukey_by_cluster.pdf"), height = 7, width = 8)

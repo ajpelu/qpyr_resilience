@@ -69,46 +69,31 @@ mymodel <- aov(myformula, data=eviresi_f)
 ## Summary model 
 # kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
 
-panderOptions('keep.trailing.zeros', TRUE)
-pander(mymodel)
-
-
-# Find row/col entries of significance
-a <- anova(mymodel)
-t_aux <- which(a[['Pr(>F)']] < 0.001 , arr.ind = T)
-emphasize.cells()
-
-emphasize.strong.cells(which(a[['Pr(>F)']] < 0.001 , arr.ind = TRUE))
-pander(a)
-
 tm <- broom::tidy(mymodel)
 pander(tm, 
-       round = 4,
-             caption = "ANOVA table", 
-             missing = '',
-             emphasize.rownames = TRUE)
-, 
-             emphasize.strong.cells = 
-               which(mymodel < 0.001, arr.ind = T))
+       round=5,
+       caption = "ANOVA table", 
+       missing = '', 
+       emphasize.strong.cells = 
+               which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
              
-             
-              , caption = "BBDD `airquality` con `pandoc.table()`"
-              , justify = 'lcrrcl'
-              , round = 2
-              , decimal.mark = ","
-              , missing = NA
-              , emphasize.rownames = FALSE
-              , split.cells = 5
-              , emphasize.strong.cells =
-                  which(df > 12 & df == df$Wind, arr.ind = TRUE)
-             )
-
-
-
-
-
-
-broom::glance(mymodel)
+ 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",
+                       c("R^2",
+                         "\\mathrm{adj}R^2",
+                         "\\sigma_e",
+                         "F",
+                         "p",
+                         "df_m",
+                         "\\mathrm{logLik}",
+                         "AIC",
+                         "BIC",
+                         "\\mathrm{dev}",
+                         "df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
 
 ## Evaluate terms 
 drop1(mymodel, test="Chi")
