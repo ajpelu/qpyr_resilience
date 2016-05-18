@@ -245,3 +245,213 @@ pander(mymult, round=4,caption = "Post hoc comparison (Tukey, alpha = 0.05)", mi
        emphasize.strong.cells = 
          which(mymult < 0.05 & mymult == mymult[,4], arr.ind = T))
 ```
+
+
+# Recovery
+
+## Mean values (Cluster population)
+```{r}
+mivariable <- 'rc'
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ elev + clu_popf + elev:clu_popf"))
+mymodel <- aov(myformula, data=eviresi_f)
+```
+
+```{r}
+auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
+```
+
+## Summary ANCOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,caption = "ANOVA table", missing = '', 
+       emphasize.strong.cells = 
+         which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+## Effects plot 
+### . ~ Cluster population 
+```{r}
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(mivariable, ' vs. Cluster population'),
+     xlab='Cluster population')
+```
+
+### . ~ Elevation
+```{r}
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(mivariable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+```
+
+### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ')'),
+     xlab='Elevation (m)')
+```
+
+## Post-hoc comparison 
+```{r}
+## Multiple comparison 
+
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
+
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(clu_popf = as.factor(lhs),
+            tukey = letters) %>%
+  mutate(variable = mivariable)
+
+aux_name <- paste0('df_tuk_', mivariable)
+assign(aux_name, df_letter)
+
+# Get table 
+mymult <- as.data.frame(table_glht(tuk))
+pander(mymult, round=4,caption = "Post hoc comparison (Tukey, alpha = 0.05)", missing = '', 
+       emphasize.strong.cells = 
+         which(mymult < 0.05 & mymult == mymult[,4], arr.ind = T))
+```
+
+# Relative resilience
+
+## Mean values (Cluster population)
+```{r}
+mivariable <- 'rrs'
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ elev + clu_popf + elev:clu_popf"))
+mymodel <- aov(myformula, data=eviresi_f)
+```
+
+```{r}
+auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
+```
+
+## Summary ANCOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,caption = "ANOVA table", missing = '', 
+       emphasize.strong.cells = 
+         which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+## Effects plot 
+### . ~ Cluster population 
+```{r}
+## Effects plots 
+### Population 
+plot(effect("clu_popf",mymodel), 
+     main=paste0(mivariable, ' vs. Cluster population'),
+     xlab='Cluster population')
+```
+
+### . ~ Elevation
+```{r}
+### Elevation
+plot(effect("elev",mymodel), 
+     main=paste0(mivariable, ' vs. Elevation'),
+     xlab='Elevation (m)')
+```
+
+### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("elev:clu_popf",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ')'),
+     xlab='Elevation (m)')
+```
+
+## Post-hoc comparison 
+```{r}
+## Multiple comparison 
+
+tuk <- glht(mymodel, linfct = mcp(clu_popf = "Tukey"))
+
+# Convert comparisons into letters 
+df_letter <- fortify(cld(tuk)) %>%
+  transmute(clu_popf = as.factor(lhs),
+            tukey = letters) %>%
+  mutate(variable = mivariable)
+
+aux_name <- paste0('df_tuk_', mivariable)
+assign(aux_name, df_letter)
+
+# Get table 
+mymult <- as.data.frame(table_glht(tuk))
+pander(mymult, round=4,caption = "Post hoc comparison (Tukey, alpha = 0.05)", missing = '', 
+       emphasize.strong.cells = 
+         which(mymult < 0.05 & mymult == mymult[,4], arr.ind = T))
+```
+
+
+
+```{r}
+df_all_letters <- rbind(df_tuk_rs, df_tuk_rt, df_tuk_rc, df_tuk_rrs)
+
+auxdf <- auxdf %>% 
+  inner_join(df_all_letters, by=c('clu_popf', 'variable')) 
+
+
+gpop_bar_letter <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_popf, y=mean)) + 
+  geom_bar(stat='identity', fill='black', colour='black') + 
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), 
+                width=.2, position=position_dodge(.9))  +
+  facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
+  theme_bw() + xlab('') + ylab('') + 
+  geom_text(aes(label = tukey, 
+                y=(mean+1.7*sd)),
+            position = position_dodge(width=0.9)) +
+  theme(strip.background = element_rect(fill = "white"))
+
+gpop_bar_letter
+pdf(file=paste0(di, "/man/images/plot_resicomp_bar_tukey_by_cluster.pdf"), height = 7, width = 8)
+gpop_bar_letter
+dev.off()
+```
+
+```{r}
+gpop_bar_letter_rrs <- ggplot(auxdf[auxdf$variable == 'rrs',], aes(x=clu_popf, y=mean)) + 
+  geom_bar(stat='identity', fill='black', colour='black') + 
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), 
+                width=.2, position=position_dodge(.9))  +
+  theme_bw() + xlab('') + ylab('Relative resilience') + 
+  geom_text(aes(label = tukey, 
+                y=(mean+1.7*sd)),
+            position = position_dodge(width=0.9)) +
+  theme(strip.background = element_rect(fill = "white"))
+
+gpop_bar_letter_rrs
+pdf(file=paste0(di, "/man/images/plot_rrs_bar_tukey_by_cluster.pdf"), height = 7, width = 8)
+gpop_bar_letter_rrs
+dev.off()
+```
+
+
