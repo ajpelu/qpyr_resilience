@@ -30,9 +30,8 @@ library("broom")
 library("effects")
 ```
 
-## Read and prepare data 
 
-```{r}
+```{r, echo=FALSE}
 # Read data
 eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
 
@@ -53,7 +52,32 @@ eviresi_f <- eviresi %>%
   mutate(clu_popf = as.factor(ifelse(clu_pop == 'a', 'Camarate',
                            ifelse(clu_pop == 'b','Northern slopes', 'Southern slopes'))))
 
+
+# Obtain means values by cluster population
+
+variables <- c('rs','rc','rt','rrs')
+auxdf <- data.frame() 
+
+for (i in variables){ 
+aux <- eviresi_f %>% 
+  dplyr::group_by(clu_popf) %>% 
+  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+
+auxdf <- rbind(auxdf, aux) }
+
+label_variable <- c('rt' = 'Resistance', 
+                    'rc' = 'Recovery',
+                    'rs' = 'Resilience',
+                    'rrs' = 'Relative Resilience')
+
 ```
+
+```{r}
+auxdf %>% dplyr::filter(variable=='rs') %>% pander() 
+```
+
+
+
 
 # Models 
 

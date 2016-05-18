@@ -1,30 +1,51 @@
 Exploring patterns of resilience components
 ===========================================
 
-Read and prepare data
----------------------
-
 ``` r
-# Read data
-eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
-
-# Prepare data
-elev <- read.csv(file=paste(di, "/data/elev.csv", sep=""), header = TRUE, sep = ',')
-
-eviresi <- eviresi %>% 
-  # join elevation data
-  dplyr::inner_join(elev, by='iv_malla_modi_id') %>% 
-  # Add a variable for population cluster
-  mutate(clu_pop = as.factor(ifelse(poblacion == 1, 'a', 
-                          ifelse(poblacion %in% c(2,3,4,5), 'b', 
-                                 ifelse(poblacion %in% c(6,7,8), 'c', 'out')))))
-
-# Filter out cluster 
-eviresi_f <- eviresi %>% 
-  filter(clu_pop != 'out') %>%
-  mutate(clu_popf = as.factor(ifelse(clu_pop == 'a', 'Camarate',
-                           ifelse(clu_pop == 'b','Northern slopes', 'Southern slopes'))))
+auxdf %>% dplyr::filter(variable=='rs') %>% pander() 
 ```
+
+<table style="width:85%;">
+<colgroup>
+<col width="22%" />
+<col width="13%" />
+<col width="15%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">clu_popf</th>
+<th align="center">mean</th>
+<th align="center">sd</th>
+<th align="center">se</th>
+<th align="center">variable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Camarate</td>
+<td align="center">0.9097170</td>
+<td align="center">0.03828143</td>
+<td align="center">0.002392589</td>
+<td align="center">rs</td>
+</tr>
+<tr class="even">
+<td align="center">Northern slopes</td>
+<td align="center">0.9265084</td>
+<td align="center">0.06251420</td>
+<td align="center">0.002467239</td>
+<td align="center">rs</td>
+</tr>
+<tr class="odd">
+<td align="center">Southern slopes</td>
+<td align="center">0.9308963</td>
+<td align="center">0.05909947</td>
+<td align="center">0.002005967</td>
+<td align="center">rs</td>
+</tr>
+</tbody>
+</table>
 
 Models
 ======
@@ -180,7 +201,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
 ### Elevation
@@ -191,7 +212,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-2.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
 ``` r
 ### Both 
@@ -200,7 +221,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-4-3.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -230,7 +251,7 @@ summary(tuk)
     ##                                        Pr(>|t|)    
     ## Northern slopes - Camarate == 0         < 1e-04 ***
     ## Southern slopes - Camarate == 0         0.00275 ** 
-    ## Southern slopes - Northern slopes == 0  0.02638 *  
+    ## Southern slopes - Northern slopes == 0  0.02640 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -298,7 +319,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 ### Elevation
@@ -309,7 +330,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-2.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-2.png)
 
 ``` r
 ### Both 
@@ -318,7 +339,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-5-3.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -347,8 +368,8 @@ summary(tuk)
     ## Southern slopes - Northern slopes == 0  0.05953    0.01963   3.033
     ##                                        Pr(>|t|)   
     ## Northern slopes - Camarate == 0         0.88328   
-    ## Southern slopes - Camarate == 0         0.35828   
-    ## Southern slopes - Northern slopes == 0  0.00651 **
+    ## Southern slopes - Camarate == 0         0.35827   
+    ## Southern slopes - Northern slopes == 0  0.00653 **
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -418,7 +439,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
 ### Elevation
@@ -429,7 +450,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-2.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-2.png)
 
 ``` r
 ### Both 
@@ -438,7 +459,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-6-3.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -466,9 +487,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.20388    0.04215  -4.837
     ## Southern slopes - Northern slopes == 0 -0.03197    0.02550  -1.254
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000244 ***
+    ## Northern slopes - Camarate == 0        0.000243 ***
     ## Southern slopes - Camarate == 0         < 1e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.412207    
+    ## Southern slopes - Northern slopes == 0 0.412208    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -538,7 +559,7 @@ plot(effect("clu_popf",mymodel),
 
     ## NOTE: clu_popf is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
 ### Elevation
@@ -549,7 +570,7 @@ plot(effect("elev",mymodel),
 
     ## NOTE: elev is not a high-order term in the model
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-2.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-2.png)
 
 ``` r
 ### Both 
@@ -558,7 +579,7 @@ plot(effect("elev:clu_popf",mymodel),
      xlab='Elevation (m)')
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-7-3.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-3.png)
 
 ``` r
 ## Multiple comparison 
@@ -586,8 +607,8 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.14482    0.03282  -4.413
     ## Southern slopes - Northern slopes == 0 -0.01187    0.01986  -0.598
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000272 ***
-    ## Southern slopes - Camarate == 0        3.03e-05 ***
+    ## Northern slopes - Camarate == 0        0.000275 ***
+    ## Southern slopes - Camarate == 0        3.08e-05 ***
     ## Southern slopes - Northern slopes == 0 0.816451    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -641,7 +662,7 @@ gpop_bar_letter <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_popf, y=mea
 gpop_bar_letter
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ``` r
 pdf(file=paste0(di, "/man/images/plot_resicomp_bar_tukey_by_cluster.pdf"), height = 7, width = 8)
@@ -666,7 +687,7 @@ gpop_bar_letter_rrs <- ggplot(auxdf[auxdf$variable == 'rrs',], aes(x=clu_popf, y
 gpop_bar_letter_rrs
 ```
 
-![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-8-2.png)
+![](analysis_resilience_files/figure-markdown_github/unnamed-chunk-9-2.png)
 
 ``` r
 pdf(file=paste0(di, "/man/images/plot_rrs_bar_tukey_by_cluster.pdf"), height = 7, width = 8)
