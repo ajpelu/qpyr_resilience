@@ -67,9 +67,46 @@ myformula <- as.formula(paste0(variable, " ~ elev + clu_popf + elev:clu_popf"))
 mymodel <- aov(myformula, data=eviresi_f)
 
 ## Summary model 
-kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
+# kable(broom::tidy(mymodel), col.names = c("Source", "df", "SS", "MS", "F", "p"))
 
-pander(aov(mymodel))
+panderOptions('keep.trailing.zeros', TRUE)
+pander(mymodel)
+
+
+# Find row/col entries of significance
+a <- anova(mymodel)
+t_aux <- which(a[['Pr(>F)']] < 0.001 , arr.ind = T)
+emphasize.cells()
+
+emphasize.strong.cells(which(a[['Pr(>F)']] < 0.001 , arr.ind = TRUE))
+pander(a)
+
+tm <- broom::tidy(mymodel)
+pander(tm, 
+       round = 4,
+             caption = "ANOVA table", 
+             missing = '',
+             emphasize.rownames = TRUE)
+, 
+             emphasize.strong.cells = 
+               which(mymodel < 0.001, arr.ind = T))
+             
+             
+              , caption = "BBDD `airquality` con `pandoc.table()`"
+              , justify = 'lcrrcl'
+              , round = 2
+              , decimal.mark = ","
+              , missing = NA
+              , emphasize.rownames = FALSE
+              , split.cells = 5
+              , emphasize.strong.cells =
+                  which(df > 12 & df == df$Wind, arr.ind = TRUE)
+             )
+
+
+
+
+
 
 broom::glance(mymodel)
 
