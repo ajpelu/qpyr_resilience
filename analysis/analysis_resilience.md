@@ -31,6 +31,7 @@
         -   [. ~ Elevation](#elevation-3)
         -   [. ~ Cluster population:Elevation](#cluster-populationelevation-3)
     -   [Post-hoc comparison](#post-hoc-comparison-3)
+-   [Summary plots](#summary-plots)
 
     ## Warning: package 'knitr' was built under R version 3.2.5
 
@@ -948,6 +949,9 @@ Post-hoc comparison
 </tr>
 </tbody>
 </table>
+
+Summary plots
+=============
 
 <img src="analysis_resilience_files/figure-markdown_github/unnamed-chunk-36-1.png" style="display: block; margin: auto;" />
 

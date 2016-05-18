@@ -411,7 +411,7 @@ pander(mymult, round=4,caption = "Post hoc comparison (Tukey, alpha = 0.05)", mi
          which(mymult < 0.05 & mymult == mymult[,4], arr.ind = T))
 ```
 
-
+# Summary plots 
 
 ```{r}
 df_all_letters <- rbind(df_tuk_rs, df_tuk_rt, df_tuk_rc, df_tuk_rrs)
