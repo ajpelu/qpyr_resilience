@@ -703,7 +703,7 @@ Post-hoc comparison
 <td align="center">-0.1719</td>
 <td align="center">0.0437</td>
 <td align="center">-3.932</td>
-<td align="center"><strong>2e-04</strong></td>
+<td align="center"><strong>3e-04</strong></td>
 </tr>
 <tr class="even">
 <td align="center"><strong>Southern slope - Camarate</strong></td>
@@ -945,7 +945,7 @@ Post-hoc comparison
 <td align="center">-0.0119</td>
 <td align="center">0.0199</td>
 <td align="center">-0.5979</td>
-<td align="center">0.8165</td>
+<td align="center">0.8164</td>
 </tr>
 </tbody>
 </table>
