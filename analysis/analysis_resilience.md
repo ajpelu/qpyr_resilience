@@ -1,8 +1,14 @@
 Exploring patterns of resilience components
 ===========================================
 
+Models
+======
+
+Resilience
+----------
+
 ``` r
-auxdf %>% dplyr::filter(variable=='rs') %>% pander() 
+auxdf %>% dplyr::filter_(variable==variable) %>% pander() 
 ```
 
 <table style="width:85%;">
@@ -44,14 +50,71 @@ auxdf %>% dplyr::filter(variable=='rs') %>% pander()
 <td align="center">0.002005967</td>
 <td align="center">rs</td>
 </tr>
+<tr class="even">
+<td align="center">Camarate</td>
+<td align="center">1.1630439</td>
+<td align="center">0.04879727</td>
+<td align="center">0.003049830</td>
+<td align="center">rc</td>
+</tr>
+<tr class="odd">
+<td align="center">Northern slopes</td>
+<td align="center">1.1547352</td>
+<td align="center">0.06855112</td>
+<td align="center">0.002705497</td>
+<td align="center">rc</td>
+</tr>
+<tr class="even">
+<td align="center">Southern slopes</td>
+<td align="center">1.0960489</td>
+<td align="center">0.06920996</td>
+<td align="center">0.002349139</td>
+<td align="center">rc</td>
+</tr>
+<tr class="odd">
+<td align="center">Camarate</td>
+<td align="center">0.7830706</td>
+<td align="center">0.03744782</td>
+<td align="center">0.002340489</td>
+<td align="center">rt</td>
+</tr>
+<tr class="even">
+<td align="center">Northern slopes</td>
+<td align="center">0.8040958</td>
+<td align="center">0.05909288</td>
+<td align="center">0.002332210</td>
+<td align="center">rt</td>
+</tr>
+<tr class="odd">
+<td align="center">Southern slopes</td>
+<td align="center">0.8510511</td>
+<td align="center">0.05526450</td>
+<td align="center">0.001875799</td>
+<td align="center">rt</td>
+</tr>
+<tr class="even">
+<td align="center">Camarate</td>
+<td align="center">0.1266463</td>
+<td align="center">0.03435465</td>
+<td align="center">0.002147166</td>
+<td align="center">rrs</td>
+</tr>
+<tr class="odd">
+<td align="center">Northern slopes</td>
+<td align="center">0.1224126</td>
+<td align="center">0.05219402</td>
+<td align="center">0.002059934</td>
+<td align="center">rrs</td>
+</tr>
+<tr class="even">
+<td align="center">Southern slopes</td>
+<td align="center">0.0798452</td>
+<td align="center">0.05640528</td>
+<td align="center">0.001914520</td>
+<td align="center">rrs</td>
+</tr>
 </tbody>
 </table>
-
-Models
-======
-
-Resilience
-----------
 
 <table style="width:79%;">
 <caption>ANOVA table</caption>
@@ -251,7 +314,7 @@ summary(tuk)
     ##                                        Pr(>|t|)    
     ## Northern slopes - Camarate == 0         < 1e-04 ***
     ## Southern slopes - Camarate == 0         0.00275 ** 
-    ## Southern slopes - Northern slopes == 0  0.02640 *  
+    ## Southern slopes - Northern slopes == 0  0.02639 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -487,9 +550,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.20388    0.04215  -4.837
     ## Southern slopes - Northern slopes == 0 -0.03197    0.02550  -1.254
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000243 ***
+    ## Northern slopes - Camarate == 0        0.000241 ***
     ## Southern slopes - Camarate == 0         < 1e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.412208    
+    ## Southern slopes - Northern slopes == 0 0.412209    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
@@ -607,9 +670,9 @@ summary(tuk)
     ## Southern slopes - Camarate == 0        -0.14482    0.03282  -4.413
     ## Southern slopes - Northern slopes == 0 -0.01187    0.01986  -0.598
     ##                                        Pr(>|t|)    
-    ## Northern slopes - Camarate == 0        0.000275 ***
-    ## Southern slopes - Camarate == 0        3.08e-05 ***
-    ## Southern slopes - Northern slopes == 0 0.816451    
+    ## Northern slopes - Camarate == 0        0.000271 ***
+    ## Southern slopes - Camarate == 0        3.01e-05 ***
+    ## Southern slopes - Northern slopes == 0 0.816450    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## (Adjusted p values reported -- single-step method)
