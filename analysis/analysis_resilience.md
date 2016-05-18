@@ -1,3 +1,11 @@
+-   [Exploring patterns of resilience components](#exploring-patterns-of-resilience-components)
+-   [Models](#models)
+    -   [Resilience](#resilience)
+        -   [Mean values (Cluster population)](#mean-values-cluster-population)
+        -   [Summary ANCOVA model](#summary-ancova-model)
+        -   [Effects plot](#effects-plot)
+        -   [Post-hoc comparison](#post-hoc-comparison)
+
     ## Warning: package 'knitr' was built under R version 3.2.5
 
 Exploring patterns of resilience components

@@ -4,6 +4,7 @@ author: "AJ Perez-Luque (@ajpelu)"
 date: "2016 May"
 output:  
   md_document:
+    toc: true
     variant: markdown_github
 ---
 ```{r, echo=FALSE, message=FALSE}
