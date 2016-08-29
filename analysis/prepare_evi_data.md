@@ -46,6 +46,21 @@ Each dataframe has the following fields:
 # Read and prepare data
 rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
 
+# Get temporal range of the data
+# Start date
+unique(min(as.Date(rawdata$date)))
+```
+
+    ## [1] "2000-02-25"
+
+``` r
+# End date 
+unique(max(as.Date(rawdata$date)))
+```
+
+    ## [1] "2015-12-31"
+
+``` r
 # Create variables of year and month 
 # Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
 rawdata <- rawdata %>% 
