@@ -15,16 +15,6 @@ library("dplyr")
 
 ``` r
 library("lubridate")
-```
-
-    ## 
-    ## Attaching package: 'lubridate'
-
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     date
-
-``` r
 library("ggplot2")
 ```
 
@@ -54,14 +44,14 @@ Each dataframe has the following fields:
 
 ``` r
 # Read and prepare data
-rawdata <- read.csv(file=paste(di, "/data_raw/evi/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
 
 # Create variables of year and month 
 # Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
 rawdata <- rawdata %>% 
   mutate(myevi = evi * 0.0001,
-         year = lubridate::year(fecha),
-         month = lubridate::month(fecha))
+         year = lubridate::year(date),
+         month = lubridate::month(date))
 
 # Create annual evi by pixel 
 eviyear <- rawdata %>% 
@@ -85,7 +75,7 @@ wi <- lubridate::yday(as.Date("2000-12-21"))
 season_julian <- c(sp,su,au,wi)
 
 eviseason <- rawdata %>%
-  mutate(jday=lubridate::yday(fecha)) %>%
+  mutate(jday=lubridate::yday(date)) %>%
   select(iv_malla_modi_id, year, myevi, jday) %>% 
   mutate(season = ifelse(jday > 81 & jday <= 173, 1,
                         ifelse(jday > 173 & jday <= 265, 2, 
