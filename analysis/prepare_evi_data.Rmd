@@ -10,9 +10,9 @@ output:
   
 ```{r wd, echo=FALSE}
 #---------------------------------
-# machine <- 'ajpelu'
-machine <- 'ajpeluLap'
-di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
+machine <- 'ajpelu'
+# machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
 
@@ -48,7 +48,7 @@ Each dataframe has the following fields:
 
 ```{r}
 # Read and prepare data
-rawdata <- read.csv(file=paste(di, "/data_raw/evi/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
 
 # Create variables of year and month 
 # Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
