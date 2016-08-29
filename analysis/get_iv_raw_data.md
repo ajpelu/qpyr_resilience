@@ -1,5 +1,27 @@
 ### Get raw data
 
+To obtain data of vegetation indices for *Q. pyrenaica* forests of Sierra Nevada, first we obtain the pixels covering these forest using the info stored into [obsnev](obsnev.es). 
+
+#### Get lat/long data for all ndvi of SN 
+
+```sql
+SELECT
+ iv.id, 
+ ST_X(ST_Centroid(iv.the_geom)) as lng,
+ ST_Y(ST_Centroid(iv.the_geom)) as lat
+FROM 
+ public.iv_malla_modis as iv;
+```
+
+Output result is stored as: `/data_raw/geoinfo/coordinates_iv_modis.csv`
+
+
+With the centroids, we used the [MODISTool R-package](https://cran.r-project.org/web/packages/MODISTools/index.html) to donwload the data. See [this repo](https://github.com/ajpelu/modis_iv) with more info about the process. The raw data can be found [here](https://raw.githubusercontent.com/ajpelu/modis_iv/master/data/iv_quercus_pyrenaica.csv)
+
+#### Old version
+
+We obtain the data of vegetation indices for the pixels covering *Q. pyrenaica* populations in Sierra Nevada using the centroids of the pixels 
+
 A query to obtain raw data by pixel (only pixels covering *Q. pyrenaica* populations in Sierra Nevada)
 
 ```sql 
