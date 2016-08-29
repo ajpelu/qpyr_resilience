@@ -10,9 +10,9 @@ output:
 
 ```{r wd, echo=FALSE}
 #---------------------------------
-# machine <- 'ajpelu'
-machine <- 'ajpeluLap'
-di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
+machine <- 'ajpelu'
+# machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
 
@@ -40,6 +40,16 @@ ggplot(evidf, aes(x=year, y=evi, group=year)) +
   geom_boxplot() + 
   facet_wrap(~seasonF, scales = "free_y") + 
   theme_bw() + 
+  theme(strip.background=element_rect(fill='white')) + 
+  ylab('EVI')
+
+
+evidf %>% 
+  filter(seasonF %in% c('spring','summer')) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x=year, y=evi, group=year)) +
+  geom_boxplot() + theme_bw() + 
+  facet_wrap(~seasonF) +
   theme(strip.background=element_rect(fill='white')) + 
   ylab('EVI')
 ```
