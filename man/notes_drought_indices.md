@@ -41,5 +41,9 @@
 * Effects of droughts on plant phenology (NDVI) are visible, especially for the years 1999 and 2005 (both characterized by prolonged dry periods)
 
 
+* Read two good papers about extreme climatic events
+ * http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2011.01833.x/full 
+ * http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2745.2011.01798.x/full
+
 
 
