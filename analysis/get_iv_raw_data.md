@@ -13,13 +13,13 @@ FROM
  public.iv_malla_modis as iv;
 ```
 
-Output result is stored as: `/data_raw/geoinfo/coordinates_iv_modis.csv` in the folder `/data_raw/evi/`. 
+Output result is stored as: `/data_raw/geoinfo/coordinates_iv_modis.csv`. 
 
 
 With the centroids, we used the [MODISTool R-package](https://cran.r-project.org/web/packages/MODISTools/index.html) to donwload the data. See [this repo](https://github.com/ajpelu/modis_iv) with more info about the process. The raw data can be found [here](https://raw.githubusercontent.com/ajpelu/modis_iv/master/data/iv_quercus_pyrenaica.csv)
 
 
-The data are stored as `iv_quercus_pyrenaica.csv` 
+The data are stored as `/data_raw/evi/iv_quercus_pyrenaica.csv` in the folder. 
 
 ### Old version
 
