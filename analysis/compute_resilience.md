@@ -31,10 +31,20 @@ ggplot(evidf, aes(x=year, y=evi, group=year)) +
   ylab('EVI')
 ```
 
-<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png" alt="Evolution of seasonal and annual EVI for Q. pyrenaica forests in S.Nevada (2000-2014)"  />
-<p class="caption">
-Evolution of seasonal and annual EVI for Q. pyrenaica forests in S.Nevada (2000-2014)
-</p>
+![Evolution of seasonal and annual EVI for Q. pyrenaica forests in S.Nevada (2000-2014)](compute_resilience_files/figure-markdown_github/unnamed-chunk-2-1.png)
+
+``` r
+evidf %>% 
+  filter(seasonF %in% c('spring','summer')) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x=year, y=evi, group=year)) +
+  geom_boxplot() + theme_bw() + 
+  facet_wrap(~seasonF) +
+  theme(strip.background=element_rect(fill='white')) + 
+  ylab('annual EVI')
+```
+
+![Evolution of seasonal and annual EVI for Q. pyrenaica forests in S.Nevada (2000-2014)](compute_resilience_files/figure-markdown_github/unnamed-chunk-2-2.png)
 
 Define the drought period
 -------------------------
@@ -48,6 +58,17 @@ Define the drought period
 > Trigo et al. 2013 reported a winter drought event for souther Iberian in 2011-2012.
 >
 > During the hydrological years of 2004/2005 and 2011/2012, Iberia was hit by two of the worst drought episodes ever recording in this semi-arid region (Gouveia and Trigo 2014)
+
+We consider two drought events: 2005 and 2012. We stats the following periods:
+
+| **Type**      | Event | *code*  | *years*   | code\_type |
+|---------------|-------|---------|-----------|------------|
+| pre Drought   | 1     | `pre1`  | 2003-2004 | pre        |
+| Drought event | 1     | `d1`    | 2005-2006 | d          |
+| post Drought  | 1     | `post1` | 2007-2011 | post       |
+| pre Drought   | 2     | `pre2`  | 2009-2011 | pre        |
+| Drought event | 2     | `d2`    | 2012-2013 | d          |
+| post Drought  | 2     | `post2` | 2014-2015 | post       |
 
 We filter 2000-2002 and &gt; 2010, to revmoe the potential bias produced by this drougt events.
 
@@ -101,10 +122,7 @@ ggplot(evisummer, aes(x=year, y=evi, group=year)) +
   theme(strip.background=element_rect(fill='white'))
 ```
 
-<img src="compute_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png" alt="Evolution of summer EVI for Q. pyrenaica forests in S.Nevada, from 2003 to 2010"  />
-<p class="caption">
-Evolution of summer EVI for Q. pyrenaica forests in S.Nevada, from 2003 to 2010
-</p>
+![Evolution of summer EVI for Q. pyrenaica forests in S.Nevada, from 2003 to 2010](compute_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 Compute resilience components
 -----------------------------

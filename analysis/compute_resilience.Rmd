@@ -71,31 +71,24 @@ We consider two drought events: 2005 and 2012. We stats the following periods:
 | **Type**      | Event | *code*  | *years*   | code_type |
 |---------------|-------|---------|-----------|-----------|
 |  pre Drought  | 1     | `pre1`  | 2003-2004 | pre       |
-| Drought event | 1     | `d1`    | 2005-2006 | d         |
+| Drought event | 1     | `dr1`   | 2005-2006 | dr        |
 | post Drought  | 1     | `post1` | 2007-2011 | post      |
 |  pre Drought  | 2     | `pre2`  | 2009-2011 | pre       |
-| Drought event | 2     | `d2`    | 2012-2013 | d         |
+| Drought event | 2     | `dr2`   | 2012-2013 | dr        |
 | post Drought  | 2     | `post2` | 2014-2015 | post      |
 
 
 
-
-
-We filter 2000-2002 and > 2010, to revmoe the potential bias produced by this drougt events. 
-
-We states the period as: 
-
-* Drought event: `2005-2006`
-* preDrought: `2003-2004`
-* postDrought: `2007-2010`
-
-
 ```{r}
-# define period 
-pre <- c(2003,2004)
-dr <- c(2005,2006)
-post <- c(2007,2008,2009,2010)
+# define periods 
+pre1 <- c(2003,2004)
+dr1 <- c(2005,2006)
+post1 <- c(2007,2008,2009,2010,2011)
+pre2 <- c(2009,2010,2011)
+dr2 <- c(2012,2013)
+post2 <- c(2012,2014)
 ```
+
 
 Assign, also, names for each *Q. pyrenaica* patch:  
 
@@ -105,6 +98,7 @@ label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
                       '4' = 'Dilar', '5' = 'Durcal', '6' = 'Caniar', 
                       '7' = 'Poqueira', '8' = 'Trevelez', '9' = 'Cadiar')
 ```
+
 
 ## Explore evolution of summer EVI
 
@@ -117,9 +111,42 @@ label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
 # Choose season
 myseason <- 'summer'
 
-evisummer <- evidf %>%
+
+
+event1 <- evidf %>%
   filter(seasonF == myseason) %>% 
-  mutate(myperiod = ifelse(year %in% pre, 'pre',
+  filter(year <= max(pre1,dr1,post1)) %>% 
+  mutate(myperiod = ifelse(year %in% pre1, 'pre1', 
+                           ifelse(year %in% dr1, 'dr1',
+                           ifelse(year %in% post1, 'post1', 'out')))) %>%
+  filter(myperiod != 'out') 
+
+event2 <- evidf %>%
+  filter(seasonF == myseason) %>% 
+  filter(year >= min(pre2,dr2,post2)) %>% 
+  mutate(myperiod = ifelse(year %in% pre1, 'pre1', 
+                           ifelse(year %in% dr1, 'dr1',
+                           ifelse(year %in% post1, 'post1', 'out')))) %>%
+  filter(myperiod != 'out') 
+  
+evidf %>%
+  filter(seasonF == myseason) %>% 
+  filter(year <= max(pre1,dr1,post1)) %>% 
+  nrow()
+
+evidf %>%
+  filter(seasonF == myseason) %>% 
+   filter(year >= min(pre2,dr2,post2)) %>% 
+  nrow()
+
+
+
+
+
+
+  
+  
+  mutate(event1 = ifelse(year %in% pre1, 'pre1',
                          ifelse(year %in% dr, 'dr',
                            ifelse(year %in% post, 'post', 'out')))) %>%
   filter(myperiod != 'out') 
@@ -160,6 +187,28 @@ eviresi <- df_aux %>%
 
 # Export data
 write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names = FALSE)
+
+
+
+
+library(leaflet)
+m <- leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+
+
+m <- leaflet() %>% 
+  addWMSTiles('http://www.ideandalucia.es/services/toporaster10/wms?',
+              layers = 'toporaster10',
+              options = WMSTileOptions(format = "image/png", transparent = FALSE),
+              attribution = '<a href="http://www.juntadeandalucia.es/institutodeestadisticaycartografia" target="_blank">Instituto de Estadística y Cartografía de Andalucía</a>',
+              group = 'Topographical') %>%
+
+
+http://www.ideandalucia.es:80/services/dea100/wfs?request=GetFeature
+
+
+
 ```
 
 
