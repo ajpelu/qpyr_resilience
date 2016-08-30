@@ -51,7 +51,7 @@ evidf %>%
   geom_boxplot() + theme_bw() + 
   facet_wrap(~seasonF) +
   theme(strip.background=element_rect(fill='white')) + 
-  ylab('EVI')
+  ylab('annual EVI')
 ```
 
 ## Define the drought period 
@@ -65,6 +65,21 @@ evidf %>%
 > Trigo et al. 2013 reported a winter drought event for souther Iberian in 2011-2012. 
 >
 > During the hydrological years of 2004/2005 and 2011/2012, Iberia was hit by two of the worst drought episodes ever recording in this semi-arid region (Gouveia and Trigo 2014)
+
+We consider two drought events: 2005 and 2012. We stats the following periods: 
+
+| **Type**      | Event | *code*  | *years*   | code_type |
+|---------------|-------|---------|-----------|-----------|
+|  pre Drought  | 1     | `pre1`  | 2003-2004 | pre       |
+| Drought event | 1     | `d1`    | 2005-2006 | d         |
+| post Drought  | 1     | `post1` | 2007-2011 | post      |
+|  pre Drought  | 2     | `pre2`  | 2009-2011 | pre       |
+| Drought event | 2     | `d2`    | 2012-2013 | d         |
+| post Drought  | 2     | `post2` | 2014-2015 | post      |
+
+
+
+
 
 We filter 2000-2002 and > 2010, to revmoe the potential bias produced by this drougt events. 
 
