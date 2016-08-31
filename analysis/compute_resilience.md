@@ -64,25 +64,20 @@ We consider two drought events: 2005 and 2012. We stats the following periods:
 | **Type**      | Event | *code*  | *years*   | code\_type |
 |---------------|-------|---------|-----------|------------|
 | pre Drought   | 1     | `pre1`  | 2003-2004 | pre        |
-| Drought event | 1     | `d1`    | 2005-2006 | d          |
+| Drought event | 1     | `dr1`   | 2005-2006 | dr         |
 | post Drought  | 1     | `post1` | 2007-2011 | post       |
 | pre Drought   | 2     | `pre2`  | 2009-2011 | pre        |
-| Drought event | 2     | `d2`    | 2012-2013 | d          |
+| Drought event | 2     | `dr2`   | 2012-2013 | dr         |
 | post Drought  | 2     | `post2` | 2014-2015 | post       |
 
-We filter 2000-2002 and &gt; 2010, to revmoe the potential bias produced by this drougt events.
-
-We states the period as:
-
--   Drought event: `2005-2006`
--   preDrought: `2003-2004`
--   postDrought: `2007-2010`
-
 ``` r
-# define period 
-pre <- c(2003,2004)
-dr <- c(2005,2006)
-post <- c(2007,2008,2009,2010)
+# define periods 
+pre1 <- c(2003,2004)
+dr1 <- c(2005,2006)
+post1 <- c(2007,2008,2009,2010,2011)
+pre2 <- c(2009,2010,2011)
+dr2 <- c(2012,2013)
+post2 <- c(2014,2015)
 ```
 
 Assign, also, names for each *Q. pyrenaica* patch:
@@ -106,16 +101,9 @@ Explore evolution of summer EVI
 # Choose season
 myseason <- 'summer'
 
-evisummer <- evidf %>%
+evidf %>%
   filter(seasonF == myseason) %>% 
-  mutate(myperiod = ifelse(year %in% pre, 'pre',
-                         ifelse(year %in% dr, 'dr',
-                           ifelse(year %in% post, 'post', 'out')))) %>%
-  filter(myperiod != 'out') 
-
-
-
-ggplot(evisummer, aes(x=year, y=evi, group=year)) + 
+  ggplot(aes(x=year, y=evi, group=year)) + 
   geom_boxplot() + facet_wrap(~poblacion, labeller = as_labeller(label_pop)) + 
   ggtitle(paste0(myseason, ' EVI')) + 
   theme_bw() + 
@@ -123,6 +111,29 @@ ggplot(evisummer, aes(x=year, y=evi, group=year)) +
 ```
 
 ![Evolution of summer EVI for Q. pyrenaica forests in S.Nevada, from 2003 to 2010](compute_resilience_files/figure-markdown_github/unnamed-chunk-5-1.png)
+
+``` r
+# Categorize events drought data 
+event1 <- evidf %>%
+  filter(seasonF == myseason) %>% 
+  filter(year <= max(pre1,dr1,post1)) %>% 
+  mutate(disturb = ifelse(year %in% pre1, 'pre', 
+                           ifelse(year %in% dr1, 'dr',
+                           ifelse(year %in% post1, 'post', 'out'))),
+         event = 1,
+         dist_event = paste0(disturb, event)) %>%
+  filter(disturb != 'out') 
+
+event2 <- evidf %>%
+  filter(seasonF == myseason) %>% 
+  filter(year >= min(pre2,dr2,post2)) %>% 
+  mutate(disturb = ifelse(year %in% pre2, 'pre', 
+                           ifelse(year %in% dr2, 'dr',
+                           ifelse(year %in% post2, 'post', 'out'))),
+         event = 2,
+         dist_event = paste0(disturb, event)) %>%
+  filter(disturb != 'out') 
+```
 
 Compute resilience components
 -----------------------------
@@ -134,24 +145,34 @@ Compute resilience components
 
 ``` r
 # First aggregate each pixel by period (get mean value of evi by period) 
-eviperiod <- evisummer %>% 
-  select(iv_malla_modi_id, poblacion, evi, myperiod, lng, lat) %>%
-  group_by(iv_malla_modi_id, myperiod, poblacion, lng, lat) %>% 
-  summarise(media_period = mean(evi))
+# Compute for the two dataframes (event1, event2)
 
-# Change format of the dataset (long to wide)
-df_aux <- dcast(eviperiod, iv_malla_modi_id + poblacion + lng + lat ~ myperiod, value.var = 'media_period')
+# function to compute Resilience 
+computeResilience <- function(df){ 
+  # Group by period and get mean of evi by pixel
+  eviperiod <- df %>%
+    select(iv_malla_modi_id, poblacion, evi, disturb, lng, lat, event, dist_event) %>%
+    group_by(iv_malla_modi_id, disturb, poblacion, lng, lat, event, dist_event) %>% 
+    summarise(media_period = mean(evi))
   
-# Compute components of resilience 
+  # Change format of the dataset (long to wide)
+  df_aux <- dcast(eviperiod, iv_malla_modi_id + poblacion + lng + lat  ~ disturb, value.var = 'media_period')
+  
+  # Compute components of resilience 
+  eviresi <- df_aux %>% 
+    mutate(rt = dr / pre,
+           rc = post / dr,
+           rs = post / pre) %>%
+    mutate(rrs = ((post - dr) / pre))
+  } 
 
-eviresi <- df_aux %>% 
-  mutate(rt = dr / pre,
-         rc = post / dr,
-         rs = post / pre) %>%
-  mutate(rrs = ((post - dr) / pre))
+res_event1 <- computeResilience(event1)
+res_event2 <- computeResilience(event2)
 
-# Export data
-write.csv(eviresi, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names = FALSE)
+
+# Export dataframe
+write.csv(res_event1, file=paste(di, "/data/evi_resilience_event1.csv", sep=""), row.names = FALSE)
+write.csv(res_event2, file=paste(di, "/data/evi_resilience_event1.csv", sep=""), row.names = FALSE)
 ```
 
 References
