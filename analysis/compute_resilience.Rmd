@@ -179,7 +179,7 @@ res_event2 <- computeResilience(event2)
 
 # Export dataframe
 write.csv(res_event1, file=paste(di, "/data/evi_resilience_event1.csv", sep=""), row.names = FALSE)
-write.csv(res_event2, file=paste(di, "/data/evi_resilience_event1.csv", sep=""), row.names = FALSE)
+write.csv(res_event2, file=paste(di, "/data/evi_resilience_event2.csv", sep=""), row.names = FALSE)
 ```
 
 
