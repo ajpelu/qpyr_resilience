@@ -1,14 +1,154 @@
+``` r
+#---------------------------------
+machine <- 'ajpelu'
+# machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
+#---------------------------------
+```
+
+``` r
+library("dplyr")
+library("lubridate")
+library("ggplot2")
+```
+
+``` r
+# Read and prepare data
+rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
+
+# Get year and month 
+rawdata <- rawdata %>% 
+  mutate(myevi = evi * 0.0001,
+         myndvi = ndvi * 0.0001,
+         year = lubridate::year(date),
+         month = lubridate::month(date))
+
+# Create variable with three cats: d1 (2005), d2 (2012) and ref(2000-2004; 2006-2011; 2013-2015)
+# Aggregate by cluster and remove pob 9
+
+rawdata <- rawdata %>% 
+  mutate(event = ifelse(year == 2005, '2005',
+                        ifelse(year == 2012, '2012', 'ref')), 
+         clu_pop = as.factor(ifelse(poblacion == 1, 'Camarate',
+                                    ifelse(poblacion %in% c(2,3,4,5), 'Northern slope',
+                                           ifelse(poblacion %in% c(6,7,8), 'Southern slope', 'out'))))) %>% 
+  filter(clu_pop != 'out') 
+  
+
+
+# Spatial aggregation. All pixels of the same populations are aggregate by mean
+sp_iv <- rawdata %>% 
+  # select(iv_malla_modi_id, poblacion, myevi, lng, lat, month, event) %>%
+  group_by(clu_pop, poblacion, year, month, event) %>% 
+  summarise(myevisp = mean(myevi),
+            myndvisp = mean(myndvi))
+
+
+# Temporal aggregation (references period, d1 and d2, and temporal)
+# By cluster 
+variables <- c('myevisp', 'myndvisp')
+anomalo_clu <- data.frame() 
+
+for (i in variables){ 
+aux <- sp_iv %>% 
+  dplyr::group_by(clu_pop, month, event) %>%  
+  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+
+anomalo_clu <- rbind(anomalo_clu, aux) }
+
+# By population 
+variables <- c('myevisp', 'myndvisp')
+anomalo_pop <- data.frame() 
+
+for (i in variables){ 
+aux <- sp_iv %>% 
+  dplyr::group_by(poblacion, month, event) %>%  
+  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+
+anomalo_pop <- rbind(anomalo_pop, aux) }
+
+# For all population
+variables <- c('myevisp', 'myndvisp')
+anomalo_sn <- data.frame() 
+
+for (i in variables){ 
+aux <- sp_iv %>% 
+  dplyr::group_by(month, event) %>%  
+  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+
+anomalo_sn <- rbind(anomalo_sn, aux) }
+```
+
 Annomalies for all *Q. pyrenaica* forests
 -----------------------------------------
+
+``` r
+label_variable <- c('myevisp' = 'EVI', 'myndvisp' = 'NDVI')  
+
+label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
+                      '4' = 'Dilar', '5' = 'Durcal', '6' = 'Caniar', 
+                      '7' = 'Poqueira', '8' = 'Trevelez')
+
+
+## Plot for all populations 
+anomalo_sn %>% 
+  # dplyr::filter(variable == 'myevisp') %>% 
+  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
+  geom_point() + geom_line() + theme_bw() + 
+  xlab('Months') + ylab('') + 
+  facet_wrap(~variable, 
+             labeller = as_labeller(label_variable),
+             scales = 'free_y') +
+  theme(strip.background = element_rect(fill = "white"))
+```
 
 <img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
 
 Annomalies by populations
 -------------------------
 
-<img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /><img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-5-2.png" style="display: block; margin: auto;" />
+``` r
+## Plot for each population 
+# EVI
+anomalo_pop %>% 
+  dplyr::filter(variable == 'myevisp') %>% 
+  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
+  geom_point() + geom_line() + theme_bw() + 
+  xlab('Months') + ylab('EVI') + 
+  facet_wrap(~poblacion, 
+             labeller = as_labeller(label_pop)) +
+  theme(strip.background = element_rect(fill = "white"))
+```
+
+<img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+
+``` r
+# NDVI
+anomalo_pop %>% 
+  dplyr::filter(variable == 'myndvisp') %>% 
+  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
+  geom_point() + geom_line() + theme_bw() + 
+  xlab('Months') + ylab('NDVI') + 
+  facet_wrap(~poblacion,
+             labeller = as_labeller(label_pop)) +
+  theme(strip.background = element_rect(fill = "white"))
+```
+
+<img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-5-2.png" style="display: block; margin: auto;" />
 
 Annomalies by populations cluster
 ---------------------------------
+
+``` r
+## Plot for each cluster
+anomalo_clu %>% 
+  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
+  geom_point() + geom_line() + theme_bw() + 
+  xlab('Months') + ylab('') + 
+  facet_grid(variable~clu_pop, 
+             labeller = labeller(.rows=label_variable),
+             scales = 'free_y') + 
+  theme(strip.background = element_rect(fill = "white"))
+```
 
 <img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
