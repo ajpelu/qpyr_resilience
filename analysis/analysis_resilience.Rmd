@@ -17,8 +17,8 @@ opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE, warning = FALS
 
 ```{r}
 #---------------------------------
-#machine <- 'ajpelu'
-machine <- 'ajpeluLap'
+machine <- 'ajpelu'
+# machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -48,19 +48,32 @@ eviresi2 <- read.csv(file=paste(di, "/data/evi_resilience_event2.csv", sep=""), 
 # Prepare data
 elev <- read.csv(file=paste(di, "/data/elev.csv", sep=""), header = TRUE, sep = ',')
 
-eviresi <- eviresi %>% 
-  # join elevation data
-  dplyr::inner_join(elev, by='iv_malla_modi_id') %>% 
-  # Add a variable for population cluster
-  mutate(clu_pop = as.factor(ifelse(poblacion == 1, 'a', 
-                          ifelse(poblacion %in% c(2,3,4,5), 'b', 
-                                 ifelse(poblacion %in% c(6,7,8), 'c', 'out')))))
+### Custom function to prepare dat 
 
-# Filter out cluster 
-eviresi_f <- eviresi %>% 
-  filter(clu_pop != 'out') %>%
-  mutate(clu_popf = as.factor(ifelse(clu_pop == 'a', 'Camarate',
-                           ifelse(clu_pop == 'b','Northern slope', 'Southern slope'))))
+auxPrepareData <- function(df){ 
+  # Join Elevation data 
+  # Add variable for population cluster
+  # Filter population 9 
+
+  # df is the dataframe. i.e.: evi_resilience_event1.csv 
+  require('dplyr')
+
+  out_df <- df %>% 
+    dplyr::inner_join(elev, by='iv_malla_modi_id') %>% 
+    mutate(clu_pop = as.factor(ifelse(poblacion == 1, 'a',
+                                      ifelse(poblacion %in% c(2,3,4,5), 'b',
+                                             ifelse(poblacion %in% c(6,7,8), 'c', 'out'))))) %>% 
+    filter(clu_pop != 'out') %>%
+    mutate(clu_popf = as.factor(ifelse(clu_pop == 'a', 'Camarate',
+                                       ifelse(clu_pop == 'b','Northern slope', 'Southern slope'))))
+}
+
+evi_f1 <- auxPrepareData(eviresi1)
+evi_f2 <- auxPrepareData(eviresi2)
+```
+
+
+
 
 
 # Obtain means values by cluster population
@@ -69,7 +82,7 @@ variables <- c('rs','rc','rt','rrs')
 auxdf <- data.frame() 
 
 for (i in variables){ 
-aux <- eviresi_f %>% 
+aux <- evi_f1 %>% 
   dplyr::group_by(clu_popf) %>% 
   summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
 
