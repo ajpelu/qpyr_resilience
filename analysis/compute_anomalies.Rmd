@@ -8,7 +8,7 @@ output:
 ---
 ```{r, echo=FALSE, message=FALSE}
 require(knitr)
-opts_chunk$set(fig.align='center', fig.width = 14, fig.height = 14, echo=FALSE, message = FALSE, warning = FALSE) 
+opts_chunk$set(fig.align='center', fig.width = 14, echo=FALSE, message = FALSE, warning = FALSE) 
 ```
 
 
@@ -118,7 +118,7 @@ anomalo_sn %>%
 
 
 ## Annomalies by populations
-```{r}
+```{r, fig.height=14}
 ## Plot for each population 
 # EVI
 anomalo_pop %>% 
@@ -129,8 +129,9 @@ anomalo_pop %>%
   facet_wrap(~poblacion, 
              labeller = as_labeller(label_pop)) +
   theme(strip.background = element_rect(fill = "white"))
+```
 
-
+```{r, fig.height=14}
 # NDVI
 anomalo_pop %>% 
   dplyr::filter(variable == 'myndvisp') %>% 
@@ -145,7 +146,7 @@ anomalo_pop %>%
 
 
 ## Annomalies by populations cluster
-```{r}
+```{r, fig.height=14}
 ## Plot for each cluster
 anomalo_clu %>% 
   ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
