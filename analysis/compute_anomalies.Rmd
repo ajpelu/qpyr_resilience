@@ -4,7 +4,6 @@ author: "AJ Perez-Luque (@ajpelu)"
 date: "2016 Aug"
 output:  
   md_document:
-    toc: true
     variant: markdown_github
 ---
 ```{r, echo=FALSE, message=FALSE}
@@ -12,8 +11,6 @@ require(knitr)
 opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE, warning = FALSE) 
 ```
 
-
-# Exploring patterns of resilience components (models)
 
 ```{r}
 #---------------------------------
@@ -98,6 +95,7 @@ anomalo_sn <- rbind(anomalo_sn, aux) }
 ```
 
 
+## Annomalies for all *Q. pyrenaica* forests
 ```{r} 
 label_variable <- c('myevisp' = 'EVI', 'myndvisp' = 'NDVI')  
 
@@ -116,8 +114,11 @@ anomalo_sn %>%
              labeller = as_labeller(label_variable),
              scales = 'free_y') +
   theme(strip.background = element_rect(fill = "white"))
+```
 
 
+## Annomalies by populations
+```{r}
 ## Plot for each population 
 # EVI
 anomalo_pop %>% 
@@ -139,8 +140,12 @@ anomalo_pop %>%
   facet_wrap(~poblacion,
              labeller = as_labeller(label_pop)) +
   theme(strip.background = element_rect(fill = "white"))
+```
 
 
+
+## Annomalies by populations cluster
+```{r}
 ## Plot for each cluster
 anomalo_clu %>% 
   ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
