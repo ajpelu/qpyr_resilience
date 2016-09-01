@@ -30,6 +30,7 @@ library("ggplot2")
 ```{r}
 # Read and prepare data
 rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
+# Para el flexdashboard aux_df <-read.csv(text=getURL("https://raw.githubusercontent.com/ajpelu/modis_iv/master/data/aux_comparison.csv"), header=T) 
 
 # Get year and month 
 rawdata <- rawdata %>% 
