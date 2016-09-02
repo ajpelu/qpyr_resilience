@@ -33,10 +33,176 @@ library("tidyr")
 # Read and prepare data
 rawdata <- read.csv(text = getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/evi/iv_quercus_pyrenaica.csv"), header=T) 
 
+
+## Anomalies by pixel
+
+# Set disturbance years 
+disturb_years <- c(2005, 2012)
+
+
+
+ndvi_by_date <- rawdata %>% 
+  mutate(myevi = evi * 0.0001, 
+         myndvi = ndvi * 0.0001,
+         yearday = lubridate::yday(date)) %>% 
+         mutate(yearday = ifelse(yearday == 2, 3, yearday), ### Artefacto para agregar dia 2 y 3 
+         monthday = as.Date(yearday - 1, origin = "2008-01-01")) %>% 
+  group_by(monthday) %>% 
+  summarise(mean=mean(myevi),
+            sd = sd(myevi),
+            se = sd / sqrt (length(myevi)))
+
+         
+16*3
+
+
+        
+         
+         month = lubridate::month(date),
+         year = lubridate::month(date),
+         
+         
+         iseq = ifelse(yearday == composite_day_of_the_year, 1, 0))
+
+
+
+ndvi_by_date <- rawdata %>% 
+  mutate(myevi = evi * 0.0001, 
+         myndvi = ndvi * 0.0001,
+         yearday = lubridate::yday(fecha)) %>% 
+  mutate(yearday = ifelse(yearday == 2, 3, yearday), ### Artefacto para agregar dia 2 y 3 
+         monthday = as.Date(yearday - 1, origin = "2008-01-01")) %>% 
+  group_by(monthday) %>% 
+  summarise(mean=mean(myevi),
+            sd = sd(myevi),
+            se = sd / sqrt (length(myevi)))
+
+
+ggplot(ndvi_by_date, aes(as.Date(monthday), y=mean)) + 
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean - sd, ymax= mean + sd))
+
+
+
+
+
+
+myid <- ndvi_by_date %>% filter(iv_malla_modi_id == 142799) 
+
+table(myid$yearday)
+
+
+%>% 
+  ggplot(aes()
+  
+  
+  ggplot(ndvi_by_date, aes(as.Date(monthday), y=mean)) + 
+  geom_point() + 
+  geom_errorbar(aes(ymin = mean - sd, ymax= mean + sd))
+
+
+%>% 
+  
+  
+  mutate(yearday = ifelse(yearday == 2, 3, yearday), ### Artefacto para agregar dia 2 y 3 
+         monthday = as.Date(yearday - 1, origin = "2008-01-01")) %>% 
+  group_by(monthday) %>% 
+  summarise(mean=mean(myevi),
+            sd = sd(myevi),
+            se = sd / sqrt (length(myevi)))
+
+
+
+
+
+
+d <- rawdata %>% 
+    # Factor Correction to evi and ndvi
+    mutate(myevi = evi * 0.0001,
+           myndvi = ndvi * 0.0001) %>% 
+    select(-evi) %>% 
+    select(-ndvi) %>% 
+    
+    # Compute year and month 
+    mutate(year = lubridate::year(date),  
+           month = lubridate::month(date),
+           yearday = lubridate::yday(date)) %>%
+
+    
+    # Add variable of population cluster and remove population '9'
+    mutate(clu_pop = as.factor(ifelse(poblacion == 1, 'Camarate',
+                                      ifelse(poblacion %in% c(2,3,4,5), 'Northern slope',
+                                             ifelse(poblacion %in% c(6,7,8), 'Southern slope', 'out'))))) %>% 
+    filter(clu_pop != 'out') %>% 
+  
+      # Categorize reference period and disturbance year
+    mutate(event = ifelse(year != disturb_years,
+                          'ref',
+                          ifelse(year == disturb_years[1], 
+                                 as.character(disturb_years[1]),
+                                 as.character(disturb_years[2])))) %>% 
+  
+      # Spatial aggregation. All pixels of the same populations are aggregate by mean
+    group_by(iv_malla_modi_id, clu_pop, poblacion, year, month, yearday, event) %>% 
+    summarise(myevisp = mean(myevi), 
+              myndvisp = mean(myndvi)) 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d <- rawdata %>% 
+    # Factor Correction to evi and ndvi
+    mutate(myevi = evi * 0.0001,
+           myndvi = evi * 0.0001) %>% 
+    select(-evi) %>% 
+    select(-ndvi) %>% 
+    
+    # Compute year and month 
+    mutate(year = lubridate::year(date),  
+           month = lubridate::month(date)) %>% 
+    
+    # Add variable of population cluster and remove population '9'
+    mutate(clu_pop = as.factor(ifelse(poblacion == 1, 'Camarate',
+                                      ifelse(poblacion %in% c(2,3,4,5), 'Northern slope',
+                                             ifelse(poblacion %in% c(6,7,8), 'Southern slope', 'out'))))) %>% 
+    filter(clu_pop != 'out') %>% 
+    
+    # Categorize reference period and disturbance year
+    mutate(event = ifelse(year != disturb_years,
+                          'ref',
+                          ifelse(year == disturb_years[1], 
+                                 as.character(disturb_years[1]),
+                                 as.character(disturb_years[2])))) %>% 
+    
+    # Spatial aggregation. All pixels of the same populations are aggregate by mean
+    group_by(clu_pop, poblacion, year, month, event) %>% 
+    summarise(myevisp = mean(myevi), 
+              myndvisp = mean(myndvi)) 
+  }
+```
+
+
+
+```{r}
+
 # Note 
 
 computeAnomaly <- function(df, disturb_years){
   require('dplyr')
+  
   
   rd <- df %>% 
     # Factor Correction to evi and ndvi
@@ -69,7 +235,7 @@ computeAnomaly <- function(df, disturb_years){
   }
 
 
-d <- computeAnomaly(df=rawdata, disturb_year = c(2005, 2012))
+d <- computeAnomaly(df=rawdata, disturb_years = c(2005, 2012))
 # d2 <- computeAnomaly(df=rawdata, disturb_year = 2012)
   
 
@@ -93,9 +259,9 @@ for (j in misdataframes){
   # By cluster 
   for (i in variables){ 
     
-    all_var_interest <- c('clu_pop', 'year', 'month', 'event', i)  
+    #all_var_interest <- c('clu_pop', 'year', 'month', 'event', i)  
     
-    mydf <- mydf %>% dplyr::select(one_of(dplyr::intersect(all_var_interest, names(.))))
+    # mydf <- mydf %>% dplyr::select(one_of(dplyr::intersect(all_var_interest, names(.))))
 
     
     # summary for all pixels
