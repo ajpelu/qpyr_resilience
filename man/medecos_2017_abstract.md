@@ -17,6 +17,10 @@ Notes
 
 -   `IDEA`: Comparación de anomalias mensuales, anuales (ver (Zhang et al. 2012))
 
+-   Ver descripcion de Drought periods en (Chaparro et al. 2016)
+
+Chaparro, D., J. Vayreda, M. Vall-llossera, M. Banque, M. Piles, A. Camps, and J. Martinez-Vilalta. 2016. The Role of Climatic Anomalies and Soil Moisture in the Decline of Drought-Prone Forests. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing:1–12.
+
 Mildrexler, D. J., M. Zhao, and S. W. Running. 2009. Testing a MODIS Global Disturbance Index across North America. Remote Sensing of Environment 113:2103–2117.
 
 Mildrexler, D. J., M. Zhao, F. A. Heinsch, and S. W. Running. 2007. A new satellite-based methodology for continental-scale disturbance detection. Ecological Applications 17:235–250.

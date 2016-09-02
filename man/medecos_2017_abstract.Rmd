@@ -29,3 +29,5 @@ knitr::opts_chunk$set(echo = TRUE)
 * Hablar mas bien de *vegetation drouhgt* (para diferenciarla de hydrological y meteorological drought )
 
 * `IDEA`: Comparación de anomalias mensuales, anuales (ver [@Zhang2012])
+
+* Ver descripcion de Drought periods en [@Chaparro2016]
