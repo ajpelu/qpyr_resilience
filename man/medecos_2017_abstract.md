@@ -17,7 +17,7 @@ Notes
 
 -   `IDEA`: Comparación de anomalias mensuales, anuales (ver (Zhang et al. 2012))
 
--   Ver descripcion de Drought periods en (Chaparro et al. 2016)
+-   Ver descripcion de Drought periods en (Chaparro et al. 2016) ()
 
 Chaparro, D., J. Vayreda, M. Vall-llossera, M. Banque, M. Piles, A. Camps, and J. Martinez-Vilalta. 2016. The Role of Climatic Anomalies and Soil Moisture in the Decline of Drought-Prone Forests. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing:1–12.
 
