@@ -1,16 +1,182 @@
-Annomalies for all *Q. pyrenaica* forests
------------------------------------------
+``` r
+library("dplyr")
+library("lubridate")
+library("ggplot2")
+library("RCurl")
+library("tidyr")
+```
 
-<img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+``` r
+# Read and prepare data
+rawdata <- read.csv(text = getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/evi/iv_quercus_pyrenaica.csv"), header=T) 
 
-Annomalies by populations
--------------------------
+# Note 
 
-<img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+computeAnomaly <- function(df, disturb_years){
+  require('dplyr')
+  
+  rd <- df %>% 
+    # Factor Correction to evi and ndvi
+    mutate(myevi = evi * 0.0001,
+           myndvi = evi * 0.0001) %>% 
+    select(-evi) %>% 
+    select(-ndvi) %>% 
+    
+    # Compute year and month 
+    mutate(year = lubridate::year(date),  
+           month = lubridate::month(date)) %>% 
+    
+    # Add variable of population cluster and remove population '9'
+    mutate(clu_pop = as.factor(ifelse(poblacion == 1, 'Camarate',
+                                      ifelse(poblacion %in% c(2,3,4,5), 'Northern slope',
+                                             ifelse(poblacion %in% c(6,7,8), 'Southern slope', 'out'))))) %>% 
+    filter(clu_pop != 'out') %>% 
+    
+    # Categorize reference period and disturbance year
+    mutate(event = ifelse(year != disturb_years,
+                          'ref',
+                          ifelse(year == disturb_years[1], 
+                                 as.character(disturb_years[1]),
+                                 as.character(disturb_years[2])))) %>% 
+    
+    # Spatial aggregation. All pixels of the same populations are aggregate by mean
+    group_by(clu_pop, poblacion, year, month, event) %>% 
+    summarise(myevisp = mean(myevi), 
+              myndvisp = mean(myndvi)) 
+  }
 
-<img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
-Annomalies by populations cluster
----------------------------------
+d <- computeAnomaly(df=rawdata, disturb_year = c(2005, 2012))
+# d2 <- computeAnomaly(df=rawdata, disturb_year = 2012)
+  
 
-<img src="compute_anomalies_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+
+### Loop for temporal aggregation 
+
+# misdataframes <- c("d1", "d2")
+misdataframes <- c("d")
+variables <- c('myevisp', 'myndvisp')
+
+for (j in misdataframes){ 
+  
+  mydf <- get(j)
+  
+  # Create three empty dataframe
+  anomalo_clu <- data.frame() 
+  anomalo_pop <- data.frame()
+  anomalo_sn <- data.frame() 
+  
+  # Temporal aggregation (references period, d1 and d2, and temporal)
+  # By cluster 
+  for (i in variables){ 
+    # summary for all pixels
+    aux_sn <- mydf %>% 
+      dplyr::group_by(month, event) %>%
+      summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i)
+    
+    anomalo_sn <- rbind(anomalo_sn, aux_sn) 
+    
+    # summary for cluster pop   
+    aux_clu <- mydf %>% 
+      dplyr::group_by(clu_pop, month, event) %>%
+      summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+    
+    anomalo_clu <- rbind(anomalo_clu, aux_clu)
+    
+    # summary for populations 
+    aux_pop <- mydf %>% 
+      dplyr::group_by(poblacion, month, event) %>%  
+      summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+    
+    anomalo_pop <- rbind(anomalo_pop, aux_pop) 
+    
+    rm(aux_pop, aux_clu, aux_sn)
+    }
+  
+  # Store df for each j of misdataframes
+  assign(paste0("anomalo_sn", j), anomalo_sn)
+  assign(paste0("anomalo_pop", j), anomalo_pop)
+  assign(paste0("anomalo_clu", j), anomalo_clu)
+  
+  rm(anomalo_sn, anomalo_pop, anomalo_clu)
+  rm(mydf)
+}
+
+
+# Exportdataframes 
+write.csv(anomalo_snd, file=paste(di, "/data/anomalies/anomalo_sn.csv", sep=""), row.names = FALSE)
+write.csv(anomalo_clud, file=paste(di, "/data/anomalies/anomalo_clu.csv", sep=""), row.names = FALSE)
+write.csv(anomalo_popd, file=paste(di, "/data/anomalies/anomalo_pop.csv", sep=""), row.names = FALSE)
+
+# Computar anomalias standarizadas 
+
+conjuntodata <- c('anomalo_snd', 'anomalo_popd', 'anomalo_clud')
+variables <- c('myevisp', 'myndvisp')
+myyear <- c('2005', '2012')
+
+for (g in conjuntodata){
+  
+  # Select conjunto
+  midf <- get(g)
+  
+  # Loop by year 
+  for (j in myyear) { 
+    # filter by byear
+    df <- midf %>%
+      filter(event %in% c(j, 'ref')) 
+    
+    # empty df to store results 
+    a <- data.frame() 
+    
+    # loop into variables
+    for (i in variables){ 
+      out <- df %>% 
+        filter(variable == i) %>%
+        select(-variable) %>% gather(variable, value, mean, se, sd) %>%
+        unite(var, variable, event) %>% 
+        spread(var, value) 
+      
+      out <- out %>% mutate(iv = i)
+      
+      a <- rbind(a, out) 
+      }
+    
+    assign(paste0("a_",g,j), a)
+  }
+}
+
+
+
+### Compute and Export anomalies as csv
+
+
+#SN 
+a_anomalo_snd2005 <- a_anomalo_snd2005 %>% 
+  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_snd2005, file=paste(di, "/data/anomalies/std_a_2005_sn.csv", sep=""), row.names = FALSE)
+
+a_anomalo_snd2012 <- a_anomalo_snd2012 %>% 
+  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_snd2012, file=paste(di, "/data/anomalies/std_a_2012_sn.csv", sep=""), row.names = FALSE)
+
+
+#Clu 
+a_anomalo_clud2005 <- a_anomalo_clud2005 %>% 
+  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_clud2005, file=paste(di, "/data/anomalies/std_a_2005_clu.csv", sep=""), row.names = FALSE)
+
+a_anomalo_clud2012 <- a_anomalo_clud2012 %>% 
+  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_clud2012, file=paste(di, "/data/anomalies/std_a_2012_clu.csv", sep=""), row.names = FALSE)
+
+
+
+#Pop 
+a_anomalo_popd2005 <- a_anomalo_popd2005 %>% 
+  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_popd2005, file=paste(di, "/data/anomalies/std_a_2005_pop.csv", sep=""), row.names = FALSE)
+
+a_anomalo_popd2012 <- a_anomalo_popd2012 %>% 
+  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_popd2012, file=paste(di, "/data/anomalies/std_a_2012_pop.csv", sep=""), row.names = FALSE)
+```

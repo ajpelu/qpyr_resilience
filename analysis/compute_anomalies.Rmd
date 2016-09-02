@@ -8,14 +8,24 @@ output:
 ---
 ```{r, echo=FALSE, message=FALSE}
 require(knitr)
-opts_chunk$set(fig.align='center', fig.width = 14, echo=FALSE, message = FALSE, warning = FALSE) 
+opts_chunk$set(fig.align='center', fig.width = 14, message = FALSE, warning = FALSE) 
 ```
+
+```{r wd, echo=FALSE}
+#---------------------------------
+machine <- 'ajpelu'
+#machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
+#---------------------------------
+```
+
 
 ```{r packages, warning=FALSE, message=FALSE}
 library("dplyr")
 library("lubridate")
 library("ggplot2")
 library("RCurl")
+library("tidyr")
 ```
 
 
@@ -116,111 +126,81 @@ for (j in misdataframes){
 }
 
 
+# Exportdataframes 
+write.csv(anomalo_snd, file=paste(di, "/data/anomalies/anomalo_sn.csv", sep=""), row.names = FALSE)
+write.csv(anomalo_clud, file=paste(di, "/data/anomalies/anomalo_clu.csv", sep=""), row.names = FALSE)
+write.csv(anomalo_popd, file=paste(di, "/data/anomalies/anomalo_pop.csv", sep=""), row.names = FALSE)
 
+# Computar anomalias standarizadas 
 
-
-
-
-
-
-for (i in variables){ 
-aux <- aux_d1 %>% 
-  dplyr::group_by(poblacion, month, event) %>%  
-  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
-
-anomalo_pop <- rbind(anomalo_pop, aux) }
-
-# For all population
+conjuntodata <- c('anomalo_snd', 'anomalo_popd', 'anomalo_clud')
 variables <- c('myevisp', 'myndvisp')
-anomalo_sn <- data.frame() 
+myyear <- c('2005', '2012')
 
-for (i in variables){ 
-aux <- aux_d1 %>% 
-  dplyr::group_by(month, event) %>%  
-  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
-
-anomalo_sn <- rbind(anomalo_sn, aux) }
+for (g in conjuntodata){
   
-
-assign(paste0("anomalo_sn", j), anomalo_sn)
-assign(paste0("anomalo_pop", j), anomalo_pop)
-assign(paste0("anomalo_clu", j), anomalo_clu)
-} 
-
-
-
-
+  # Select conjunto
+  midf <- get(g)
   
+  # Loop by year 
+  for (j in myyear) { 
+    # filter by byear
+    df <- midf %>%
+      filter(event %in% c(j, 'ref')) 
+    
+    # empty df to store results 
+    a <- data.frame() 
+    
+    # loop into variables
+    for (i in variables){ 
+      out <- df %>% 
+        filter(variable == i) %>%
+        select(-variable) %>% gather(variable, value, mean, se, sd) %>%
+        unite(var, variable, event) %>% 
+        spread(var, value) 
+      
+      out <- out %>% mutate(iv = i)
+      
+      a <- rbind(a, out) 
+      }
+    
+    assign(paste0("a_",g,j), a)
+  }
+}
 
 
 
+### Compute and Export anomalies as csv
 
+
+#SN 
+a_anomalo_snd2005 <- a_anomalo_snd2005 %>% 
+  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_snd2005, file=paste(di, "/data/anomalies/std_a_2005_sn.csv", sep=""), row.names = FALSE)
+
+a_anomalo_snd2012 <- a_anomalo_snd2012 %>% 
+  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_snd2012, file=paste(di, "/data/anomalies/std_a_2012_sn.csv", sep=""), row.names = FALSE)
+
+
+#Clu 
+a_anomalo_clud2005 <- a_anomalo_clud2005 %>% 
+  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_clud2005, file=paste(di, "/data/anomalies/std_a_2005_clu.csv", sep=""), row.names = FALSE)
+
+a_anomalo_clud2012 <- a_anomalo_clud2012 %>% 
+  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_clud2012, file=paste(di, "/data/anomalies/std_a_2012_clu.csv", sep=""), row.names = FALSE)
+
+
+
+#Pop 
+a_anomalo_popd2005 <- a_anomalo_popd2005 %>% 
+  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_popd2005, file=paste(di, "/data/anomalies/std_a_2005_pop.csv", sep=""), row.names = FALSE)
+
+a_anomalo_popd2012 <- a_anomalo_popd2012 %>% 
+  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
+write.csv(a_anomalo_popd2012, file=paste(di, "/data/anomalies/std_a_2012_pop.csv", sep=""), row.names = FALSE)
 ```
-
-
-## Annomalies for all *Q. pyrenaica* forests
-```{r} 
-label_variable <- c('myevisp' = 'EVI', 'myndvisp' = 'NDVI')  
-
-label_pop <- c('1' = 'Lugros', '2' = 'Guejar-Sierra', '3' = 'Monachil',
-                      '4' = 'Dilar', '5' = 'Durcal', '6' = 'Caniar', 
-                      '7' = 'Poqueira', '8' = 'Trevelez')
-
-
-## Plot for all populations 
-anomalo_sn %>% 
-  # dplyr::filter(variable == 'myevisp') %>% 
-  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
-  geom_point() + geom_line() + theme_bw() + 
-  xlab('Months') + ylab('') + 
-  facet_wrap(~variable, 
-             labeller = as_labeller(label_variable),
-             scales = 'free_y') +
-  theme(strip.background = element_rect(fill = "white"))
-```
-
-
-## Annomalies by populations
-```{r, fig.height=14}
-## Plot for each population 
-# EVI
-anomalo_pop %>% 
-  dplyr::filter(variable == 'myevisp') %>% 
-  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
-  geom_point() + geom_line() + theme_bw() + 
-  xlab('Months') + ylab('EVI') + 
-  facet_wrap(~poblacion, 
-             labeller = as_labeller(label_pop)) +
-  theme(strip.background = element_rect(fill = "white"))
-```
-
-```{r, fig.height=14}
-# NDVI
-anomalo_pop %>% 
-  dplyr::filter(variable == 'myndvisp') %>% 
-  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
-  geom_point() + geom_line() + theme_bw() + 
-  xlab('Months') + ylab('NDVI') + 
-  facet_wrap(~poblacion,
-             labeller = as_labeller(label_pop)) +
-  theme(strip.background = element_rect(fill = "white"))
-```
-
-
-
-## Annomalies by populations cluster
-```{r, fig.height=14}
-## Plot for each cluster
-anomalo_clu %>% 
-  ggplot(aes(x=as.factor(month), y=mean, group=event, colour=event)) + 
-  geom_point() + geom_line() + theme_bw() + 
-  xlab('Months') + ylab('') + 
-  facet_grid(variable~clu_pop, 
-             labeller = labeller(.rows=label_variable),
-             scales = 'free_y') + 
-  theme(strip.background = element_rect(fill = "white"))
-```
-
-
-
 
