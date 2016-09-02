@@ -75,7 +75,7 @@ evi_f2 <- auxPrepareData(eviresi2)
 
 
 
-
+```{r}
 # Obtain means values by cluster population
 
 variables <- c('rs','rc','rt','rrs')
