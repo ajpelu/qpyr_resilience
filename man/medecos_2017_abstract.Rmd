@@ -14,10 +14,13 @@ csl: ecology.csl
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Abstract
-
-
 ## Notes 
+
+
+Significatives differences were founded on resilience components between northen and souther populations. 
+* resilience S > N 
+* resistence S > N 
+* recovery N > S
 
 * Remote sensing can efficiently track stress responses of forests and other vegetation overa large regions at  high frequency (see [@Norman2016]) 
 
