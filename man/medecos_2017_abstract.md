@@ -8,20 +8,21 @@ title 1: Greenness's resilience of *Quercus pyrenaica* forests to two extreme dr
 
 title 2: Resilience of the greenness of the Q. pyrenaica forests of Sierra Nevada (southern Spain) to two consecutive extreme drought events.
 
+--- 
 
 Climate change projections predict an increase in the frequency of extreme events (e.g. droughts). This increase could result in reduced resilience of ecosystems, particularly in populations located in the rear edge of its distribution. 
 
-In this work, we evaluate the drought impacts on the greenness of the *Quercus pyrenaica* forests in Sierra Nevada, a high-mountain located in southern Spain. Summers 2005 and 2012 were two of the worst drought episodes ever recorded in this Mediterranean area. Our main objectives were: i) to evaluate how each drought event has affected the greenness of this forest type; ii) to analyze the resistance and resilience of this ecosystem to consecutive extreme drought events; and iii) to explore differences of the forest resilience between southern and northern populations. 
+In this work, we evaluate the drought impacts in the greenness of the *Quercus pyrenaica* forests in Sierra Nevada, a high-mountain located in southern Spain. Summers 2005 and 2012 were two of the worst drought episodes ever recorded in this Mediterranean area. Our main objectives were: *(i)* to evaluate how each drought event has affected the greenness of this forest ecosystem; *(ii)* to analyze the resistance and resilience of this ecosystem to consecutive extreme drought events; and *(iii)* to explore differences of the forest resilience between southern and northern populations. 
 
-Using remote sensing information (MODIS MOD13Q1 product), we obtained a temporal series (2000-2015) of the greenness of the forests by computing the Enhanced Vegetation Index (EVI). We computed the anomaly of 
-
-
+We used Enhanced Vegetation Index (EVI) data products derived from MODIS (MOD13Q1 product) to characterize vegetation greenness during the period 2000-2015. At a pixel-scale, we calculate EVI monthly anomalies for each drought event (2005 and 2012) relative to reference period. Resistance, recovery, resilience and relative resilience of the forest greenness to each droguht event were also calculated for each pixel. 
 
 
 
 
 
-a temporal series (2000-2015) 
+resistance, recovery, resilience, and relative resilience for both variables following the procedure
+
+
 
 
 
