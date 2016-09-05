@@ -14,14 +14,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Title:
 `option title 1`
+
 **Greenness's resilience of *Quercus pyrenaica* forests to two extreme drought events: A study case from Sierra Nevada (southern Spain)** 
 
+
 `option title 2`
+
 **Resilience of the greenness of *Quercus pyrenaica* forests of Sierra Nevada (southern Spain) to two consecutive extreme drought events**
---- 
+
 
 ## Authors
-*Pérez-Luque AJ, Bonet FJ & Zamora R*
+Pérez-Luque AJ, Bonet FJ & Zamora R
 
 ## Abstract 
 Climate change projections predict an increase in the frequency of extreme events (e.g. droughts). This increase could result in reduced resilience of ecosystems, particularly in populations located in the rear edge of its distribution. 
