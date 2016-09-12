@@ -1,0 +1,53 @@
+---
+title: "SPEI by stations"
+author: "AJ Perez-Luque (@ajpelu)"
+date: "2016 Sep"
+output:  
+  md_document:
+    toc: true
+    variant: markdown_github
+--- 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#---------------------------------
+machine <- 'ajpelu'
+# machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
+#---------------------------------
+```
+
+```{r}
+library('dplyr')
+library('lubridate')
+```
+
+
+
+```{r}
+cadiar <- read.delim(file='/Users/ajpeluLap/Dropbox/phd/phd_repos/qpyr_resilience/data_raw/meteo/Cadiar.txt', header=T, sep='')
+padul <- read.delim(file='/Users/ajpeluLap/Dropbox/phd/phd_repos/qpyr_resilience/data_raw/meteo/Padul.txt', header=T, sep='')
+jerez <- read.delim(file='/Users/ajpeluLap/Dropbox/phd/phd_repos/qpyr_resilience/data_raw/meteo/Jerez del Marquesado.txt', header=T, sep='')
+                    
+
+
+ca <- cadiar %>% 
+  mutate(date = as.Date(FECHA, format="%d-%m-%y"), 
+         year = lubridate::year(date), 
+         month = lubridate::month(date) )%>% 
+  select(date, year, month, doy = DIA, tmed = Gr07TMed, prec = Gr07Precip, et0 = Gr07ETo) %>% 
+  # Group by year and month 
+  group_by(year, month) %>% 
+  summarise(prec_ac = sum(prec),
+            et0_ac = sum(et0),
+            tmed_avg = mean(tmed)) %>% 
+  mutate(et = SPEI::spei(prec_ac - et0_ac, 3))
+  
+
+
+lat = 
+                     
