@@ -1,5 +1,9 @@
 # Get data by station
 
+### NOTE 
+
+* ***See this resource*** https://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=listadoEstaciones.jsp&c_provincia=18 
+
 ## What variables have been recorded in each station? 
 * First we check the variables available for each station 
 
