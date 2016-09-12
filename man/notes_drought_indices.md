@@ -23,6 +23,20 @@
 
 
 
+## SPEI 
+* We decided to use SPEI index as it accounts for the sensivity to temperature of PDSI and it has the multiscalar nature of SPI (See Vicente-Serrano et al. 2010)
+
+* We will use the [SPEI R-package](https://cran.r-project.org/web/packages/SPEI/index.html) to compute SPEI index at several stations closed to Pyrenean oak population of Sierra Nevada.  
+
+* We explore the drought indices using by **REDIAM**. It uses the *Indice estandarizado de Sequía Pluviométrica (IESP)* that is based on anomalies (a full description can be found [here](http://www.climasig.es/metod2.html#i9). It's a similar approach than SPI, but it does not account the effect of the increased temperatured (see Vicente-Serrano et al. 2010)
+
+### Selection of the climatic stations from obsnev.es 
+* First, locate the stations closed to Pyrenean oak populations
+
+![Figure 1.](/man/images/cli_stations_camarate.png) 
+![Figure 2.](/man/images/cli_stations_northern.png)
+![Figure 3.](/man/images/cli_stations_southern.png)
+
 
 ## Examples of drought in Iberian Peninsula
 * [Overview of 2005 drought](http://earthobservatory.nasa.gov/NaturalHazards/view.php?id=14719)
@@ -48,4 +62,12 @@
 ## More notes: 
 
 * See Chaparro et al. to describe the two drougth periods 
+
+## References: 
+
+* Vicente-Serrano et al. 2010. A Multiscalar Drought Index Sensitive to Global Warming: The Standardized
+Precipitation Evapotranspiration Index. doi: 10.1175/2009JCLI2909.1
+
+
+
 
