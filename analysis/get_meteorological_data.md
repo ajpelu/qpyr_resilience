@@ -56,3 +56,30 @@ WHERE
 ```
 
 and the output was stored as: '/data_raw/meteo/meteo_data.csv'
+
+
+## Long term series 
+
+* Series from 1950 to 2009: 
+ * `cli_estaciones.id` = c(195, 386, 368)
+ * `cli_estaciones.nombre` = Granada Base Aérea, Soportujar, Quentar
+ 
+### Granada Base Aérea 
+```sql
+SELECT 
+  cli_estaciones.codigo, 
+  cli_variables.codigo, 
+  cli_datos_estaciones.valor, 
+  cli_datos_estaciones.fecha
+FROM 
+  public.cli_datos_estaciones, 
+  public.cli_variables, 
+  public.cli_estaciones
+WHERE 
+  cli_variables.id = cli_datos_estaciones.cli_variable_id AND
+  cli_estaciones.id = cli_datos_estaciones.cli_estacion_id AND 
+  cli_variables.codigo IN ('PI1', 'TI1') AND 
+  cli_estaciones.id =  195;
+```
+
+and the output was stored as: '/data_raw/meteo/meteo_data_base_aerea.csv'
