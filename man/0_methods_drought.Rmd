@@ -1,0 +1,38 @@
+---
+title: "Drought Characterization"
+author: "AJ Perez-Luque (@ajpelu)"
+date: "2016 Aug"
+output:  
+  md_document:
+    toc: true
+    variant: markdown_github
+bibliography: references_drought.bib
+csl: ecology.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Drought Characterization 
+
+* 2004/2005 hydrological year is considered one of the worst drooughts ever recorded in the Iberian Peninsula, particularly in the central and southern sectors. 
+
+
+Significatives differences were founded on resilience components between northen and souther populations. 
+* resilience S > N 
+* resistence S > N 
+* recovery N > S
+
+* Remote sensing can efficiently track stress responses of forests and other vegetation overa large regions at  high frequency (see [@Norman2016]) 
+
+* Ventajas del uso de RS (y + especificamente MODIS) para evaluar la sequía (ver [@Norman2016] y referencias asociadas ([@Mildrexler2007; @Mildrexler2009; @Mildrexler2016])
+
+
+* Ojo controlar si ha cambiado la estación de crecimiento. The phenological timing can vary (by a week) yearly, and such variation can obscure recognition and measurement of the seasonal effects of drought [@Norman2016])   
+
+* Hablar mas bien de *vegetation drouhgt* (para diferenciarla de hydrological y meteorological drought )
+
+* `IDEA`: Comparación de anomalias mensuales, anuales (ver [@Zhang2012])
+
+* Ver descripcion de Drought periods en [@Chaparro2016]
