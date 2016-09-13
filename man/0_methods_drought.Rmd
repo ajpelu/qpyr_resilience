@@ -19,14 +19,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Summer of 2005 
 
 * 2004/2005 hydrological year is considered one of the worst drooughts ever recorded in the Iberian Peninsula, particularly in the central and southern sectors [@GarciaHerrera2007].
-* [@GarciaHerrera207] analyzed three longest dialy series available (1941-2005) and for Granada station found 
 
+## Long-term perspective 
 
-The following figure shows the daily accumulated precipitation anomaly compared to the 1961–90 normal for Granada station. The colored lines display the six greater droughts ever recorded in each station (1941–2005 period) during the corresponding October (year n 􏰕 1) to June (year n) hydrological year
-![](/man/images/garcia_herrera_granada_zoom.jpg)
+* @GarciaHerrera2007 analyzed three longest dialy series available (1941-2005). 
+The following figure shows the daily accumulated precipitation anomaly compared to the 1961–90 normal for Granada station. The colored lines display the six greater droughts ever recorded in each station (1941–2005 period) during the corresponding October (year - 1) to June (year) hydrological year. 
 
+<center>![](/man/images/garcia_herrera_granada_zoom.jpg)</center>
 
-
-
-From a long-term perspective, the decades of 40s and the early 50s along with the 80s and 90s are described as particularly dry throughout the whole Iberian territory (Vicente-Serrano 2006a,b)
+* From a long-term perspective, the decades of 40s and the early 50s along with the 80s and 90s are described as particularly dry throughout the whole Iberian territory (Vicente-Serrano 2006a,b)
 
