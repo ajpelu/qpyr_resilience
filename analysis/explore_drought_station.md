@@ -1,19 +1,4 @@
----
-title: "SPEI by stations"
-author: "AJ Perez-Luque (@ajpelu)"
-date: "2016 Sep"
-output:  
-  md_document:
-    toc: true
-    variant: markdown_github
---- 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-```{r}
+``` r
 #---------------------------------
 machine <- 'ajpelu'
 # machine <- 'ajpeluLap'
@@ -21,18 +6,70 @@ di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep=''
 #---------------------------------
 ```
 
-```{r}
+``` r
 library('plyr')
 library('dplyr')
-library('lubridate')
-library('SPEI')
-library('ggplot2')
-library('zoo')
-
 ```
 
+    ## 
+    ## Attaching package: 'dplyr'
 
-```{r}
+    ## The following objects are masked from 'package:plyr':
+    ## 
+    ##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+    ##     summarize
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library('lubridate')
+```
+
+    ## Warning: package 'lubridate' was built under R version 3.2.3
+
+    ## 
+    ## Attaching package: 'lubridate'
+
+    ## The following object is masked from 'package:plyr':
+    ## 
+    ##     here
+
+``` r
+library('SPEI')
+```
+
+    ## Loading required package: lmomco
+
+    ## Warning: package 'lmomco' was built under R version 3.2.5
+
+    ## Loading required package: parallel
+
+    ## # Package SPEI (1.6) loaded [try SPEINews()].
+
+``` r
+library('ggplot2')
+```
+
+    ## Warning: package 'ggplot2' was built under R version 3.2.4
+
+``` r
+library('zoo')
+```
+
+    ## 
+    ## Attaching package: 'zoo'
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     as.Date, as.Date.numeric
+
+``` r
 cadiar <- read.delim(file=paste0(di, '/data_raw/meteo/Cadiar.txt'), header=T, sep='')
 padul <- read.delim(file=paste0(di, '/data_raw/meteo/Padul.txt'), header=T, sep='')
 jerez <- read.delim(file=paste0(di, '/data_raw/meteo/Jerez del Marquesado.txt'), header=T, sep='')
@@ -79,11 +116,9 @@ pa <- padul %>%
   summarise(prec_ac = sum(prec),
             et0_ac = sum(et0),
             tmed_avg = mean(tmed)) 
-
 ```
 
-
-```{r}
+``` r
 # Compute the spei index 
 
 compute_spei <- function(x, rango_mensual){
@@ -124,7 +159,7 @@ compute_spei <- function(x, rango_mensual){
   } 
 ```
 
-```{r}
+``` r
 # SPEI Cadiar
 spei_ca <- compute_spei(ca, rango_mensual = c(1,3,6,12,24))
 
@@ -145,8 +180,13 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
   ggtitle(site)
 ```
 
+    ## Warning: Removed 41 rows containing missing values (position_stack).
 
-```{r}
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-5-1.png)
+
+``` r
 # SPEI Padul
 spei_pa <- compute_spei(pa, rango_mensual = c(1,3,6,12,24))
 
@@ -167,8 +207,13 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
   ggtitle(site)
 ```
 
+    ## Warning: Removed 41 rows containing missing values (position_stack).
 
-```{r}
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+``` r
 # SPEI Jerez 
 spei_je <- compute_spei(je, rango_mensual = c(1,3,6,12,24))
 
@@ -189,5 +234,8 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
   ggtitle(site)
 ```
 
+    ## Warning: Removed 41 rows containing missing values (position_stack).
 
+    ## Warning: Stacking not well defined when ymin != 0
 
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-7-1.png)
