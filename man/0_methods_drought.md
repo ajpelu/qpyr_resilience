@@ -6,7 +6,10 @@
 Drought Characterization
 ========================
 
--   The three most severe drought events in the period **1950–2012** were the hydrologicals year of **1998-1999**, **2004-2005** and **2011-2012** (Trigo et al. 2013, Gouveia et al. (2015)).
+-   Three most severe drought events (**1950–2012**) (Trigo et al. 2013, Gouveia et al. (2015)):
+-   **1998-1999**
+-   **2004-2005**
+-   **2011-2012**
 
 -   The two drought episodes of 2004/2005 and 2011/2012 were extreme in both its magnitude and spatial extent (Gouveia and Trigo 2014)
 
@@ -39,8 +42,8 @@ Long-term perspective
 
 García-Herrera, R., E. Hernández, D. Barriopedro, D. Paredes, R. M. Trigo, I. F. Trigo, and M. A. Mendes. 2007. The Outstanding 2004/05 Drought in the Iberian Peninsula: Associated Atmospheric Circulation. Journal of Hydrometeorology 8:483–498.
 
-Gouveia, C. M., and R. M. Trigo. 2014. The 2005 and 2012 major drought events in Iberia: monitoring vegetation dynamics and crop yields using satellite data. Page 15179 *in* EGU General Assembly Conference Abstracts.
+Gouveia, C. M., and R. M. Trigo. 2014. The 2005 and 2012 major drought events in Iberia: monitoring vegetation dynamics and crop yields using satellite data. Page 15179 *in* EGU general assembly conference abstracts.
 
-Gouveia, C. M., P. Ramos, A. Russo, and R. M. Trigo. 2015. Drought trends in the Iberian Peninsula over the last 112 years. Page 12680 *in* EGU General Assembly Conference Abstracts.
+Gouveia, C. M., P. Ramos, A. Russo, and R. M. Trigo. 2015. Drought trends in the Iberian Peninsula over the last 112 years. Page 12680 *in* EGU general assembly conference abstracts.
 
 Trigo, R. M., J. A. Añel, D. Barriopedro, R. García-Herrera, L. Gimeno, R. Castillo, M. R. Allen, and A. Massey. 2013. The record Winter drought of 2011-12 in the Iberian Peninsula \[in "Explaining Extreme Events of 2012 from a Climate Perspective. \[Peterson, T. C., M. P. Hoerling, P.A. Stott and S. Herring, Eds.\] 94:S41–S45.
