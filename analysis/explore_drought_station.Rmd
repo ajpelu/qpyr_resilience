@@ -243,5 +243,26 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
   geom_vline(xintercept=as.numeric(as.Date("2005-12-31"))) 
 ``` 
 
+```{r}
+
+pre_acu <- pre %>% 
+  mutate(m = ifelse(mimonth <= 8, mimonth + 4, mimonth -8)) %>% 
+  filter(!(miyear == 1951 & m >= 5)) 
+
+pre_acu$my_id <- seq(1,nrow(pre_acu), by=1)
+
+x <- pre_acu %>% 
+  group_by()
 
 
+cum <- 0 
+
+
+for i in 
+
+
+
+
+
+
+pdf = df %>% group_by(group) %>% arrange(dates) %>% mutate(cs = cumsum(sales))
