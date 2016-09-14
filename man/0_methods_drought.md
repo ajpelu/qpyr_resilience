@@ -7,6 +7,7 @@ Drought Characterization
 ========================
 
 -   Three most severe drought events (**1950–2012**) (Trigo et al. 2013, Gouveia et al. (2015)):
+
 -   **1998-1999**
 -   **2004-2005**
 -   **2011-2012**
