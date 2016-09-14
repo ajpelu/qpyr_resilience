@@ -28,7 +28,7 @@ library('lubridate')
 library('SPEI')
 library('ggplot2')
 library('zoo')
-
+source(paste0(di, '/R/hydro_year.R'))
 ```
 
 
@@ -194,18 +194,6 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
 ```{r}
 raw <- read.csv(file=paste0(di, '/data_raw/meteo/meteo_data_base_aerea.csv'), header=T, sep=';')
 
-hydro_year <- function(dates, start_month=9) {
-  # Convert dates into POSIXlt
-  dates.posix = as.POSIXlt(dates)
-  # Year offset
-  offset = ifelse(dates.posix$mon >= start_month - 1, 1, 0)
-  # Water year
-  adj.year = dates.posix$year + 1900 + offset
-  # Return the water year
-  adj.year
-}
-
-
 raw <- raw %>% 
   select(-codigo) %>% 
   mutate(miyear = lubridate::year(fecha),
@@ -267,19 +255,28 @@ pre_acu <- pre %>%
 cumulate_preci <- pre_acu %>% 
   group_by(hyear_corrected, hmonth) %>% 
   summarise(prec_ac = sum(prec_ac)) %>%
-  mutate(csum = cumsum(prec_ac))
+  mutate(csum = cumsum(prec_ac)) 
   
 
-
-
-ggplot(data=subset(cumulate_preci, hyear_corrected != 2004, hyear_corrected != 1998 ), 
-       aes(x=as.factor(hmonth), y=csum)) + 
+cumulate_preci %>% 
+  filter(!(hyear_corrected %in% c(2004, 1998))) %>% 
+  ggplot(aes(x=as.factor(hmonth), y=csum)) + 
   geom_boxplot() + 
+  geom_smooth(aes(group=1), se=TRUE, level=0.95) + 
   geom_line(data=subset(cumulate_preci, hyear_corrected == 2004),
-                              aes(x=as.factor(hmonth), y=csum, group=1)) +
+            aes(x=as.factor(hmonth), y=csum, group=1)) +
   geom_line(data=subset(cumulate_preci, hyear_corrected == 1998),
-                              aes(x=as.factor(hmonth), y=csum, group=1),
-            colour='red') 
+            aes(x=as.factor(hmonth), y=csum, group=1),
+            colour='red') +
+  theme_bw() + ylab('Precipitation (mm) acumulated') + 
+  xlab('months (hydrological year; 1= sep)') + 
+  annotate("text", label = "2004-2005", x = 2, y = 500, size = 6, colour = "black") + 
+  annotate("text", label = "1998-1999", x = 2, y = 550, size = 6, colour = "red") + 
+  annotate("text", label = "mean 1950-2009", x = 3, y = 600, size = 6, colour = "blue")
+
+
+  
+
 
 
 g <- ggplot(data=cumulate_preci, 
