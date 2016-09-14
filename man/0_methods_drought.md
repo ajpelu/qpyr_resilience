@@ -7,12 +7,14 @@ Drought Characterization
 ========================
 
 -   Three most severe drought events (**1950–2012**) (Trigo et al. 2013, Gouveia et al. (2015)):
--   **1998-1999**
--   **2004-2005**
--   **2011-2012**
-
+    -   **1998-1999**
+    -   **2004-2005**
+    -   **2011-2012**
 -   The two drought episodes of 2004/2005 and 2011/2012 were extreme in both its magnitude and spatial extent (Gouveia and Trigo 2014)
 
+<center>
+![](/man/images/trigo_2012.jpg)
+</center>
 Summer of 2005
 --------------
 
@@ -28,7 +30,9 @@ Summer of 2012
 <center>
 ![](/man/images/trigo_2012.jpg)
 </center>
-Accumulated monthly precipitation averaged over the IP during the hydrological year 2011–12 (black line) and during the other two most severe drought events in the period 1950–2012 (colored lines). Light, dark, and medium gray shaded areas show the ensemble spread from the corresponding evolutions of all hydrological years between 2002–03 and 2011–12, 1950–51 and 1959–60, and the overlapping between them, respectively. The gray thick line indicates the 1950 –2010 mean evolution, with boxes and whiskers representing the ±0.5 sigma level and the 10th–90th percentile interval, respectively.
+<br>
+
+Figure. Accumulated monthly precipitation averaged over the IP during the hydrological year 2011–12 (black line) and during the other two most severe drought events in the period 1950–2012 (colored lines). Light, dark, and medium gray shaded areas show the ensemble spread from the corresponding evolutions of all hydrological years between 2002–03 and 2011–12, 1950–51 and 1959–60, and the overlapping between them, respectively. The gray thick line indicates the 1950 –2010 mean evolution, with boxes and whiskers representing the ±0.5 sigma level and the 10th–90th percentile interval, respectively.
 
 Long-term perspective
 ---------------------
