@@ -15,8 +15,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 #---------------------------------
-machine <- 'ajpelu'
-# machine <- 'ajpeluLap'
+#machine <- 'ajpelu'
+machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -194,25 +194,38 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
 ```{r}
 raw <- read.csv(file=paste0(di, '/data_raw/meteo/meteo_data_base_aerea.csv'), header=T, sep=';')
 
+hydro_year <- function(dates, start_month=9) {
+  # Convert dates into POSIXlt
+  dates.posix = as.POSIXlt(dates)
+  # Year offset
+  offset = ifelse(dates.posix$mon >= start_month - 1, 1, 0)
+  # Water year
+  adj.year = dates.posix$year + 1900 + offset
+  # Return the water year
+  adj.year
+}
+
+
 raw <- raw %>% 
   select(-codigo) %>% 
   mutate(miyear = lubridate::year(fecha),
-         mimonth = lubridate::month(fecha))
+         mimonth = lubridate::month(fecha),
+         hyear = hydro_year(fecha))
 
 
 # Group by month-year and summarize 
 pre <- raw %>%
   filter(codigo.1 == 'PI1') %>% 
-  group_by(miyear, mimonth) %>% 
+  group_by(miyear, mimonth, hyear) %>% 
   summarize(prec_ac = sum(valor))
 
 tmed <- raw %>%
   filter(codigo.1 == 'TI1') %>% 
-  group_by(miyear, mimonth) %>% 
+  group_by(miyear, mimonth, hyear) %>% 
   summarize(tmed = mean(valor))
 
 ba <- pre %>% 
-  inner_join(tmed, by=c('miyear', 'mimonth'))
+  inner_join(tmed, by=c('miyear', 'mimonth', 'hyear'))
 
 
 # Compute et0 
@@ -246,23 +259,33 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
 ```{r}
 
 pre_acu <- pre %>% 
-  mutate(m = ifelse(mimonth <= 8, mimonth + 4, mimonth -8)) %>% 
-  filter(!(miyear == 1951 & m >= 5)) 
+  mutate(hmonth = ifelse(mimonth <= 8, mimonth + 4, mimonth -8)) %>%
+  filter(!(miyear == 1951 & hmonth >= 5)) %>% 
+  mutate(hyear_corrected = hyear -1)
+  
 
-pre_acu$my_id <- seq(1,nrow(pre_acu), by=1)
-
-x <- pre_acu %>% 
-  group_by()
-
-
-cum <- 0 
-
-
-for i in 
+cumulate_preci <- pre_acu %>% 
+  group_by(hyear_corrected, hmonth) %>% 
+  summarise(prec_ac = sum(prec_ac)) %>%
+  mutate(csum = cumsum(prec_ac))
+  
 
 
 
+ggplot(data=subset(cumulate_preci, hyear_corrected != 2004, hyear_corrected != 1998 ), 
+       aes(x=as.factor(hmonth), y=csum)) + 
+  geom_boxplot() + 
+  geom_line(data=subset(cumulate_preci, hyear_corrected == 2004),
+                              aes(x=as.factor(hmonth), y=csum, group=1)) +
+  geom_line(data=subset(cumulate_preci, hyear_corrected == 1998),
+                              aes(x=as.factor(hmonth), y=csum, group=1),
+            colour='red') 
 
 
+g <- ggplot(data=cumulate_preci, 
+       aes(x=as.factor(hmonth), y=csum, group=hyear_corrected, colour=as.factor(hyear_corrected))) + 
+  geom_line()                    
 
-pdf = df %>% group_by(group) %>% arrange(dates) %>% mutate(cs = cumsum(sales))
+library(plotly)
+
+ggplotly(g)
