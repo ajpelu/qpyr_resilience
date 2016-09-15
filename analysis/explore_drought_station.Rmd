@@ -196,9 +196,34 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
 ```
 
 ### Precipitation curves
+
+
 ```{r}
 
-caca <- ca %>% 
+mysites <- c('ca','je','pa')
+all_sites <- data.frame() 
+
+for (i in mysites){ 
+
+  df <- get(i)
+  aux <- df %>% 
+    mutate(hmonth = ifelse(month <= 8, month + 4, month -8)) %>% 
+    group_by(hyear_f, hmonth) %>% 
+    summarise(prec_ac = sum(prec_ac)) %>%
+    mutate(csum = cumsum(prec_ac)) %>% 
+    mutate(loc = i)
+  
+  all_sites <- rbind(all_sites, aux)
+}
+
+
+
+
+
+
+
+
+
   
   function(df){ }
 
