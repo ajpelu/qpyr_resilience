@@ -259,22 +259,23 @@ raw <- raw %>%
   select(-codigo) %>% 
   mutate(miyear = lubridate::year(fecha),
          mimonth = lubridate::month(fecha),
-         hyear = hydro_year(fecha))
+         hyear = hydro_year(fecha),
+         hyear_f = paste0(hyear-1,'-', hyear))
 
 
 # Group by month-year and summarize 
 pre <- raw %>%
   filter(codigo.1 == 'PI1') %>% 
-  group_by(miyear, mimonth, hyear) %>% 
+  group_by(miyear, mimonth, hyear, hyear_f) %>% 
   summarize(prec_ac = sum(valor))
 
 tmed <- raw %>%
   filter(codigo.1 == 'TI1') %>% 
-  group_by(miyear, mimonth, hyear) %>% 
+  group_by(miyear, mimonth, hyear, hyear_f) %>% 
   summarize(tmed = mean(valor))
 
 ba <- pre %>% 
-  inner_join(tmed, by=c('miyear', 'mimonth', 'hyear'))
+  inner_join(tmed, by=c('miyear', 'mimonth', 'hyear', 'hyear_f'))
 
 
 # Compute et0 
@@ -282,6 +283,8 @@ ba <- pre %>%
 lat_ba <- 37.13694
 ba$et0_ac <-thornthwaite(ba$tmed,lat_ba)
 
+# Export data
+write.csv(ba, file=paste0(di, '/data_raw/meteo/base_aerea_aggregated.csv'), row.names = FALSE)
 
 spei_ba <- compute_spei(ba, rango_mensual = c(6,12,24), inicio = c(1951,1))
 
