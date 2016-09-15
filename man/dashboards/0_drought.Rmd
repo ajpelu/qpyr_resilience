@@ -273,9 +273,11 @@ gg <- ggplot(df_aux, aes(x=as.factor(hmonth), y=csum)) +
             aes(x=as.factor(hmonth), y=csum, group=1),
             colour='red') +
   theme_bw() + 
-  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  theme(strip.background = element_rect(fill = NA, color = "black"),
+        plot.margin = unit(c(1,1,1,0.5), 'lines')) + 
   ylab('Precipitation (mm) acumulated') + 
   xlab('months (hydrological year; 1= sep)') 
+  
 
 ggplotly(gg)
 ```
