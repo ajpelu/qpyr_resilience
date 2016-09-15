@@ -1,9 +1,10 @@
+-   [Precipitation curves](#precipitation-curves)
 -   [Long term serie](#long-term-serie)
 
 ``` r
 #---------------------------------
 machine <- 'ajpelu'
-# machine <- 'ajpeluLap'
+#machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -72,6 +73,27 @@ library('zoo')
     ##     as.Date, as.Date.numeric
 
 ``` r
+library('plotly')
+```
+
+    ## Warning: package 'plotly' was built under R version 3.2.5
+
+    ## 
+    ## Attaching package: 'plotly'
+
+    ## The following object is masked from 'package:ggplot2':
+    ## 
+    ##     last_plot
+
+    ## The following object is masked from 'package:graphics':
+    ## 
+    ##     layout
+
+``` r
+source(paste0(di, '/R/hydro_year.R'))
+```
+
+``` r
 cadiar <- read.delim(file=paste0(di, '/data_raw/meteo/Cadiar.txt'), header=T, sep='')
 padul <- read.delim(file=paste0(di, '/data_raw/meteo/Padul.txt'), header=T, sep='')
 jerez <- read.delim(file=paste0(di, '/data_raw/meteo/Jerez del Marquesado.txt'), header=T, sep='')
@@ -82,11 +104,13 @@ ca <- cadiar %>%
   filter(complete.cases(.)) %>% 
   mutate(date = as.Date(FECHA, format="%d-%m-%y"), 
          year = lubridate::year(date), 
-         month = lubridate::month(date)) %>%
+         month = lubridate::month(date),
+         hyear = hydro_year(date), 
+         hyear_f = paste0(hyear-1,'-', hyear)) %>%
   filter(year < 2016) %>% 
-  select(date, year, month, doy = DIA, tmed = Gr07TMed, prec = Gr07Precip, et0 = Gr07ETo) %>% 
+  select(date, year, month, doy = DIA, tmed = Gr07TMed, prec = Gr07Precip, et0 = Gr07ETo, hyear, hyear_f) %>% 
   # Group by year and month 
-  group_by(year, month) %>% 
+  group_by(year, month, hyear, hyear_f) %>% 
   summarise(prec_ac = sum(prec),
             et0_ac = sum(et0),
             tmed_avg = mean(tmed)) 
@@ -96,11 +120,13 @@ je <- jerez %>%
   filter(complete.cases(.)) %>% 
   mutate(date = as.Date(FECHA, format="%d-%m-%y"), 
          year = lubridate::year(date), 
-         month = lubridate::month(date)) %>%
+         month = lubridate::month(date),
+         hyear = hydro_year(date), 
+         hyear_f = paste0(hyear-1,'-', hyear)) %>%
   filter(year < 2016) %>% 
-  select(date, year, month, doy = DIA, tmed = Gr06TMed, prec = Gr06Precip, et0 = Gr06ETo) %>% 
+  select(date, year, month, doy = DIA, tmed = Gr06TMed, prec = Gr06Precip, et0 = Gr06ETo, hyear, hyear_f) %>% 
   # Group by year and month 
-  group_by(year, month) %>% 
+  group_by(year, month, hyear, hyear_f) %>% 
   summarise(prec_ac = sum(prec),
             et0_ac = sum(et0),
             tmed_avg = mean(tmed)) 
@@ -110,11 +136,13 @@ pa <- padul %>%
   filter(complete.cases(.)) %>% 
   mutate(date = as.Date(FECHA, format="%d-%m-%y"), 
          year = lubridate::year(date), 
-         month = lubridate::month(date)) %>%
+         month = lubridate::month(date),
+         hyear = hydro_year(date), 
+         hyear_f = paste0(hyear-1,'-', hyear)) %>%
   filter(year < 2016) %>% 
-  select(date, year, month, doy = DIA, tmed = Gr10TMed, prec = Gr10Precip, et0 = Gr10ETo) %>% 
+  select(date, year, month, doy = DIA, tmed = Gr10TMed, prec = Gr10Precip, et0 = Gr10ETo, hyear, hyear_f) %>% 
   # Group by year and month 
-  group_by(year, month) %>% 
+  group_by(year, month, hyear, hyear_f) %>% 
   summarise(prec_ac = sum(prec),
             et0_ac = sum(et0),
             tmed_avg = mean(tmed)) 
@@ -242,6 +270,57 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
 
 ![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
+### Precipitation curves
+
+``` r
+mysites <- c('ca','je','pa')
+all_sites <- data.frame() 
+
+for (i in mysites){ 
+
+  df <- get(i)
+  aux <- df %>% 
+    mutate(hmonth = ifelse(month <= 8, month + 4, month -8)) %>% 
+    group_by(hyear_f, hmonth) %>% 
+    summarise(prec_ac = sum(prec_ac)) %>%
+    mutate(csum = cumsum(prec_ac)) %>% 
+    mutate(loc = i)
+  
+  all_sites <- rbind(all_sites, aux)
+}
+
+all_sites <-  all_sites %>% 
+  mutate(station= plyr::mapvalues(loc, c('ca', 'je', 'pa'), c("Cadiar", "Jerez", "Padul")))
+
+all_sites %>% 
+  filter(!(hyear_f %in% c('2004-2005', '2011-2012'))) %>% 
+  ggplot(aes(x=as.factor(hmonth), y=csum)) + 
+  geom_boxplot() + facet_wrap(~station) + 
+  geom_smooth(aes(group=1), se=TRUE, level=0.95) + 
+  geom_line(data=subset(all_sites, hyear_f == '2004-2005'),
+            aes(x=as.factor(hmonth), y=csum, group=1)) +
+  geom_line(data=subset(all_sites, hyear_f == '2011-2012'),
+            aes(x=as.factor(hmonth), y=csum, group=1),
+            colour='red') +
+  theme_bw() + 
+  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  ylab('Precipitation (mm) acumulated') + 
+  xlab('months (hydrological year; 1= sep)') 
+```
+
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-8-1.png)
+
+``` r
+g <- ggplot(data=all_sites, aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=hyear_f)) + 
+  geom_line() + facet_wrap(~station) + theme_bw() +
+  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  xlab('months (hydrological year; 1= sep)') +
+  ylab('Precipitation (mm) acumulated') 
+
+p <- ggplotly(g)
+print(p)
+```
+
 ### Long term serie
 
 ``` r
@@ -250,22 +329,23 @@ raw <- read.csv(file=paste0(di, '/data_raw/meteo/meteo_data_base_aerea.csv'), he
 raw <- raw %>% 
   select(-codigo) %>% 
   mutate(miyear = lubridate::year(fecha),
-         mimonth = lubridate::month(fecha))
+         mimonth = lubridate::month(fecha),
+         hyear = hydro_year(fecha))
 
 
 # Group by month-year and summarize 
 pre <- raw %>%
   filter(codigo.1 == 'PI1') %>% 
-  group_by(miyear, mimonth) %>% 
+  group_by(miyear, mimonth, hyear) %>% 
   summarize(prec_ac = sum(valor))
 
 tmed <- raw %>%
   filter(codigo.1 == 'TI1') %>% 
-  group_by(miyear, mimonth) %>% 
+  group_by(miyear, mimonth, hyear) %>% 
   summarize(tmed = mean(valor))
 
 ba <- pre %>% 
-  inner_join(tmed, by=c('miyear', 'mimonth'))
+  inner_join(tmed, by=c('miyear', 'mimonth', 'hyear'))
 
 
 # Compute et0 
@@ -303,4 +383,47 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
 
     ## Warning: Stacking not well defined when ymin != 0
 
-![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
+``` r
+pre_acu <- pre %>% 
+  mutate(hmonth = ifelse(mimonth <= 8, mimonth + 4, mimonth -8)) %>%
+  filter(!(miyear == 1951 & hmonth >= 5)) %>% 
+  mutate(hyear_corrected = hyear -1)
+  
+
+cumulate_preci <- pre_acu %>% 
+  group_by(hyear_corrected, hmonth) %>% 
+  summarise(prec_ac = sum(prec_ac)) %>%
+  mutate(csum = cumsum(prec_ac)) 
+  
+
+cumulate_preci %>% 
+  filter(!(hyear_corrected %in% c(2004, 1998))) %>% 
+  ggplot(aes(x=as.factor(hmonth), y=csum)) + 
+  geom_boxplot() + 
+  geom_smooth(aes(group=1), se=TRUE, level=0.95) + 
+  geom_line(data=subset(cumulate_preci, hyear_corrected == 2004),
+            aes(x=as.factor(hmonth), y=csum, group=1)) +
+  geom_line(data=subset(cumulate_preci, hyear_corrected == 1998),
+            aes(x=as.factor(hmonth), y=csum, group=1),
+            colour='red') +
+  theme_bw() + ylab('Precipitation (mm) acumulated') + 
+  xlab('months (hydrological year; 1= sep)') + 
+  annotate("text", label = "2004-2005", x = 2, y = 500, size = 6, colour = "black") + 
+  annotate("text", label = "1998-1999", x = 2, y = 550, size = 6, colour = "red") + 
+  annotate("text", label = "mean 1950-2009", x = 3, y = 600, size = 6, colour = "blue")
+```
+
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-10-1.png)
+
+``` r
+g <- ggplot(data=cumulate_preci, 
+       aes(x=as.factor(hmonth), y=csum, group=hyear_corrected, colour=as.factor(hyear_corrected))) + 
+  geom_line()                    
+
+library(plotly)
+
+p <- ggplotly(g)
+print(p)
+```

@@ -28,6 +28,7 @@ library('lubridate')
 library('SPEI')
 library('ggplot2')
 library('zoo')
+library('plotly')
 source(paste0(di, '/R/hydro_year.R'))
 ```
 
@@ -216,65 +217,37 @@ for (i in mysites){
   all_sites <- rbind(all_sites, aux)
 }
 
+all_sites <-  all_sites %>% 
+  mutate(station= plyr::mapvalues(loc, c('ca', 'je', 'pa'), c("Cadiar", "Jerez", "Padul")))
 
-
-
-
-
-
-
-
-  
-  function(df){ }
-
-  aux <- caca 
-  
-  aux_df %>% aux %>% 
-    mutate(hmonth = ifelse(month <= 8, month + 4, month -8)) %>%
-
-
-pre_acu <- pre %>% 
-  mutate(hmonth = ifelse(mimonth <= 8, mimonth + 4, mimonth -8)) %>%
-  filter(!(miyear == 1951 & hmonth >= 5)) %>% 
-  mutate(hyear_corrected = hyear - 1)
-  
-
-cumulate_preci <- pre_acu %>% 
-  group_by(hyear_corrected, hmonth) %>% 
-  summarise(prec_ac = sum(prec_ac)) %>%
-  mutate(csum = cumsum(prec_ac)) 
-  
-
-cumulate_preci %>% 
-  filter(!(hyear_corrected %in% c(2004, 1998))) %>% 
+all_sites %>% 
+  filter(!(hyear_f %in% c('2004-2005', '2011-2012'))) %>% 
   ggplot(aes(x=as.factor(hmonth), y=csum)) + 
-  geom_boxplot() + 
+  geom_boxplot() + facet_wrap(~station) + 
   geom_smooth(aes(group=1), se=TRUE, level=0.95) + 
-  geom_line(data=subset(cumulate_preci, hyear_corrected == 2004),
+  geom_line(data=subset(all_sites, hyear_f == '2004-2005'),
             aes(x=as.factor(hmonth), y=csum, group=1)) +
-  geom_line(data=subset(cumulate_preci, hyear_corrected == 1998),
+  geom_line(data=subset(all_sites, hyear_f == '2011-2012'),
             aes(x=as.factor(hmonth), y=csum, group=1),
             colour='red') +
-  theme_bw() + ylab('Precipitation (mm) acumulated') + 
-  xlab('months (hydrological year; 1= sep)') + 
-  annotate("text", label = "2004-2005", x = 2, y = 500, size = 6, colour = "black") + 
-  annotate("text", label = "1998-1999", x = 2, y = 550, size = 6, colour = "red") + 
-  annotate("text", label = "mean 1950-2009", x = 3, y = 600, size = 6, colour = "blue")
+  theme_bw() + 
+  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  ylab('Precipitation (mm) acumulated') + 
+  xlab('months (hydrological year; 1= sep)') 
 
 
 
 
 
 
+g <- ggplot(data=all_sites, aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=hyear_f)) + 
+  geom_line() + facet_wrap(~station) + theme_bw() +
+  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  xlab('months (hydrological year; 1= sep)') +
+  ylab('Precipitation (mm) acumulated') 
 
-
-
-
-
-
-
-
-
+p <- ggplotly(g)
+print(p)
 ```
 
 
@@ -373,4 +346,7 @@ g <- ggplot(data=cumulate_preci,
 
 library(plotly)
 
-ggplotly(g)
+p <- ggplotly(g)
+print(p)
+
+```
