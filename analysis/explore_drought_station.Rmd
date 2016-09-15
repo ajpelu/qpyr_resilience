@@ -93,6 +93,7 @@ pa <- padul %>%
 ```{r}
 # Compute the spei index 
 
+
 compute_spei <- function(x, rango_mensual, inicio){
   # x = dataframe 
   # rango_mensual = vector with temporal range of spei
@@ -124,11 +125,11 @@ compute_spei <- function(x, rango_mensual, inicio){
   }
   
   outdf <- outdf %>% 
-     mutate(spei_ord = plyr::mapvalues(spei,
-                                       c('spei_1', 'spei_3', 'spei_6', 'spei_12'),
-                                       c('spei_01', 'spei_03', 'spei_06', 'spei_12'))) 
+    mutate(spei_ord = plyr::mapvalues(spei,
+                                      c('spei_1', 'spei_3', 'spei_6', 'spei_12', 'spei_24'),
+                                      c('spei_01', 'spei_03', 'spei_06', 'spei_12', 'spei_24'))) 
     
-  } 
+} 
 ```
 
 ```{r}
