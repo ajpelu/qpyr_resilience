@@ -4,8 +4,6 @@ output:
   flexdashboard::flex_dashboard:
     vertical_layout: fill
     orientation: rows
-    social: ["twitter"]
-    source_code: https://github.com/ajpelu/qpyr_resilience
 ---
 
 ```{r setup, include=FALSE}
