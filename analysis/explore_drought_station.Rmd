@@ -29,6 +29,7 @@ library('SPEI')
 library('ggplot2')
 library('zoo')
 library('plotly')
+library('RCurl')
 source(paste0(di, '/R/hydro_year.R'))
 ```
 
