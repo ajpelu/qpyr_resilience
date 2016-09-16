@@ -236,12 +236,11 @@ all_sites %>%
   theme(strip.background = element_rect(fill = NA, color = "black")) + 
   ylab('Precipitation (mm) acumulated') + 
   xlab('months (hydrological year; 1= sep)') 
+```
 
 
 
-
-
-
+```{r}
 g <- ggplot(data=all_sites, aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=hyear_f)) + 
   geom_line() + facet_wrap(~station) + theme_bw() +
   theme(strip.background = element_rect(fill = NA, color = "black")) + 
@@ -355,3 +354,58 @@ p <- ggplotly(g)
 print(p)
 
 ```
+
+
+```{r}
+# Data from REDIAM 
+
+r <- read.table(file=paste0(di, '/data_raw/meteo/meteo_base_aerea_rediam.csv'), header=T, sep=';', dec=',')
+
+r <- r %>% 
+  select(year = AGNO, month = MES, pre=PREFINAL, tmed = TEMPMED) %>% 
+  mutate(fecha=as.Date(paste(year, month, '01', sep='-'), format='%Y-%m-%d'),
+         hyear = hydro_year(fecha),
+         hyear_f = paste0(hyear-1,'-', hyear))
+
+
+rba <- r %>% 
+  mutate(hmonth = ifelse(month <= 8, month + 4, month -8)) %>%
+  filter(year >= 1951) %>% 
+  filter(!(year == 1951 & hmonth >= 5)) %>% 
+  group_by(hyear_f, hmonth) %>% 
+  summarise(pre = sum(pre)) %>%
+  mutate(csum = cumsum(pre)) 
+  
+
+
+
+rba %>% 
+  filter(!(hyear_f %in% c('2004-2005', '2011-2012'))) %>% 
+  ggplot(aes(x=as.factor(hmonth), y=csum)) + 
+  geom_boxplot() +  
+  geom_smooth(aes(group=1), se=TRUE, level=0.95, colour='black') + 
+  geom_line(data=subset(rba, hyear_f == '2004-2005'),
+            aes(x=as.factor(hmonth), y=csum, group=1), colour='blue') +
+  geom_line(data=subset(rba, hyear_f == '2011-2012'),
+            aes(x=as.factor(hmonth), y=csum, group=1),
+            colour='red') +
+  theme_bw() + 
+  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  ylab('Precipitation (mm) acumulated') + 
+  xlab('months (hydrological year; 1= sep)') 
+
+
+
+rba_s <- rba %>% filter(!(hyear_f %in% c('2004-2005', '2011-2012'))) 
+  ggplot(rba, aes(x=as.factor(hmonth), y=csum)) + 
+  geom_boxplot() +  
+  geom_smooth(aes(group=1), se=TRUE, level=0.95, colour='black') + 
+  geom_line(data=subset(rba, hyear_f == '2004-2005'),
+            aes(x=as.factor(hmonth), y=csum, group=1), colour='blue') +
+  geom_line(data=subset(rba, hyear_f == '2011-2012'),
+            aes(x=as.factor(hmonth), y=csum, group=1),
+            colour='red') +
+  theme_bw() + 
+  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  ylab('Precipitation (mm) acumulated') + 
+  xlab('months (hydrological year; 1= sep)') 
