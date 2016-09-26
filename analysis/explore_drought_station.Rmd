@@ -52,9 +52,9 @@ ca <- cadiar %>%
   select(date, year, month, doy = DIA, tmed = Gr07TMed, prec = Gr07Precip, et0 = Gr07ETo, hyear, hyear_f) %>% 
   # Group by year and month 
   group_by(year, month, hyear, hyear_f) %>% 
-  summarise(prec_ac = sum(prec),
-            et0_ac = sum(et0),
-            tmed_avg = mean(tmed)) 
+  dplyr::summarise(prec_ac = sum(prec),
+                   et0_ac = sum(et0),
+                   tmed_avg = mean(tmed)) 
 
 
 je <- jerez %>% 
@@ -68,7 +68,7 @@ je <- jerez %>%
   select(date, year, month, doy = DIA, tmed = Gr06TMed, prec = Gr06Precip, et0 = Gr06ETo, hyear, hyear_f) %>% 
   # Group by year and month 
   group_by(year, month, hyear, hyear_f) %>% 
-  summarise(prec_ac = sum(prec),
+  dplyr::summarise(prec_ac = sum(prec),
             et0_ac = sum(et0),
             tmed_avg = mean(tmed)) 
 
@@ -84,7 +84,7 @@ pa <- padul %>%
   select(date, year, month, doy = DIA, tmed = Gr10TMed, prec = Gr10Precip, et0 = Gr10ETo, hyear, hyear_f) %>% 
   # Group by year and month 
   group_by(year, month, hyear, hyear_f) %>% 
-  summarise(prec_ac = sum(prec),
+  dplyr::summarise(prec_ac = sum(prec),
             et0_ac = sum(et0),
             tmed_avg = mean(tmed)) 
 
@@ -210,9 +210,9 @@ for (i in mysites){
 
   df <- get(i)
   aux <- df %>% 
-    mutate(hmonth = ifelse(month <= 8, month + 4, month -8)) %>% 
+    dplyr::mutate(hmonth = ifelse(month <= 8, month + 4, month -8)) %>% 
     group_by(hyear_f, hmonth) %>% 
-    summarise(prec_ac = sum(prec_ac)) %>%
+    dplyr::summarise(prec_ac = sum(prec_ac)) %>%
     mutate(csum = cumsum(prec_ac)) %>% 
     mutate(loc = i)
   
