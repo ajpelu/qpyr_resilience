@@ -15,8 +15,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 #---------------------------------
-machine <- 'ajpelu'
-#machine <- 'ajpeluLap'
+#machine <- 'ajpelu'
+machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -214,7 +214,8 @@ for (i in mysites){
     group_by(hyear_f, hmonth) %>% 
     dplyr::summarise(prec_ac = sum(prec_ac)) %>%
     mutate(csum = cumsum(prec_ac)) %>% 
-    mutate(loc = i)
+    mutate(loc = i) %>% 
+    as.data.frame() 
   
   all_sites <- rbind(all_sites, aux)
 }
@@ -361,11 +362,13 @@ print(p)
 
 r <- read.table(file=paste0(di, '/data_raw/meteo/meteo_base_aerea_rediam.csv'), header=T, sep=';', dec=',')
 
-r <- r %>% 
-  select(year = AGNO, month = MES, pre=PREFINAL, tmed = TEMPMED) %>% 
+r <- r %>%
+  select(year = AGNO, month = MES, pre=PREFINAL, tmed = TEMPMED) %>%
   mutate(fecha=as.Date(paste(year, month, '01', sep='-'), format='%Y-%m-%d'),
          hyear = hydro_year(fecha),
          hyear_f = paste0(hyear-1,'-', hyear))
+
+
 
 
 rba <- r %>% 
@@ -409,3 +412,58 @@ rba_s <- rba %>% filter(!(hyear_f %in% c('2004-2005', '2011-2012')))
   theme(strip.background = element_rect(fill = NA, color = "black")) + 
   ylab('Precipitation (mm) acumulated') + 
   xlab('months (hydrological year; 1= sep)') 
+```
+
+## Long term series REDIAM
+```{r}
+ltdf <- read.table(file=paste0(di, '/data_raw/meteo/long_term_data_rediam_data.txt'), header=T, sep=';', dec=',')
+
+ltdf <- ltdf %>% 
+  select(cod = INDICATIVO, VARIABLE, FECHA, VALOR) %>% 
+  dplyr::mutate(fecha = as.Date(FECHA, format='%d/%m/%Y'),
+         month = lubridate::month(fecha),
+         hmonth = ifelse(month <= 8, month + 4, month -8), 
+         hyear = hydro_year(fecha),
+         hyear_f = paste0(hyear-1,'-', hyear))
+
+# We used onlyt the 5514 station (the most long term)
+# Filter by station and prec
+# Filter from 1940 
+st5514 <-ltdf %>% 
+  filter(VARIABLE == 'PM1') %>% 
+  filter(cod == '5514') %>% 
+  filter(hyear >= 1940) %>% 
+  select(fecha, month, hmonth, hyear, hyear_f, pre=VALOR)
+
+st5514_pro <- st5514 %>% 
+  group_by(hyear_f, hmonth) %>% 
+  dplyr::summarise(pre = sum(pre)) %>%
+  mutate(csum = cumsum(pre)) 
+
+
+
+st5514_pro  %>% 
+  filter(!(hyear_f %in% c('2004-2005', '2011-2012'))) %>% 
+  ggplot(aes(x=as.factor(hmonth), y=csum)) + 
+  geom_boxplot() +  
+  geom_smooth(aes(group=1), se=TRUE, level=0.95, colour='black') + 
+  geom_line(data=subset(st5514_pro, hyear_f == '2004-2005'),
+            aes(x=as.factor(hmonth), y=csum, group=1), colour='blue') +
+  geom_line(data=subset(st5514_pro, hyear_f == '2011-2012'),
+            aes(x=as.factor(hmonth), y=csum, group=1),
+            colour='red') +
+  theme_bw() + 
+  theme(strip.background = element_rect(fill = NA, color = "black")) + 
+  ylab('Precipitation (mm) acumulated') + 
+  xlab('months (hydrological year; 1= sep)') 
+
+
+g <- ggplot(data=st5514_pro, 
+       aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=as.factor(hyear_f))) +
+  geom_line()                    
+
+library(plotly)
+
+p <- ggplotly(g)
+print(p)
+
