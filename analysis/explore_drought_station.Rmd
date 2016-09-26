@@ -460,9 +460,13 @@ st5514_pro  %>%
 
 g <- ggplot(data=st5514_pro, 
        aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=as.factor(hyear_f))) +
-  geom_line()                    
+  geom_line() + 
+  theme_bw() + 
+  ylab('Cumulative precipitation (mm)') + 
+  xlab('Months hydro. year (1=sep, 12=aug)') + 
+  theme(legend.title = element_blank())
 
-library(plotly)
+
 
 p <- ggplotly(g)
 print(p)
