@@ -458,6 +458,7 @@ st5514_pro  %>%
   xlab('months (hydrological year; 1= sep)') 
 
 
+## Interactive plot (by year)
 g <- ggplot(data=st5514_pro, 
        aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=as.factor(hyear_f))) +
   geom_line() + 
@@ -465,8 +466,6 @@ g <- ggplot(data=st5514_pro,
   ylab('Cumulative precipitation (mm)') + 
   xlab('Months hydro. year (1=sep, 12=aug)') + 
   theme(legend.title = element_blank())
-
-
 
 p <- ggplotly(g)
 print(p)
