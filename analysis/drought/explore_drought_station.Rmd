@@ -15,8 +15,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 #---------------------------------
-#machine <- 'ajpelu'
-machine <- 'ajpeluLap'
+machine <- 'ajpelu'
+#machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -31,8 +31,26 @@ library('zoo')
 library('plotly')
 library('RCurl')
 source(paste0(di, '/R/hydro_year.R'))
+library("rgdal")
+library("sp")
+library("raster")
+library("leaflet")
 ```
 
+### SPEI Sierra Nevada 
+* Compute SPEI of Sierra Nevada for three stations from [RIA network](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController): [Cadiar](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=7), [Padul](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=10) and [Jerez del Marquesado](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=6)
+* Temporal serie: 2000 - 2016 
+
+```{r}
+geoinfo_station <- read.table(file=paste0(di, '/data_raw/meteo/metadata_station_ria.txt'), header=TRUE, sep=';')
+
+m <- leaflet(geoinfo_station) %>%  
+    addProviderTiles("Esri.WorldImagery", 
+                   group='Satellite') %>% 
+  addMarkers(~long, ~lat, popup = ~as.character(name)) 
+
+m
+```
 
 ```{r}
 cadiar <- read.delim(file=paste0(di, '/data_raw/meteo/Cadiar.txt'), header=T, sep='')
