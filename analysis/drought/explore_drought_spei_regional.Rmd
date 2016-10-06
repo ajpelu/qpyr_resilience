@@ -15,9 +15,9 @@ output:
 ```{r metadata, echo=FALSE}
 # Set working directory 
 
-# machine <- 'ajpelu'
-machine <- 'ajpeluLap'
-di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
+machine <- 'ajpelu'
+#machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 ```
 
 ```{r packages, warning=FALSE, echo=FALSE, message=FALSE}
@@ -27,6 +27,7 @@ library("stringr")
 library("lubridate")
 library("reshape2")
 library("ggplot2")
+source(paste0(di,"/R/exportpdf.R"))
 ```
 
 ## Prepare data
@@ -165,15 +166,17 @@ d1995
 
 ```{r}
 ### Export all pdfs
-pdf(file=paste0(di, "/man/images/spei_sn_all.pdf"), height = 10, width =9)
+di_export <- paste0(di, "/man/images/drought") 
+
+pdf(file=paste0(di_export, "/spei_sn_all.pdf"), height = 10, width =9)
 d 
 dev.off() 
 
-pdf(file=paste0(di, "/man/images/spei_sn_all_2000.pdf"), height = 10, width =9)
+pdf(file=paste0(di_export, "/spei_sn_all_2000.pdf"), height = 10, width =9)
 d2000
 dev.off()
 
-pdf(file=paste0(di, "/man/images/spei_sn_all_1995.pdf"), height = 5, width =9)
+pdf(file=paste0(di_export, "/spei_sn_all_1995.pdf"), height = 5, width =9)
 d1995
 dev.off()
 ```
