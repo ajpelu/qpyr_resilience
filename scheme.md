@@ -1,0 +1,3 @@
+# Scheme
+
+## Drought characterisation 
