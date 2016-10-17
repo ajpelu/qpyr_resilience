@@ -20,12 +20,12 @@ library('ggplot2')
 library('zoo')
 library('plotly')
 source("https://gist.githubusercontent.com/ajpelu/bb0d3617b5a026ab1de67bcf84fa577a/raw/4ca37e4d5b49275146ffb7fe9a58549a6778bf5b/hydrological_year.R%2520")
+library("leaflet") 
 ```
 
 
 
 ```{r readData}
-require(RCurl)
 cadiar <-read.csv(text=getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/meteo/Cadiar.txt"), sep='', header=T)
 padul <-read.csv(text=getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/meteo/Padul.txt"), sep='', header=T)
 jerez <-read.csv(text=getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/meteo/Jerez%20del%20Marquesado.txt"), sep='', header=T)
@@ -72,6 +72,22 @@ compute_spei <- function(x, rango_mensual, inicio){
     
 } 
 ```
+
+Map 
+=======================================================================
+
+```{r}
+
+geoinfo_station <-read.csv(text=getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/meteo/metadata_station_ria.txt"), sep=';', header=T)
+
+m <- leaflet(geoinfo_station) %>%  
+    addProviderTiles("Esri.WorldImagery", 
+                   group='Satellite') %>% 
+  addMarkers(~long, ~lat, popup = ~as.character(name)) 
+
+m
+```
+
 
 
 Long Term Serie 
