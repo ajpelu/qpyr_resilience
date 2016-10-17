@@ -1,19 +1,12 @@
----
-title: "SPEI by stations"
-author: "AJ Perez-Luque (@ajpelu)"
-date: "2016 Sep"
-output:  
-  md_document:
-    toc: true
-    variant: markdown_github
---- 
+-   [SPEI Sierra Nevada](#spei-sierra-nevada)
+-   [SPEI index](#spei-index)
+    -   [Plot the SPEI indices for all sites](#plot-the-spei-indices-for-all-sites)
+-   [Precipitation curves](#precipitation-curves)
+    -   [Interactively by year](#interactively-by-year)
+-   [Long term series REDIAM](#long-term-series-rediam)
+    -   [Data from stations 5514 and 5515](#data-from-stations-5514-and-5515)
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-```{r}
+``` r
 #---------------------------------
 machine <- 'ajpelu'
 #machine <- 'ajpeluLap'
@@ -21,27 +14,134 @@ di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep=''
 #---------------------------------
 ```
 
-```{r}
+``` r
 library('plyr')
 library('dplyr')
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:plyr':
+    ## 
+    ##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+    ##     summarize
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
 library('lubridate')
+```
+
+    ## Warning: package 'lubridate' was built under R version 3.2.3
+
+    ## 
+    ## Attaching package: 'lubridate'
+
+    ## The following object is masked from 'package:plyr':
+    ## 
+    ##     here
+
+``` r
 library('SPEI')
+```
+
+    ## Loading required package: lmomco
+
+    ## Warning: package 'lmomco' was built under R version 3.2.5
+
+    ## Loading required package: parallel
+
+    ## # Package SPEI (1.6) loaded [try SPEINews()].
+
+``` r
 library('ggplot2')
+```
+
+    ## Warning: package 'ggplot2' was built under R version 3.2.4
+
+``` r
 library('zoo')
+```
+
+    ## 
+    ## Attaching package: 'zoo'
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     as.Date, as.Date.numeric
+
+``` r
 library('plotly')
+```
+
+    ## Warning: package 'plotly' was built under R version 3.2.5
+
+    ## 
+    ## Attaching package: 'plotly'
+
+    ## The following object is masked from 'package:ggplot2':
+    ## 
+    ##     last_plot
+
+    ## The following object is masked from 'package:graphics':
+    ## 
+    ##     layout
+
+``` r
 library('RCurl')
+```
+
+    ## Warning: package 'RCurl' was built under R version 3.2.4
+
+    ## Loading required package: bitops
+
+``` r
 source(paste0(di, '/R/hydro_year.R'))
 library("rgdal")
+```
+
+    ## Loading required package: sp
+
+    ## rgdal: version: 1.1-3, (SVN revision 594)
+    ##  Geospatial Data Abstraction Library extensions to R successfully loaded
+    ##  Loaded GDAL runtime: GDAL 1.11.3, released 2015/09/16
+    ##  Path to GDAL shared files: /usr/local/Cellar/gdal/1.11.3_1/share/gdal
+    ##  Loaded PROJ.4 runtime: Rel. 4.9.2, 08 September 2015, [PJ_VERSION: 492]
+    ##  Path to PROJ.4 shared files: (autodetected)
+    ##  Linking to sp version: 1.1-1
+
+``` r
 library("sp")
 library("raster")
+```
+
+    ## 
+    ## Attaching package: 'raster'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     select
+
+``` r
 library("leaflet")
 ```
 
-## SPEI Sierra Nevada 
-* Compute SPEI of Sierra Nevada for three stations from [RIA network](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController): [Cadiar](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=7), [Padul](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=10) and [Jerez del Marquesado](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=6)
-* Temporal serie: 2000 - 2016 
+    ## Warning: package 'leaflet' was built under R version 3.2.3
 
-```{r, eval=FALSE}
+SPEI Sierra Nevada
+------------------
+
+-   Compute SPEI of Sierra Nevada for three stations from [RIA network](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController): [Cadiar](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=7), [Padul](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=10) and [Jerez del Marquesado](http://www.juntadeandalucia.es/agriculturaypesca/ifapa/ria/servlet/FrontController?action=Static&url=coordenadas.jsp&c_provincia=18&c_estacion=6)
+-   Temporal serie: 2000 - 2016
+
+``` r
 # Map of station
 
 geoinfo_station <- read.table(file=paste0(di, '/data_raw/meteo/metadata_station_ria.txt'), header=TRUE, sep=';')
@@ -54,13 +154,13 @@ m <- leaflet(geoinfo_station) %>%
 m
 ```
 
-* Read raw data and prepare data: 
-    * Get month and year
-    * Compute hydrological year
-    * Filter (up to 2015)
-    * Compute the precipitation, evapotranspiration and mean temperature (average by month)
+-   Read raw data and prepare data:
+    -   Get month and year
+    -   Compute hydrological year
+    -   Filter (up to 2015)
+    -   Compute the precipitation, evapotranspiration and mean temperature (average by month)
 
-```{r}
+``` r
 cadiar <- read.delim(file=paste0(di, '/data_raw/meteo/Cadiar.txt'), header=T, sep='')
 padul <- read.delim(file=paste0(di, '/data_raw/meteo/Padul.txt'), header=T, sep='')
 jerez <- read.delim(file=paste0(di, '/data_raw/meteo/Jerez del Marquesado.txt'), header=T, sep='')
@@ -113,14 +213,14 @@ pa <- padul %>%
   dplyr::summarise(prec_ac = sum(prec),
             et0_ac = sum(et0),
             tmed_avg = mean(tmed)) 
-
 ```
 
+SPEI index
+----------
 
-## SPEI index 
-Now compute the SPEI index. We first created a function to compute the spei (using SPEI package) in our dataframes. 
+Now compute the SPEI index. We first created a function to compute the spei (using SPEI package) in our dataframes.
 
-```{r}
+``` r
 # Compute the spei index 
 
 
@@ -162,9 +262,9 @@ compute_spei <- function(x, rango_mensual, inicio){
 } 
 ```
 
-### Plot the SPEI indices for all sites 
+### Plot the SPEI indices for all sites
 
-```{r}
+``` r
 # SPEI Cadiar
 spei_ca <- compute_spei(ca, rango_mensual = c(1,3,6,12,24), inicio = c(2000,9))
 
@@ -185,8 +285,13 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
   ggtitle(site)
 ```
 
+    ## Warning: Removed 41 rows containing missing values (position_stack).
 
-```{r}
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+``` r
 # SPEI Padul
 spei_pa <- compute_spei(pa, rango_mensual = c(1,3,6,12,24), inicio = c(2000,9))
 
@@ -207,8 +312,13 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
   ggtitle(site)
 ```
 
+    ## Warning: Removed 41 rows containing missing values (position_stack).
 
-```{r}
+    ## Warning: Stacking not well defined when ymin != 0
+
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-7-1.png)
+
+``` r
 # SPEI Jerez 
 spei_je <- compute_spei(je, rango_mensual = c(1,3,6,12,24), inicio = c(2000,9))
 
@@ -229,12 +339,18 @@ ggplot(df, aes(x=fecha, y=value, fill=signo)) +
   ggtitle(site)
 ```
 
-## Precipitation curves
+    ## Warning: Removed 41 rows containing missing values (position_stack).
 
-We plot the cummulated precipitation (from september to september next year) (See Trigo et al. 2013). 
+    ## Warning: Stacking not well defined when ymin != 0
 
-```{r}
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
+Precipitation curves
+--------------------
+
+We plot the cummulated precipitation (from september to september next year) (See Trigo et al. 2013).
+
+``` r
 mysites <- c('ca','je','pa')
 all_sites <- data.frame() 
 
@@ -272,11 +388,13 @@ all_sites %>%
                             "7"="Mar", "8"="Apr", "9"="May", "10"="Jun", "11"="Jul", "12"="Aug"))
 ```
 
-The boxplots show the accumulated monthly precipitation (average from 2000 to 2015; 2005 and 2012 hidro. years are excluded). The red and black lines corresponding to 2004-2005 and 2011-2012 hydrological years respectively. 
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
-### Interactively by year 
+The boxplots show the accumulated monthly precipitation (average from 2000 to 2015; 2005 and 2012 hidro. years are excluded). The red and black lines corresponding to 2004-2005 and 2011-2012 hydrological years respectively.
 
-```{r}
+### Interactively by year
+
+``` r
 g <- ggplot(data=all_sites, aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=hyear_f)) + 
   geom_line() + facet_wrap(~station) + theme_bw() +
   theme(strip.background = element_rect(fill = NA, color = "black")) + 
@@ -287,18 +405,16 @@ p <- ggplotly(g)
 print(p)
 ```
 
-
-## Long term series REDIAM 
+Long term series REDIAM
+-----------------------
 
 ### Data from stations 5514 and 5515
 
-We requested official data to REDIAM from the following stations: 
-* 5514 Granada Base Aérea 
-* 5515 Granada Cartuja
+We requested official data to REDIAM from the following stations: \* 5514 Granada Base Aérea \* 5515 Granada Cartuja
 
-as long as these two stations are the longest term series for southern Spain. 
+as long as these two stations are the longest term series for southern Spain.
 
-```{r}
+``` r
 ltdf <- read.table(file=paste0(di, '/data_raw/meteo/long_term_data_rediam_data.txt'), header=T, sep=';', dec=',')
 
 ltdf <- ltdf %>% 
@@ -310,11 +426,11 @@ ltdf <- ltdf %>%
          hyear_f = paste0(hyear-1,'-', hyear))
 ```
 
-#### 5514 station 
+#### 5514 station
 
-It's the longest term series. 
+It's the longest term series.
 
-```{r}
+``` r
 # We used only the 5514 station (the most long term)
 # Filter by station and prec
 # Filter from 1950 
@@ -347,12 +463,13 @@ st5514_pro  %>%
                             "7"="Mar", "8"="Apr", "9"="May", "10"="Jun", "11"="Jul", "12"="Aug"))
 ```
 
-Fig. Acumulated monthly precipitation during the hydrological year 2004-2005 (blue line) and 2011-2012 (red line). The boxplot representing the averaged from 1940-2015 period. 
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
+Fig. Acumulated monthly precipitation during the hydrological year 2004-2005 (blue line) and 2011-2012 (red line). The boxplot representing the averaged from 1940-2015 period.
 
-##### Cumulated precipitation from 2000 to 2015 for 5514 station  
+##### Cumulated precipitation from 2000 to 2015 for 5514 station
 
-```{r}
+``` r
 # Cumulated precipitation from 2000 to 2015 for 5514 station 
 st5514_2000  <- ltdf %>% 
   filter(VARIABLE == 'PM1') %>% 
@@ -379,13 +496,13 @@ st5514_2000 %>%
   ggtitle('Granada Base Aerea, 2000-2015') + 
   scale_x_discrete(labels=c("1"="Sep", "2"="Oct", "3"="Nov", "4"="Dec", "5"="Jan", "6"="Feb",
                             "7"="Mar", "8"="Apr", "9"="May", "10"="Jun", "11"="Jul", "12"="Aug"))
-
 ```
 
+![](explore_drought_station_files/figure-markdown_github/unnamed-chunk-13-1.png)
 
-#### Interactive plots by year 
+#### Interactive plots by year
 
-```{r}
+``` r
 ba_ip <- ggplot(data=st5514_pro, 
        aes(x=as.factor(hmonth), y=csum, group=hyear_f, colour=as.factor(hyear_f))) +
   geom_line() + 
@@ -400,47 +517,7 @@ ba_ipp <- ggplotly(ba_ip)
 print(ba_ipp)
 ```
 
-
-```{r, echo=FALSE, eval=FALSE, warning=FALSE}
-## This code is for the data of REDIAM (not official)
-
-# Data from REDIAM 
-r <- read.table(file=paste0(di, '/data_raw/meteo/meteo_base_aerea_rediam.csv'), header=T, sep=';', dec=',')
-
-r <- r %>%
-  dplyr::select(year = AGNO, month = MES, pre=PREFINAL, tmed = TEMPMED) %>%
-  mutate(fecha=as.Date(paste(year, month, '01', sep='-'), format='%Y-%m-%d'),
-         hyear = hydro_year(fecha),
-         hyear_f = paste0(hyear-1,'-', hyear))
-
-rba <- r %>% 
-  mutate(hmonth = ifelse(month <= 8, month + 4, month -8)) %>%
-  filter(year >= 1951) %>% 
-  filter(!(year == 1951 & hmonth >= 5)) %>% 
-  group_by(hyear_f, hmonth) %>% 
-  summarise(pre = sum(pre)) %>%
-  mutate(csum = cumsum(pre)) 
-  
-
-rba %>% 
-  filter(!(hyear_f %in% c('2004-2005', '2011-2012'))) %>% 
-  ggplot(aes(x=as.factor(hmonth), y=csum)) + 
-  geom_boxplot() +  
-  geom_smooth(aes(group=1), se=TRUE, level=0.95, colour='black') + 
-  geom_line(data=subset(rba, hyear_f == '2004-2005'),
-            aes(x=as.factor(hmonth), y=csum, group=1), colour='blue') +
-  geom_line(data=subset(rba, hyear_f == '2011-2012'),
-            aes(x=as.factor(hmonth), y=csum, group=1),
-            colour='red') +
-  theme_bw() + 
-  theme(strip.background = element_rect(fill = NA, color = "black")) + 
-  ylab('Precipitation (mm) acumulated') + 
-  xlab('months (hydrological year; 1= sep)') 
-```
-
-
-
-```{r, eval=FALSE, warning=FALSE, message=FALSE}
+``` r
 ### NOT EVALUATED -----------------------------
 
 
