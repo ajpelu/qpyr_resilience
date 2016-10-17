@@ -21,7 +21,7 @@ di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep=''
 #---------------------------------
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library('plyr')
 library('dplyr')
 library('lubridate')

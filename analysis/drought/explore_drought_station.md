@@ -17,123 +17,18 @@ di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep=''
 ``` r
 library('plyr')
 library('dplyr')
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:plyr':
-    ## 
-    ##     arrange, count, desc, failwith, id, mutate, rename, summarise,
-    ##     summarize
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 library('lubridate')
-```
-
-    ## Warning: package 'lubridate' was built under R version 3.2.3
-
-    ## 
-    ## Attaching package: 'lubridate'
-
-    ## The following object is masked from 'package:plyr':
-    ## 
-    ##     here
-
-``` r
 library('SPEI')
-```
-
-    ## Loading required package: lmomco
-
-    ## Warning: package 'lmomco' was built under R version 3.2.5
-
-    ## Loading required package: parallel
-
-    ## # Package SPEI (1.6) loaded [try SPEINews()].
-
-``` r
 library('ggplot2')
-```
-
-    ## Warning: package 'ggplot2' was built under R version 3.2.4
-
-``` r
 library('zoo')
-```
-
-    ## 
-    ## Attaching package: 'zoo'
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     as.Date, as.Date.numeric
-
-``` r
 library('plotly')
-```
-
-    ## Warning: package 'plotly' was built under R version 3.2.5
-
-    ## 
-    ## Attaching package: 'plotly'
-
-    ## The following object is masked from 'package:ggplot2':
-    ## 
-    ##     last_plot
-
-    ## The following object is masked from 'package:graphics':
-    ## 
-    ##     layout
-
-``` r
 library('RCurl')
-```
-
-    ## Warning: package 'RCurl' was built under R version 3.2.4
-
-    ## Loading required package: bitops
-
-``` r
 source(paste0(di, '/R/hydro_year.R'))
 library("rgdal")
-```
-
-    ## Loading required package: sp
-
-    ## rgdal: version: 1.1-3, (SVN revision 594)
-    ##  Geospatial Data Abstraction Library extensions to R successfully loaded
-    ##  Loaded GDAL runtime: GDAL 1.11.3, released 2015/09/16
-    ##  Path to GDAL shared files: /usr/local/Cellar/gdal/1.11.3_1/share/gdal
-    ##  Loaded PROJ.4 runtime: Rel. 4.9.2, 08 September 2015, [PJ_VERSION: 492]
-    ##  Path to PROJ.4 shared files: (autodetected)
-    ##  Linking to sp version: 1.1-1
-
-``` r
 library("sp")
 library("raster")
-```
-
-    ## 
-    ## Attaching package: 'raster'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     select
-
-``` r
 library("leaflet")
 ```
-
-    ## Warning: package 'leaflet' was built under R version 3.2.3
 
 SPEI Sierra Nevada
 ------------------
