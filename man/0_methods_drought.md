@@ -45,12 +45,12 @@ Long-term perspective
 </center>
 -   From a long-term perspective, the decades of 40s and the early 50s along with the 80s and 90s are described as particularly dry throughout the whole Iberian territory (Vicente-Serrano 2006a,b)
 
--   An analysis of the long term series from meteorological stations (n=54) of Iberian Peninsula (1961-2011) reveals that major drought episodes in the Iberian Peninsula were recorded in 1981, 1995, 2000 and 2005 (<span class="citeproc-not-found" data-reference-id="VicenteSerrano2014">**???**</span>).
+-   An analysis of the long term series from meteorological stations (n=54) of Iberian Peninsula (1961-2011) reveals that major drought episodes in the Iberian Peninsula were recorded in 1981, 1995, 2000 and 2005 (Vicente-Serrano et al. 2014).
 
 Drought characterization
 ========================
 
-Althought drought events are characteristic of the Mediterranean area (`TODO`: `CITA`), an increase in the drought severity in the Iberian Peninsula has been observed in the last decades (<span class="citeproc-not-found" data-reference-id="VicenteSerrano">**???**</span>). The 2004/2005 and 2011/2012 hydrological years are considered two of the worst drought periods recorded in the Iberian Peninsula, particularly in the southeren sector (García-Herrera et al. 2007, Gouveia et al. (2015), Trigo et al. (2013)). These events were extreme in both its magnitude and spatial extent (Gouveia and Trigo 2014).
+Althought drought events are characteristic of the Mediterranean area (`TODO`: `CITA`), an increase in the drought severity in the Iberian Peninsula has been observed in the last decades (<span class="citeproc-not-found" data-reference-id="VicenteSerrano">**???**</span>). The 2004/2005 and 2011/2012 hydrological years are considered two of the worst drought periods recorded in the Iberian Peninsula, particularly in the southeren sector (García-Herrera et al. 2007 Gouveia et al. (2015) Trigo et al. (2013)). These events were extreme in both its magnitude and spatial extent (Gouveia and Trigo 2014).
 
 We characterised the drought period in the study area ...
 
@@ -61,3 +61,5 @@ Gouveia, C. M., and R. M. Trigo. 2014. The 2005 and 2012 major drought events in
 Gouveia, C. M., P. Ramos, A. Russo, and R. M. Trigo. 2015. Drought trends in the Iberian Peninsula over the last 112 years. Page 12680 *in* EGU general assembly conference abstracts.
 
 Trigo, R. M., J. A. Añel, D. Barriopedro, R. García-Herrera, L. Gimeno, R. Castillo, M. R. Allen, and A. Massey. 2013. The record Winter drought of 2011-12 in the Iberian Peninsula \[in "Explaining Extreme Events of 2012 from a Climate Perspective. \[Peterson, T. C., M. P. Hoerling, P.A. Stott and S. Herring, Eds.\] 94:S41–S45.
+
+Vicente-Serrano, S. M., J. I. López-Moreno, S. Beguería, J. Lorenzo-Lacruz, A. Sanchez-Lorenzo, J. M. García-Ruiz, C. Azorín-Molina, E. Morán-Tejeda, J. Revuelto, R. Trigo, F. Coelho, and F. Espejo. 2014. Evidence of increasing drought severity caused by temperature rise in southern Europe. Environmental Research Letters 9:044001.
