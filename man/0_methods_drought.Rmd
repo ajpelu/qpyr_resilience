@@ -54,3 +54,17 @@ The following figure shows the daily accumulated precipitation anomaly compared 
 
 * From a long-term perspective, the decades of 40s and the early 50s along with the 80s and 90s are described as particularly dry throughout the whole Iberian territory (Vicente-Serrano 2006a,b)
 
+* An analysis of the long term series from meteorological stations (n=54) of Iberian Peninsula (1961-2011) reveals that major drought episodes in the Iberian Peninsula were recorded in 1981, 1995, 2000 and 2005 [@VicenteSerrano2014].
+
+
+
+
+
+# Drought characterization 
+
+Althought drought events are characteristic of the Mediterranean area (`TODO`: `CITA`), an increase in the drought severity in the Iberian Peninsula has been observed in the last decades [@VicenteSerrano]. The 2004/2005 and 2011/2012 hydrological years are considered two of the worst drought periods recorded in the Iberian Peninsula, particularly in the southeren sector [@GarciaHerrera2007, @Gouveia2015, @Trigo2013]. These events were extreme in both its magnitude and spatial extent [@Gouveia2014]. 
+
+We characterised the drought period in the study area ... 
+
+
+

@@ -2,6 +2,7 @@
     -   [Summer of 2005](#summer-of-2005)
     -   [Summer of 2012](#summer-of-2012)
     -   [Long-term perspective](#long-term-perspective)
+-   [Drought characterization](#drought-characterization-1)
 
 Drought Characterization
 ========================
@@ -43,6 +44,15 @@ Long-term perspective
 ![](/man/images/garcia_herrera_granada_zoom.jpg)
 </center>
 -   From a long-term perspective, the decades of 40s and the early 50s along with the 80s and 90s are described as particularly dry throughout the whole Iberian territory (Vicente-Serrano 2006a,b)
+
+-   An analysis of the long term series from meteorological stations (n=54) of Iberian Peninsula (1961-2011) reveals that major drought episodes in the Iberian Peninsula were recorded in 1981, 1995, 2000 and 2005 (<span class="citeproc-not-found" data-reference-id="VicenteSerrano2014">**???**</span>).
+
+Drought characterization
+========================
+
+Althought drought events are characteristic of the Mediterranean area (`TODO`: `CITA`), an increase in the drought severity in the Iberian Peninsula has been observed in the last decades (<span class="citeproc-not-found" data-reference-id="VicenteSerrano">**???**</span>). The 2004/2005 and 2011/2012 hydrological years are considered two of the worst drought periods recorded in the Iberian Peninsula, particularly in the southeren sector (García-Herrera et al. 2007, Gouveia et al. (2015), Trigo et al. (2013)). These events were extreme in both its magnitude and spatial extent (Gouveia and Trigo 2014).
+
+We characterised the drought period in the study area ...
 
 García-Herrera, R., E. Hernández, D. Barriopedro, D. Paredes, R. M. Trigo, I. F. Trigo, and M. A. Mendes. 2007. The Outstanding 2004/05 Drought in the Iberian Peninsula: Associated Atmospheric Circulation. Journal of Hydrometeorology 8:483–498.
 
