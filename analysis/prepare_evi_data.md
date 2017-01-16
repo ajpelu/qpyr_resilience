@@ -15,6 +15,16 @@ library("dplyr")
 
 ``` r
 library("lubridate")
+```
+
+    ## 
+    ## Attaching package: 'lubridate'
+
+    ## The following object is masked from 'package:base':
+    ## 
+    ##     date
+
+``` r
 library("ggplot2")
 ```
 
@@ -46,7 +56,7 @@ Each dataframe has the following fields:
 # Read and prepare data
 rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
 
-# Get temporal range of the data
+ # Get temporal range of the data
 # Start date
 unique(min(as.Date(rawdata$date)))
 ```
