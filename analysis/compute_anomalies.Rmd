@@ -31,13 +31,44 @@ library("tidyr")
 
 ```{r}
 # Read and prepare data
-rawdata <- read.csv(text = getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/evi/iv_quercus_pyrenaica.csv"), header=T) 
+# Read data directly from repo modis_iv
+rawdata <- read.csv(text = getURL("https://raw.githubusercontent.com/ajpelu/modis_iv/master/data/iv_quercus_pyrenaica.csv"), header=T) 
+
+# There are some duplicates records. Remove them 
+rawdata <- unique(rawdata)
 
 
+# Read and prepare data (from Linaria)
+# rd <- read.csv(file=paste(di, "/data_raw/evi/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+```
+
+# QA
+```{r}
+# See n of images per year and per pixel 
+n_images_pixel <- rawdata %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  group_by(year) %>%
+  count()
+
+# Which pixels has less than 23 images per year: 
+less23 <- rawdata %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  group_by(year, iv_malla_modi_id) %>% count() %>% 
+  dplyr::filter(n < 23) 
+
+less23 %>% group_by(year) %>% count()
+```
+
+Parace que en 2000, 2013 y 2015 hay menos de 23 imagenes por año 
+
+```{r}
 ## Anomalies by pixel
 
 # Set disturbance years 
 disturb_years <- c(2005, 2012)
+
+
+
 
 
 
