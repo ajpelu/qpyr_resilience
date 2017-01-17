@@ -33,8 +33,53 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Material and methods 
 ## Remote Sensing information
+
+We used the Enhanced Vegetation Index (EVI) obtained from MOD13Q1 product of the Moderate Resolution Imaging Sprectroradiometer (MODIS) sensor aboard the NASA's TERRA satellite. The EVI is a measure of vegetation photosynthetic activity calculated from reflectance in the red, near infrared and blue portions of the electromagnetic band (Huete et al. 2002). The mean EVI is a linear estimator of annual primary production (CITA) and has been used as a surrogate of vegetation productivity (Pettorelli et al. 2005, Alcaraz-Segura et al. 2012; ). We choose EVI index because it is least affected by atmospheric conditions (Huete et al. 2002), and EVI is better correlated with gross primary production in evergreen (Xiao et al., 2004b) and deciduous (Xiao et al., 2004a) forests. 
+
+
+
+
+
+EVI can improve performance in regions of high biomass through a decoupling of the canopy and background signals and a reduction in the influence of atmospheric conditions using a blue spectral reflectance (Huete et al., 2002). This makes EVI more responsive to canopy structural variations and thus EVI is better correlated with GPP than NDVI in evergreen (Xiao et al., 2004b) and deciduous (Xiao et al., 2004a) forests as well as in croplands (Xiao et al., 2005)
+
+
+* EVI has a stronger linear relationship with GPP than NDVI do, in both temperate dediduous brodadleaf (Xiao et al. 2004a) and evergreen needleleaf forests (Xiao et al. 2004b)
+
+
+
+EVI is estimator of annual primary production
+
+
+EVI is a surrogate of vegetation productivity (Pettorelli et al. 2005) 
+... 
+
+
+We used a 15 years time series of EVI with a temporal resolution of 16 days (23 images/year) and a spatial resolution of 231 m. 
+
+`Filtering`
+The images were subjected to pixel quality filtering, in which those affected by heavy content of aerosols, clouds, shadows, snow or water were eliminated.
+
+
+
+
+We used the 
+
+EVI mean is a linear estimator of annual production, one of the most integrative descriptors of ecosystem functioning (cita: VEr Virgina and Wall en Alcaraz 2017)
+
+
+
+
+
+#### Comparisons EVI vs. NDVI
+NDVI is limited due to its saturation over dense vegetation and large sensitivity to canopy background brightness (Huete et al., 2002), whereas EVI can improve performance in regions of high biomass through a decoupling of the canopy and background signals and a reduction in the influence of atmospheric conditions using a blue spectral reflectance (Huete et al., 2002). This makes EVI more responsive to canopy structural variations and thus EVI is better correlated with GPP than NDVI in evergreen (Xiao et al., 2004b) and deciduous (Xiao et al., 2004a) forests as well as in croplands (Xiao et al., 2005)
+
+
+* EVI has a stronger linear relationship with GPP than NDVI do, in both temperate dediduous brodadleaf (Xiao et al. 2004a) and evergreen needleleaf forests (Xiao et al. 2004b)
+
+
 ## Drought characterizacion 
 ## Dendrochronological data 
+
 ## Resilience metrics 
 
 For each dependent variable (i.e.: greenness and tree growth) we calculated several resilience metrics described by `TODO` `CITA LLORET`. 
