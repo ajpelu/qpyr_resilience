@@ -63,6 +63,14 @@ Parace que en 2000, 2013 y 2015 hay menos de 23 imagenes por año
 
 ```{r}
 ## Anomalies by pixel
+rawdata %>% 
+  filter(iv_malla_modi_id == 142799) 
+
+
+%>% 
+  ggplot(aes(x=composite_day_of_the_year, y=evi)) + geom_point()
+```
+
 
 # Set disturbance years 
 disturb_years <- c(2005, 2012)
