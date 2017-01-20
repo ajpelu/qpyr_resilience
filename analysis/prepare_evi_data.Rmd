@@ -47,16 +47,34 @@ Each dataframe has the following fields:
   
 
 ```{r}
-# Read and prepare data
-rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
+# Read data
+# rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_quercus_pyrenaica.csv", sep= ""), header = TRUE, sep = ',')
+rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_raw_2016.csv", sep= ""), header = TRUE, sep = ',')
+```
 
- # Get temporal range of the data
+## Some metadata of the time series 
+### Temporal range of the Time series 
+```{r}
+# Get temporal range of the data
 # Start date
 unique(min(as.Date(rawdata$date)))
 
 # End date 
 unique(max(as.Date(rawdata$date)))
+```
 
+### QA
+```{r}
+# See n of images per year and per pixel 
+n_images_pixel <- rawdata %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  group_by(year) %>%
+  summarise(n = n(),
+            n_pixel = n()/length(unique(iv_malla_modi_id)))
+```
+
+
+```{r}
 # Create variables of year and month 
 # Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
 rawdata <- rawdata %>% 
