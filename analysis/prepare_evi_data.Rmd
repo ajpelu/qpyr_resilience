@@ -20,6 +20,8 @@ di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep=''
 library("dplyr")
 library("lubridate")
 library("ggplot2")
+library("knitr")
+library('printr')
 ```
 
 ## Read and prepare evi data
@@ -71,7 +73,13 @@ n_images_pixel <- rawdata %>%
   group_by(year) %>%
   summarise(n = n(),
             n_pixel = n()/length(unique(iv_malla_modi_id)))
+
+kable(n_images_pixel)
 ```
+
+
+
+
 
 
 ```{r}
