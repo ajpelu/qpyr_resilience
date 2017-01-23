@@ -22,6 +22,7 @@ library("lubridate")
 library("ggplot2")
 library("knitr")
 library('printr')
+source(paste0(di,"/R/getComposite.R"))
 ```
 
 ## Read and prepare evi data
@@ -76,20 +77,37 @@ n_images_pixel <- rawdata %>%
 
 kable(n_images_pixel)
 ```
-
-
-
-
-
+## Prepare data 
+### Get the composite of the images and the season
+* See [Testa et al. 2014](https://www.researchgate.net/publication/262566793_Correcting_MODIS_16-day_composite_NDVI_time-series_with_actual_acquisition_dates)
+* Using a [custom function](./R/getComposite.R)
 
 ```{r}
-# Create variables of year and month 
-# Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
-rawdata <- rawdata %>% 
-  mutate(myevi = evi * 0.0001,
-         year = lubridate::year(date),
-         month = lubridate::month(date))
+# Get leap years 
+years <- unique(rawdata$year)
+ly <- years[leap_year(years)]
 
+# Two functions 
+rd <- rawdata %>% 
+  mutate(m= lubridate::month(date),
+         d= lubridate::day(date)) %>% 
+  mutate(composite = ifelse(year %in% ly, 
+                            getComposite_leap(m,d),
+                            getComposite_nonleap(m,d))) %>% 
+  mutate(season = ifelse(composite < 6, 'winter',
+                   ifelse(composite < 12, 'spring',
+                    ifelse(composite < 18, 'summer','autumn'))))
+```
+
+## Scale factor of the NDVI and EVI data 
+```{r}
+# Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
+rd <- rd %>% 
+  mutate(evi = evi * 0.0001,
+         ndvi = ndvi * 0.0001) 
+```
+
+```{r, eval=FALSE}
 # Create annual evi by pixel 
 eviyear <- rawdata %>% 
   group_by(iv_malla_modi_id, year) %>%
