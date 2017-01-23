@@ -1,7 +1,7 @@
 ## Functions to get composite of MODIS images. 
 ## Based on recomendations of Testa et al. 2014
 ## European Journal of Remote Sensing 47:285-305 
-## DOI: 10.5721/EuJRS20144718#sthash.SXyJ99Ig.dpuf
+## DOI: 10.5721/EuJRS20144718
 
 ## --- 
 # Two functions were created to get the composite (1 to 23) of the MODIS image
