@@ -34,16 +34,17 @@ source(paste0(di,"/R/getComposite.R"))
 Read and prepare evi data
 -------------------------
 
-We created two datasets:
+We created three datasets:
 
--   annual evi by pixel
--   seasonal evi by pixel
+-   annual and seasonal evi by pixel (output as `./data/evi_atributes_all.csv`)
+-   annual and seasonal ndvi by pixel (output as `./data/ndvi_atributes_all.csv`)
+-   iv by pixel and by composite (output as `./data/iv_composite.csv`)
 
-Each dataframe has the following fields:
+The first two dataframes have the following fields:
 
 -   `iv_malla_modi_id`: the identifier of the modis cell
 -   `year`
--   `evi_mean`: the value of the evi (cumulative value for each season)
+-   `evi` or `ndvi`: the value of the EVI (or NDVI) (cumulative value for each season)
 -   `season`: the season of cumulative evi:
 -   `0` annual value
 -   `1` spring value
@@ -51,9 +52,16 @@ Each dataframe has the following fields:
 -   `3` autumn value
 -   `4` winter value
 -   `seasonF`: the season coded as factor
--   `lng`: longitude coordinates
+-   `long`: longitude coordinates
 -   `lat`: latitute coordinates
--   `poblacion`: numeric code of the *Q. pyrenaica* population
+-   `pop`: numeric code of the *Q. pyrenaica* population
+
+The iv\_composite dataframe has the following fields:
+
+-   `evi` or `ndvi`: value of IV for the date
+-   `date`: date of adquisition of the image
+-   `composite`: number of composite (23 by year)
+-   `iv_malla_modi_id`, `year`, `lat`, `long`, `pop`, `seasonF`
 
 ``` r
 # Read data
@@ -116,7 +124,7 @@ kable(n_images_pixel)
 |   \#\# Prep|  are data|                                                                                                                                                   |
 |  \#\#\# Get|   the com|                                                                                                                posite of the images and the season|
 |   \* See \[|  Testa et|  al. 2014\](<https://www.researchgate.net/publication/262566793_Correcting_MODIS_16-day_composite_NDVI_time-series_with_actual_acquisition_dates>)|
-|    \* Using|  a \[cust|                                                                                                                  om function\](./R/getComposite.R)|
+|    \* Use a|  \[custom|                                                                                                                     function\](./R/getComposite.R)|
 
 ``` r
 # Get leap years 
@@ -135,8 +143,7 @@ rd <- rawdata %>%
                     ifelse(composite < 18, 'summer','autumn'))))
 ```
 
-Scale factor of the NDVI and EVI data
--------------------------------------
+### Scale factor of the NDVI and EVI data
 
 ``` r
 # Apply scale factor https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13q1 
@@ -145,56 +152,75 @@ rd <- rd %>%
          ndvi = ndvi * 0.0001) 
 ```
 
+### Create dataframe with composites
+
+``` r
+iv_composite <- rd %>% 
+  dplyr::select(iv_malla_modi_id, evi, ndvi,pop, date, year, long, lat, composite, seasonF = season)
+```
+
+### Create seasonal dataframes of EVI and NDVI
+
+-   EVI
+
 ``` r
 # Create annual evi by pixel 
-eviyear <- rawdata %>% 
+evi_annual <- rd %>% 
   group_by(iv_malla_modi_id, year) %>%
-  summarise(evi = sum(myevi[myevi >=0])) %>%
-  mutate(season=0)
+  summarise(evi = sum(evi[evi >=0])) %>%
+  mutate(seasonF='annual', 
+         season = 0)
 
-
-# Create seasonal evi 
-
-# Julian date 
-# >81 <=173 --> spring (1)
-# >173 <=265 --> summer (2)
-# > 265 <=356 --> autum (3)
-# > 356 and < 81 --> winter (4)
-# Get julian day of limits of the season
-sp <-lubridate::yday(as.Date("2000-03-21"))
-su <- lubridate::yday(as.Date("2000-06-21"))
-au <-  lubridate::yday(as.Date("2000-09-21"))
-wi <- lubridate::yday(as.Date("2000-12-21"))
-season_julian <- c(sp,su,au,wi)
-
-eviseason <- rawdata %>%
-  mutate(jday=lubridate::yday(date)) %>%
-  select(iv_malla_modi_id, year, myevi, jday) %>% 
-  mutate(season = ifelse(jday > 81 & jday <= 173, 1,
-                        ifelse(jday > 173 & jday <= 265, 2, 
-                               ifelse(jday > 265 & jday <= 356, 3, 4)))) %>%
+# Create seasonal evi by pixel 
+evi_season <- rd %>% 
   group_by(iv_malla_modi_id, year, season) %>%
-  summarise(evi = sum(myevi[myevi >=0]))
+  summarise(evi = sum(evi[evi >=0])) %>% 
+  mutate(seasonF = season) %>% 
+  mutate(season = ifelse(season == 'autumn', 3, 
+                   ifelse(season == 'winter', 4, 
+                    ifelse(season == 'spring', 1,2))))
 
-
-evidf <- rbind(eviyear, eviseason)
-
-evidf <- evidf %>% 
-  mutate(seasonF = ifelse (season == 0, 'annual',
-                           ifelse(season == 1, 'spring',
-                                  ifelse(season == 2, 'summer',
-                                         ifelse(season == 3, 'autumn', 'winter')))))
-
-
+evidf <- rbind(evi_annual, evi_season)
 
 # Add coordinates and pob 
-evi_aux <- rawdata %>% select(iv_malla_modi_id, lng, lat, poblacion) %>%
+aux_rd <- rd %>% dplyr::select(iv_malla_modi_id, long, lat, pop) %>%
   group_by(iv_malla_modi_id) %>% unique()
 
 
 # Join dataframes 
-evi <- evidf %>% inner_join(evi_aux, by="iv_malla_modi_id") 
+evidf <- evidf %>% dplyr::inner_join(aux_rd, by="iv_malla_modi_id") 
+```
 
-# Export evi dataframe
-write.csv(evi, file=paste(di, "/data/evi_attributes_all.csv", sep=""), row.names = FALSE)
+-   NDVI
+
+``` r
+# Create annual ndvi by pixel 
+ndvi_annual <- rd %>% 
+  group_by(iv_malla_modi_id, year) %>%
+  summarise(ndvi = sum(ndvi[ndvi >=0])) %>%
+  mutate(seasonF='annual', 
+         season = 0)
+
+# Create seasonal ndvi by pixel 
+ndvi_season <- rd %>% 
+  group_by(iv_malla_modi_id, year, season) %>%
+  summarise(ndvi = sum(ndvi[ndvi >=0])) %>% 
+  mutate(seasonF = season) %>% 
+  mutate(season = ifelse(season == 'autumn', 3, 
+                   ifelse(season == 'winter', 4, 
+                    ifelse(season == 'spring', 1,2))))
+
+ndvidf <- rbind(ndvi_annual, ndvi_season)
+
+# Join dataframes 
+ndvidf <- ndvidf %>% dplyr::inner_join(aux_rd, by="iv_malla_modi_id")
+```
+
+### Export dataframes
+
+``` r
+# Export dataframes 
+write.csv(evidf, file=paste(di, "/data/evi_atributes_all.csv", sep=""), row.names = FALSE)
+write.csv(ndvidf, file=paste(di, "/data/ndvi_atributes_all.csv", sep=""), row.names = FALSE)
+write.csv(iv_composite, file=paste(di, "/data/iv_composite.csv", sep=""), row.names = FALSE)
 ```
