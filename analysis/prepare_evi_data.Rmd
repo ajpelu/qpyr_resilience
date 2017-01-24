@@ -84,10 +84,12 @@ n_images_pixel <- rawdata %>%
 
 kable(n_images_pixel)
 ```
+
+
 ## Prepare data 
 ### Get the composite of the images and the season
 * See [Testa et al. 2014](https://www.researchgate.net/publication/262566793_Correcting_MODIS_16-day_composite_NDVI_time-series_with_actual_acquisition_dates)
-* Use a [custom function](./R/getComposite.R)
+* Use a [custom function](/R/getComposite.R)
 
 ```{r}
 # Get leap years 

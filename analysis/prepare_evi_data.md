@@ -102,29 +102,33 @@ n_images_pixel <- rawdata %>%
 kable(n_images_pixel)
 ```
 
-|        year|         n|                                                                                                                                           n\_pixel|
-|-----------:|---------:|--------------------------------------------------------------------------------------------------------------------------------------------------:|
-|        2000|     36280|                                                                                                                                                 20|
-|        2001|     41722|                                                                                                                                                 23|
-|        2002|     41722|                                                                                                                                                 23|
-|        2003|     41722|                                                                                                                                                 23|
-|        2004|     41722|                                                                                                                                                 23|
-|        2005|     41722|                                                                                                                                                 23|
-|        2006|     41722|                                                                                                                                                 23|
-|        2007|     41722|                                                                                                                                                 23|
-|        2008|     41722|                                                                                                                                                 23|
-|        2009|     41722|                                                                                                                                                 23|
-|        2010|     41722|                                                                                                                                                 23|
-|        2011|     41722|                                                                                                                                                 23|
-|        2012|     41722|                                                                                                                                                 23|
-|        2013|     41722|                                                                                                                                                 23|
-|        2014|     41722|                                                                                                                                                 23|
-|        2015|     41722|                                                                                                                                                 23|
-|        2016|     41722|                                                                                                                                                 23|
-|   \#\# Prep|  are data|                                                                                                                                                   |
-|  \#\#\# Get|   the com|                                                                                                                posite of the images and the season|
-|   \* See \[|  Testa et|  al. 2014\](<https://www.researchgate.net/publication/262566793_Correcting_MODIS_16-day_composite_NDVI_time-series_with_actual_acquisition_dates>)|
-|    \* Use a|  \[custom|                                                                                                                     function\](./R/getComposite.R)|
+|  year|      n|  n\_pixel|
+|-----:|------:|---------:|
+|  2000|  36280|        20|
+|  2001|  41722|        23|
+|  2002|  41722|        23|
+|  2003|  41722|        23|
+|  2004|  41722|        23|
+|  2005|  41722|        23|
+|  2006|  41722|        23|
+|  2007|  41722|        23|
+|  2008|  41722|        23|
+|  2009|  41722|        23|
+|  2010|  41722|        23|
+|  2011|  41722|        23|
+|  2012|  41722|        23|
+|  2013|  41722|        23|
+|  2014|  41722|        23|
+|  2015|  41722|        23|
+|  2016|  41722|        23|
+
+Prepare data
+------------
+
+### Get the composite of the images and the season
+
+-   See [Testa et al. 2014](https://www.researchgate.net/publication/262566793_Correcting_MODIS_16-day_composite_NDVI_time-series_with_actual_acquisition_dates)
+-   Use a [custom function](/R/getComposite.R)
 
 ``` r
 # Get leap years 
