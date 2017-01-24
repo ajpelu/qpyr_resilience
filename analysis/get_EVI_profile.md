@@ -100,3 +100,95 @@ print(ndvi_profile)
 ```
 
 ![](get_EVI_profile_files/figure-markdown_github/unnamed-chunk-4-1.png)
+
+Comparing 2005 and 2012 with reference
+--------------------------------------
+
+``` r
+drought_years <- c(2005, 2012)
+
+evi_profile_dat_ref <- iv %>% 
+  filter(!year %in% drought_years) %>% 
+  group_by(composite) %>% 
+  summarise(mean=mean(evi),
+            sd = sd(evi),
+            se = sd/sqrt(length(evi))) %>% 
+  mutate(composite_dates = 
+           plyr::mapvalues(composite,
+                           c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23),
+                           c('01-01','01-17','02-02','02-18','03-06','03-22','04-07','04-23',
+                             '05-09','05-25','06-10','06-26','07-12','07-28','08-13','08-29',
+                             '09-14','09-30','10-16','11-01','11-17','12-03','12-19'))) %>%
+  mutate(cd = as.Date(composite_dates, format = '%m-%d')) %>% 
+  mutate(period = 'reference')
+
+evi_profile_dat_2005 <- iv %>% 
+  filter(year == 2005) %>% 
+  group_by(composite) %>% 
+  summarise(mean=mean(evi),
+            sd = sd(evi),
+            se = sd/sqrt(length(evi))) %>% 
+  mutate(composite_dates = 
+           plyr::mapvalues(composite,
+                           c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23),
+                           c('01-01','01-17','02-02','02-18','03-06','03-22','04-07','04-23',
+                             '05-09','05-25','06-10','06-26','07-12','07-28','08-13','08-29',
+                             '09-14','09-30','10-16','11-01','11-17','12-03','12-19'))) %>%
+  mutate(cd = as.Date(composite_dates, format = '%m-%d')) %>% 
+  mutate(period = '2005')
+
+evi_profile_dat_2012 <- iv %>% 
+  filter(year == 2012) %>% 
+  group_by(composite) %>% 
+  summarise(mean=mean(evi),
+            sd = sd(evi),
+            se = sd/sqrt(length(evi))) %>% 
+  mutate(composite_dates = 
+           plyr::mapvalues(composite,
+                           c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23),
+                           c('01-01','01-17','02-02','02-18','03-06','03-22','04-07','04-23',
+                             '05-09','05-25','06-10','06-26','07-12','07-28','08-13','08-29',
+                             '09-14','09-30','10-16','11-01','11-17','12-03','12-19'))) %>%
+  mutate(cd = as.Date(composite_dates, format = '%m-%d')) %>% 
+  mutate(period = '2012')
+
+# Join the three dataframes
+evi_profile_compara_dat <- rbind(evi_profile_dat_ref, evi_profile_dat_2005, evi_profile_dat_2012)
+```
+
+``` r
+# colref <- '#455883'
+# colref2 <- '#10253F'
+# col2005 <- '#00BA38'
+# col2012 <- '#F8766D'
+
+col2012 <- '#0700fe'
+col2005 <- '#19e00b'
+colref <- '#7b7b7b'
+
+
+profile_compara <- ggplot(evi_profile_compara_dat, aes(cd, y=mean, color=period)) + 
+  geom_errorbar(aes(ymin = mean - 2*se, ymax= mean + 2*se), width=3, size=.5) + 
+  #geom_errorbar(aes(ymin = mean - sd, ymax= mean + sd), width=4, colour='black') + 
+  geom_line(size=.9) + 
+  geom_point(size=3) +
+  geom_point(size=1.5, color='white') +
+  scale_x_date(labels = function(x) format(x, "%b"),
+               breaks = date_breaks('month')) + 
+  ylab('EVI') + xlab('Date') + 
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank()) +
+  scale_color_manual(values=c(col2005, col2012, colref))
+
+#format(x, "%d-%b") 
+
+#pdf(file=paste0(di, "/images/compara_perfiles_evi.pdf"), height = 8, width = 12)
+profile_compara
+```
+
+![](get_EVI_profile_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+``` r
+#dev.off()
+```
