@@ -42,7 +42,6 @@ evi <- read.csv(file=paste(di, "/data/evi_atributes_all.csv", sep=""), header = 
 
 
 ```{r}
-
 # Set counters
 pixels <- unique(iv$iv_malla_modi_id)
 composites <- unique(iv$composite)
@@ -106,11 +105,20 @@ for (i in pixels){
   # Output 
   anomalos <- rbind(anomalos, aux_composite)
 }   
-  
-  
-```
 
-    
+
+# Add pob, lat, long, etc 
+iv_aux <- iv %>% dplyr::select(iv_malla_modi_id, long, lat, pop) %>%
+  group_by(iv_malla_modi_id) %>% unique()
+
+# Join dataframes 
+anomalias_composite <- anomalos %>% dplyr::inner_join(iv_aux, by="iv_malla_modi_id") 
+
+write.csv(anomalias_composite, file=paste(di, "/data/anomalies/anomalias_composite.csv", sep=""), row.names = FALSE)
+``
+
+
+
 
         
 
@@ -123,15 +131,6 @@ for (i in pixels){
 
 
   
-    }
-  }
-}
-
-
-
-
-y <- 2000 
-j <- 1 
 
 
 
