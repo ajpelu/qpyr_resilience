@@ -171,8 +171,7 @@ profile_compara <- ggplot(evi_profile_compara_dat, aes(cd, y=mean, color=period)
   geom_errorbar(aes(ymin = mean - 2*se, ymax= mean + 2*se), width=3, size=.5) + 
   #geom_errorbar(aes(ymin = mean - sd, ymax= mean + sd), width=4, colour='black') + 
   geom_line(size=.9) + 
-  geom_point(size=3) +
-  geom_point(size=1.5, color='white') +
+  geom_point(size=3, fill='white', shape=21) +
   scale_x_date(labels = function(x) format(x, "%b"),
                breaks = date_breaks('month')) + 
   ylab('EVI') + xlab('Date') + 
