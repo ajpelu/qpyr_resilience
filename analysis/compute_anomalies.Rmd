@@ -28,7 +28,7 @@ library("RCurl")
 library("tidyr")
 ```
 
-# Read data 
+# Read data 
 Two dataframes: 
 * EVI seasonal 
 * IV composites 
@@ -121,7 +121,7 @@ write.csv(anomalias_composite, file=paste(di, "/data/anomalies/anomalias_composi
 
 # By season
 
-```{r}
+```{r, eval=FALSE}
 # Set counters
 pixels <- unique(evi$iv_malla_modi_id)
 composites <- unique(evi$seasonF)
