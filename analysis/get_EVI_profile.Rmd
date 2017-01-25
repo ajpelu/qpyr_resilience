@@ -10,8 +10,8 @@ output:
 
 ```{r wd, echo=FALSE}
 #---------------------------------
-# machine <- 'ajpelu'
-machine <- 'ajpeluLap'
+machine <- 'ajpelu'
+# machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -192,7 +192,7 @@ profile_compara <- ggplot(evi_profile_compara_dat, aes(cd, y=mean, color=period)
 
 #format(x, "%d-%b") 
 
-#pdf(file=paste0(di, "/images/compara_perfiles_evi.pdf"), height = 8, width = 12)
+pdf(file=paste0(di, "/images/compara_perfiles_evi.pdf"), height = 8, width = 12)
 profile_compara
-#dev.off()
+dev.off()
 ```  

@@ -183,12 +183,10 @@ profile_compara <- ggplot(evi_profile_compara_dat, aes(cd, y=mean, color=period)
 
 #format(x, "%d-%b") 
 
-#pdf(file=paste0(di, "/images/compara_perfiles_evi.pdf"), height = 8, width = 12)
+pdf(file=paste0(di, "/images/compara_perfiles_evi.pdf"), height = 8, width = 12)
 profile_compara
+dev.off()
 ```
 
-![](get_EVI_profile_files/figure-markdown_github/unnamed-chunk-6-1.png)
-
-``` r
-#dev.off()
-```
+    ## quartz_off_screen 
+    ##                 2
