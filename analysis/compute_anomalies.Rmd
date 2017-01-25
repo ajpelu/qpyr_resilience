@@ -28,127 +28,119 @@ library("RCurl")
 library("tidyr")
 ```
 
+# Read data 
+Two dataframes: 
+* EVI seasonal 
+* IV composites 
 
 ```{r}
-# Read and prepare data
-# Read data directly from repo modis_iv
-rawdata <- read.csv(text = getURL("https://raw.githubusercontent.com/ajpelu/modis_iv/master/data/iv_quercus_pyrenaica.csv"), header=T) 
-
-# There are some duplicates records. Remove them 
-rawdata <- unique(rawdata)
-
-
-# Read and prepare data (from Linaria)
-# rd <- read.csv(file=paste(di, "/data_raw/evi/raw_iv.csv", sep= ""), header = TRUE, sep = ',')
+# Read data
+iv <- read.csv(file=paste(di, "/data/iv_composite.csv", sep=""), header = TRUE, sep = ',')
+evi <- read.csv(file=paste(di, "/data/evi_atributes_all.csv", sep=""), header = TRUE, sep = ',')
 ```
 
-# QA
-```{r}
-# See n of images per year and per pixel 
-n_images_pixel <- rawdata %>% 
-  mutate(year = lubridate::year(date)) %>% 
-  group_by(year) %>%
-  count()
 
-# Which pixels has less than 23 images per year: 
-less23 <- rawdata %>% 
-  mutate(year = lubridate::year(date)) %>% 
-  group_by(year, iv_malla_modi_id) %>% count() %>% 
-  dplyr::filter(n < 23) 
-
-less23 %>% group_by(year) %>% count()
-```
-
-Parace que en 2000, 2013 y 2015 hay menos de 23 imagenes por año 
 
 ```{r}
-## Anomalies by pixel
-rawdata %>% 
-  filter(iv_malla_modi_id == 142799) 
 
+# Set counters
+pixels <- unique(iv$iv_malla_modi_id)
+composites <- unique(iv$composite)
+years <- unique(iv$year)
 
-%>% 
-  ggplot(aes(x=composite_day_of_the_year, y=evi)) + geom_point()
+# Set dataframe to compute anomaly
+df <- iv 
+
+# Create emtpy datafraje to store output 
+anomalos <- data.frame()
+
+for (i in pixels){
+  df_aux <- df[df$iv_malla_modi_id == i,]
+  
+  # Create empty auxiliar dataframe to store results
+  aux_composite <- data.frame() 
+  
+  for (j in composites) {
+    # Create df_auxiliar by composite
+    df_by_composite <- df_aux[df_aux$composite == j,]
+    
+    # Create empty df to store anomlay of composite j of all year 
+    aux_anomaly <- data.frame() 
+    
+    for (y in years){
+      # get mean evi for the reference period
+      iv_ref <- df_by_composite %>% 
+        filter(year != y) %>% 
+        summarise(mean(evi))
+      
+      # get evi for the year
+      iv_year <- df_by_composite[df_by_composite$year == y, 'evi']
+      # To solve the problems with the year without composites (i.e 2000)
+      iv_year <- ifelse(length(iv_year) == 0, 0, iv_year)
+      
+      # Compute standardized anomaly
+      anomaly_std <- ((iv_year - iv_ref) / (iv_year + iv_ref))*100
+      names(anomaly_std) <- 'anomaly_std'
+      
+      # Compute anomaly
+      anomaly <- (iv_year - iv_ref)
+      names(anomaly) <- 'anomaly'
+      
+      # Create dataframe 
+      aux <- cbind(y, anomaly, anomaly_std)
+      aux_anomaly <- rbind(aux_anomaly, aux)
+      } 
+      
+    aux_compos <- aux_anomaly %>% mutate(composite = j)
+    
+    aux_composite <- rbind(aux_composite, aux_compos)
+    
+  }
+    
+  # Remove the composites 1,2 an 3 for year 2000 
+  aux_composite <- aux_composite[!(aux_composite$y == 2000 & aux_composite$composite %in% c(1:3)), ] 
+    
+  # Add name of the pixel 
+  aux_composite <- aux_composite %>% mutate(iv_malla_modi_id = i)
+  
+  # Output 
+  anomalos <- rbind(anomalos, aux_composite)
+}   
+  
+  
 ```
+
+    
+
+        
+
+          
+      
+
+        
+
+        
+
+
+  
+    }
+  }
+}
+
+
+
+
+y <- 2000 
+j <- 1 
+
+
+
 
 
 # Set disturbance years 
 disturb_years <- c(2005, 2012)
 
 
-
-
-
-
-ndvi_by_date <- rawdata %>% 
-  mutate(myevi = evi * 0.0001, 
-         myndvi = ndvi * 0.0001,
-         yearday = lubridate::yday(date)) %>% 
-         mutate(yearday = ifelse(yearday == 2, 3, yearday), ### Artefacto para agregar dia 2 y 3 
-         monthday = as.Date(yearday - 1, origin = "2008-01-01")) %>% 
-  group_by(monthday) %>% 
-  summarise(mean=mean(myevi),
-            sd = sd(myevi),
-            se = sd / sqrt (length(myevi)))
-
-         
-16*3
-
-
-        
-         
-         month = lubridate::month(date),
-         year = lubridate::month(date),
-         
-         
-         iseq = ifelse(yearday == composite_day_of_the_year, 1, 0))
-
-
-
-ndvi_by_date <- rawdata %>% 
-  mutate(myevi = evi * 0.0001, 
-         myndvi = ndvi * 0.0001,
-         yearday = lubridate::yday(fecha)) %>% 
-  mutate(yearday = ifelse(yearday == 2, 3, yearday), ### Artefacto para agregar dia 2 y 3 
-         monthday = as.Date(yearday - 1, origin = "2008-01-01")) %>% 
-  group_by(monthday) %>% 
-  summarise(mean=mean(myevi),
-            sd = sd(myevi),
-            se = sd / sqrt (length(myevi)))
-
-
-ggplot(ndvi_by_date, aes(as.Date(monthday), y=mean)) + 
-  geom_point() + 
-  geom_errorbar(aes(ymin = mean - sd, ymax= mean + sd))
-
-
-
-
-
-
-myid <- ndvi_by_date %>% filter(iv_malla_modi_id == 142799) 
-
-table(myid$yearday)
-
-
-%>% 
-  ggplot(aes()
-  
-  
-  ggplot(ndvi_by_date, aes(as.Date(monthday), y=mean)) + 
-  geom_point() + 
-  geom_errorbar(aes(ymin = mean - sd, ymax= mean + sd))
-
-
-%>% 
-  
-  
-  mutate(yearday = ifelse(yearday == 2, 3, yearday), ### Artefacto para agregar dia 2 y 3 
-         monthday = as.Date(yearday - 1, origin = "2008-01-01")) %>% 
-  group_by(monthday) %>% 
-  summarise(mean=mean(myevi),
-            sd = sd(myevi),
-            se = sd / sqrt (length(myevi)))
 
 
 
