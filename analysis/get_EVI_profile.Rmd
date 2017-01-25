@@ -186,6 +186,7 @@ profile_compara <- ggplot(evi_profile_compara_dat, aes(cd, y=mean, color=period)
                breaks = date_breaks('month')) + 
   ylab('EVI') + xlab('Date') + 
   theme_bw() +
+  theme_classic() + 
   theme(panel.grid.major=element_blank(),
         panel.grid.minor=element_blank()) +
   scale_color_manual(values=c(col2005, col2012, colref))
