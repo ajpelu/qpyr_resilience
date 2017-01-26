@@ -6,177 +6,172 @@ library("RCurl")
 library("tidyr")
 ```
 
+Read data
+=========
+
+Two dataframes: \* EVI seasonal \* IV composites
+
 ``` r
-# Read and prepare data
-rawdata <- read.csv(text = getURL("https://raw.githubusercontent.com/ajpelu/qpyr_resilience/master/data_raw/evi/iv_quercus_pyrenaica.csv"), header=T) 
+# Read data
+iv <- read.csv(file=paste(di, "/data/iv_composite.csv", sep=""), header = TRUE, sep = ',')
+evi <- read.csv(file=paste(di, "/data/evi_atributes_all.csv", sep=""), header = TRUE, sep = ',')
+```
 
-# Note 
+Compute anomalies
+=================
 
-computeAnomaly <- function(df, disturb_years){
-  require('dplyr')
+By composite
+------------
+
+``` r
+# Set counters
+pixels <- unique(iv$iv_malla_modi_id)
+composites <- unique(iv$composite)
+years <- unique(iv$year)
+
+# Set dataframe to compute anomaly
+df <- iv 
+
+# Create emtpy datafraje to store output 
+anomalos <- data.frame()
+
+for (i in pixels){
+  df_aux <- df[df$iv_malla_modi_id == i,]
   
-  rd <- df %>% 
-    # Factor Correction to evi and ndvi
-    mutate(myevi = evi * 0.0001,
-           myndvi = evi * 0.0001) %>% 
-    select(-evi) %>% 
-    select(-ndvi) %>% 
-    
-    # Compute year and month 
-    mutate(year = lubridate::year(date),  
-           month = lubridate::month(date)) %>% 
-    
-    # Add variable of population cluster and remove population '9'
-    mutate(clu_pop = as.factor(ifelse(poblacion == 1, 'Camarate',
-                                      ifelse(poblacion %in% c(2,3,4,5), 'Northern slope',
-                                             ifelse(poblacion %in% c(6,7,8), 'Southern slope', 'out'))))) %>% 
-    filter(clu_pop != 'out') %>% 
-    
-    # Categorize reference period and disturbance year
-    mutate(event = ifelse(year != disturb_years,
-                          'ref',
-                          ifelse(year == disturb_years[1], 
-                                 as.character(disturb_years[1]),
-                                 as.character(disturb_years[2])))) %>% 
-    
-    # Spatial aggregation. All pixels of the same populations are aggregate by mean
-    group_by(clu_pop, poblacion, year, month, event) %>% 
-    summarise(myevisp = mean(myevi), 
-              myndvisp = mean(myndvi)) 
-  }
-
-
-d <- computeAnomaly(df=rawdata, disturb_year = c(2005, 2012))
-# d2 <- computeAnomaly(df=rawdata, disturb_year = 2012)
+  # Create empty auxiliar dataframe to store results
+  aux_composite <- data.frame() 
   
-
-
-### Loop for temporal aggregation 
-
-# misdataframes <- c("d1", "d2")
-misdataframes <- c("d")
-variables <- c('myevisp', 'myndvisp')
-
-for (j in misdataframes){ 
-  
-  mydf <- get(j)
-  
-  # Create three empty dataframe
-  anomalo_clu <- data.frame() 
-  anomalo_pop <- data.frame()
-  anomalo_sn <- data.frame() 
-  
-  # Temporal aggregation (references period, d1 and d2, and temporal)
-  # By cluster 
-  for (i in variables){ 
-    # summary for all pixels
-    aux_sn <- mydf %>% 
-      dplyr::group_by(month, event) %>%
-      summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i)
+  for (j in composites) {
+    # Create df_auxiliar by composite
+    df_by_composite <- df_aux[df_aux$composite == j,]
     
-    anomalo_sn <- rbind(anomalo_sn, aux_sn) 
+    # Create empty df to store anomlay of composite j of all year 
+    aux_anomaly <- data.frame() 
     
-    # summary for cluster pop   
-    aux_clu <- mydf %>% 
-      dplyr::group_by(clu_pop, month, event) %>%
-      summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
-    
-    anomalo_clu <- rbind(anomalo_clu, aux_clu)
-    
-    # summary for populations 
-    aux_pop <- mydf %>% 
-      dplyr::group_by(poblacion, month, event) %>%  
-      summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
-    
-    anomalo_pop <- rbind(anomalo_pop, aux_pop) 
-    
-    rm(aux_pop, aux_clu, aux_sn)
-    }
-  
-  # Store df for each j of misdataframes
-  assign(paste0("anomalo_sn", j), anomalo_sn)
-  assign(paste0("anomalo_pop", j), anomalo_pop)
-  assign(paste0("anomalo_clu", j), anomalo_clu)
-  
-  rm(anomalo_sn, anomalo_pop, anomalo_clu)
-  rm(mydf)
-}
-
-
-# Exportdataframes 
-write.csv(anomalo_snd, file=paste(di, "/data/anomalies/anomalo_sn.csv", sep=""), row.names = FALSE)
-write.csv(anomalo_clud, file=paste(di, "/data/anomalies/anomalo_clu.csv", sep=""), row.names = FALSE)
-write.csv(anomalo_popd, file=paste(di, "/data/anomalies/anomalo_pop.csv", sep=""), row.names = FALSE)
-
-# Computar anomalias standarizadas 
-
-conjuntodata <- c('anomalo_snd', 'anomalo_popd', 'anomalo_clud')
-variables <- c('myevisp', 'myndvisp')
-myyear <- c('2005', '2012')
-
-for (g in conjuntodata){
-  
-  # Select conjunto
-  midf <- get(g)
-  
-  # Loop by year 
-  for (j in myyear) { 
-    # filter by byear
-    df <- midf %>%
-      filter(event %in% c(j, 'ref')) 
-    
-    # empty df to store results 
-    a <- data.frame() 
-    
-    # loop into variables
-    for (i in variables){ 
-      out <- df %>% 
-        filter(variable == i) %>%
-        select(-variable) %>% gather(variable, value, mean, se, sd) %>%
-        unite(var, variable, event) %>% 
-        spread(var, value) 
+    for (y in years){
+      # get mean evi for the reference period
+      iv_ref <- df_by_composite %>% 
+        filter(year != y) %>% 
+        summarise(mean(evi))
       
-      out <- out %>% mutate(iv = i)
+      # get evi for the year
+      iv_year <- df_by_composite[df_by_composite$year == y, 'evi']
+      # To solve the problems with the year without composites (i.e 2000)
+      iv_year <- ifelse(length(iv_year) == 0, 0, iv_year)
       
-      a <- rbind(a, out) 
-      }
+      # Compute standardized anomaly
+      anomaly_std <- ((iv_year - iv_ref) / (iv_year + iv_ref))*100
+      names(anomaly_std) <- 'anomaly_std'
+      
+      # Compute anomaly
+      anomaly <- (iv_year - iv_ref)
+      names(anomaly) <- 'anomaly'
+      
+      # Create dataframe 
+      aux <- cbind(y, anomaly, anomaly_std)
+      aux_anomaly <- rbind(aux_anomaly, aux)
+      } 
+      
+    aux_compos <- aux_anomaly %>% mutate(composite = j)
     
-    assign(paste0("a_",g,j), a)
+    aux_composite <- rbind(aux_composite, aux_compos)
+    
   }
-}
+    
+  # Remove the composites 1,2 an 3 for year 2000 
+  aux_composite <- aux_composite[!(aux_composite$y == 2000 & aux_composite$composite %in% c(1:3)), ] 
+    
+  # Add name of the pixel 
+  aux_composite <- aux_composite %>% mutate(iv_malla_modi_id = i)
+  
+  # Output 
+  anomalos <- rbind(anomalos, aux_composite)
+}   
+
+
+# Add pob, lat, long, etc 
+iv_aux <- iv %>% dplyr::select(iv_malla_modi_id, long, lat, pop) %>%
+  group_by(iv_malla_modi_id) %>% unique()
+
+# Join dataframes 
+anomalias_composite <- anomalos %>% dplyr::inner_join(iv_aux, by="iv_malla_modi_id") 
+
+write.csv(anomalias_composite, file=paste(di, "/data/anomalies/anomalias_composite.csv", sep=""), row.names = FALSE)
+```
+
+By season
+=========
+
+``` r
+# Set counters
+pixels <- unique(evi$iv_malla_modi_id)
+composites <- unique(evi$seasonF)
+years <- unique(evi$year)
+
+# Set dataframe to compute anomaly
+df <- evi
+
+# Create emtpy datafraje to store output 
+anomalos <- data.frame()
+
+for (i in pixels){
+  df_aux <- df[df$iv_malla_modi_id == i,]
+  
+  # Create empty auxiliar dataframe to store results
+  aux_composite <- data.frame() 
+  
+  for (j in composites) {
+    # Create df_auxiliar by composite
+    df_by_composite <- df_aux[df_aux$seasonF == j,]
+    
+    # Create empty df to store anomlay of composite j of all year 
+    aux_anomaly <- data.frame() 
+    
+    for (y in years){
+      # get mean evi for the reference period
+      iv_ref <- df_by_composite %>% 
+        filter(year != y) %>% 
+        summarise(mean(evi))
+      
+      # get evi for the year
+      iv_year <- df_by_composite[df_by_composite$year == y, 'evi']
+      # To solve the problems with the year without composites (i.e 2000)
+      iv_year <- ifelse(length(iv_year) == 0, 0, iv_year)
+      
+      # Compute standardized anomaly
+      anomaly_std <- ((iv_year - iv_ref) / (iv_year + iv_ref))*100
+      names(anomaly_std) <- 'anomaly_std'
+      
+      # Compute anomaly
+      anomaly <- (iv_year - iv_ref)
+      names(anomaly) <- 'anomaly'
+      
+      # Create dataframe 
+      aux <- cbind(y, anomaly, anomaly_std)
+      aux_anomaly <- rbind(aux_anomaly, aux)
+      } 
+      
+    aux_compos <- aux_anomaly %>% mutate(composite = j)
+    
+    aux_composite <- rbind(aux_composite, aux_compos)
+    
+  }
+    
+  # Add name of the pixel 
+  aux_composite <- aux_composite %>% mutate(iv_malla_modi_id = i)
+  
+  # Output 
+  anomalos <- rbind(anomalos, aux_composite)
+}   
 
 
 
-### Compute and Export anomalies as csv
+# Add pob, lat, long, etc 
+evi_aux <- evi %>% dplyr::select(iv_malla_modi_id, long, lat, pop) %>%
+  group_by(iv_malla_modi_id) %>% unique()
 
+# Join dataframes 
+anomalias_season <- anomalos %>% dplyr::inner_join(evi_aux, by="iv_malla_modi_id") 
 
-#SN 
-a_anomalo_snd2005 <- a_anomalo_snd2005 %>% 
-  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
-write.csv(a_anomalo_snd2005, file=paste(di, "/data/anomalies/std_a_2005_sn.csv", sep=""), row.names = FALSE)
-
-a_anomalo_snd2012 <- a_anomalo_snd2012 %>% 
-  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
-write.csv(a_anomalo_snd2012, file=paste(di, "/data/anomalies/std_a_2012_sn.csv", sep=""), row.names = FALSE)
-
-
-#Clu 
-a_anomalo_clud2005 <- a_anomalo_clud2005 %>% 
-  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
-write.csv(a_anomalo_clud2005, file=paste(di, "/data/anomalies/std_a_2005_clu.csv", sep=""), row.names = FALSE)
-
-a_anomalo_clud2012 <- a_anomalo_clud2012 %>% 
-  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
-write.csv(a_anomalo_clud2012, file=paste(di, "/data/anomalies/std_a_2012_clu.csv", sep=""), row.names = FALSE)
-
-
-
-#Pop 
-a_anomalo_popd2005 <- a_anomalo_popd2005 %>% 
-  mutate(std_a = ((mean_2005 - mean_ref) / sd_ref)) 
-write.csv(a_anomalo_popd2005, file=paste(di, "/data/anomalies/std_a_2005_pop.csv", sep=""), row.names = FALSE)
-
-a_anomalo_popd2012 <- a_anomalo_popd2012 %>% 
-  mutate(std_a = ((mean_2012 - mean_ref) / sd_ref)) 
-write.csv(a_anomalo_popd2012, file=paste(di, "/data/anomalies/std_a_2012_pop.csv", sep=""), row.names = FALSE)
+write.csv(anomalias_season, file=paste(di, "/data/anomalies/anomalias_season.csv", sep=""), row.names = FALSE)
 ```
