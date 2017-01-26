@@ -1,5 +1,5 @@
 ---
-title: "Analysis annomalies"
+title: "Compute anomalies"
 author: "AJ Perez-Luque (@ajpelu)"
 date: "2016 Aug"
 output:  
