@@ -17,8 +17,8 @@ Introduction
 evidf <- read.csv(file=paste(di, "/data/evi_atributes_all.csv", sep=""), header = TRUE, sep = ',')
 ```
 
-Exploring analysis evolution of EVI by season
----------------------------------------------
+Exploring evolution of EVI by season
+------------------------------------
 
 -   First we explore the evolution of EVI by season. We want to ask the question: *¿Which temporal scale does capture better the impacts of the drought event?*
 
@@ -247,30 +247,34 @@ computeResilience <- function(df){
     mutate(rt = dr / pre,
            rc = post / dr,
            rs = post / pre) %>%
-    mutate(rrs = ((post - dr) / pre))
+    mutate(rrs = ((post - dr) / pre)) 
   } 
 ```
 
 ``` r
 res_event1_annual <- computeResilience(event1_annual)
+res_event1_annual <- res_event1_annual %>% mutate(event=1, seasonF = 'annual')
+
 res_event2_annual <- computeResilience(event2_annual)
+res_event2_annual <- res_event2_annual %>% mutate(event=2, seasonF = 'annual')
+
 
 res_event1_spring <- computeResilience(event1_spring)
+res_event1_spring <- res_event1_spring %>% mutate(event=1, seasonF = 'spring')
+
 res_event2_spring <- computeResilience(event2_spring)
+res_event2_spring <- res_event2_spring %>% mutate(event=2, seasonF = 'spring')
+
 
 res_event1_summer <- computeResilience(event1_summer)
-res_event2_summer <- computeResilience(event2_summer)
+res_event1_summer <- res_event1_summer %>% mutate(event=1, seasonF = 'summer')
 
+res_event2_summer <- computeResilience(event2_summer)
+res_event2_summer <- res_event2_summer %>% mutate(event=2, seasonF = 'summer')
 
 # Export dataframes
-write.csv(res_event1_annual, file=paste(di, "/data/evi_resilience_event1_annual.csv", sep=""), row.names = FALSE)
-write.csv(res_event2_annual, file=paste(di, "/data/evi_resilience_event2_annual.csv", sep=""), row.names = FALSE)
-
-write.csv(res_event1_spring, file=paste(di, "/data/evi_resilience_event1_spring.csv", sep=""), row.names = FALSE)
-write.csv(res_event2_spring, file=paste(di, "/data/evi_resilience_event2_spring.csv", sep=""), row.names = FALSE)
-
-write.csv(res_event1_summer, file=paste(di, "/data/evi_resilience_event1_summer.csv", sep=""), row.names = FALSE)
-write.csv(res_event2_summer, file=paste(di, "/data/evi_resilience_event2_summer.csv", sep=""), row.names = FALSE)
+evi_resilience <- rbind(res_event1_annual, res_event2_annual, res_event1_spring, res_event2_spring, res_event1_summer, res_event2_summer)
+write.csv(evi_resilience, file=paste(di, "/data/evi_resilience.csv", sep=""), row.names = FALSE)
 ```
 
 References
