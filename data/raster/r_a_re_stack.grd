@@ -1,0 +1,25 @@
+[general]
+creator=R package 'raster'
+created=2017-01-27 12:21:30
+[georeference]
+nrows=1
+ncols=1
+xmin=-3.4935646
+ymin=-212.8035885
+xmax=246.5064354
+ymax=37.1964115
+projection=+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
+[data]
+datatype=FLT8S
+byteorder=little
+nbands=10
+bandorder=BIL
+minvalue=NA:NA:NA:NA:NA:NA:NA:NA:NA:NA
+maxvalue=NA:NA:NA:NA:NA:NA:NA:NA:NA:NA
+nodatavalue=-1.7e+308
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=a_annual_2005:a_spring_2005:a_summer_2005:a_autumn_2005:a_winter_2005:a_annual_2012:a_spring_2012:a_summer_2012:a_autumn_2012:a_winter_2012
