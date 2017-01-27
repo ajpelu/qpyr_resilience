@@ -12,7 +12,7 @@ output:
 #---------------------------------
 machine <- 'ajpelu'
 # machine <- 'ajpeluLap'
-di <- paste('/Users/', machine, '/Dropbox/MS/MS_QUERCUS_RESI/qpyr_resilience', sep='')
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
 
@@ -33,8 +33,8 @@ library("knitr")
 ## Read and prepare data 
 
 ```{r}
-# Read data
-eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
+# Read Summer resilience
+evi_resilience <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
 ```
 
 
@@ -43,47 +43,165 @@ eviresi <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header =
 * Create raster maps (two projections: `epsg:4326` and `epsg:23030`)
 * Export raster maps and stacks (see `/data/raster/`)
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 # Create a spatial dataframe 
-eviresi_sp <- SpatialPointsDataFrame(coords = eviresi[,c('lng','lat')], data = eviresi,
+df_sel <- SpatialPointsDataFrame(coords = evi_resilience[,c('long','lat')], data = evi_resilience,
                                proj4string = CRS("+init=epsg:4326"))
 
-# Transform 
-eviresi_sp <- spTransform(eviresi_sp, CRS("+init=epsg:23030"))
-
-# Loop to create raster map 
+# Transform
+df_sel_sp <- spTransform(df_sel, CRS("+init=epsg:23030"))
+  
+myevent <- unique(evi_resilience$event)
+seasons <- unique(evi_resilience$seasonF)
 resilience_indicators <- c('rs','rt', 'rc', 'rrs')
 
-for (i in resilience_indicators) { 
-
-  aux_spatial <- eviresi_sp 
+for (j in myevent){
+  # Filter my event 
+  aux_spatial_event <- df_sel_sp[df_sel_sp$event == j,] # aux_spatial_year = aux_spatial_event
   
-  # raster auxiliar 
-  aux_rast <- raster(aux_spatial, resolution=250)
-
-  # variable z
-  zvar <- i
-
-  # raster_layer 
-  r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
-  names(r_resi) <- i 
-  
-  # reprojected raster
-  r_resi_re <- projectRaster(r_resi, crs=crs("+init=epsg:4326"))
-  names(r_resi_re) <- i 
-  
-  # assign 
-  name_raster <- paste("r_",i, sep="")
-  name_raster_re <- paste("r_",i,"_re", sep="")
-  
-  assign(name_raster, r_resi)
-  assign(name_raster_re, r_resi_re)
-  
-  
-  writeRaster(r_resi, file=paste(di, "/data/raster/r_", i, ".asc", sep=""), overwrite=TRUE)
-  writeRaster(r_resi_re, file=paste(di, "/data/raster/r_", i, "_re", ".tif", sep=""), overwrite=TRUE)
-  
+  for (m in seasons){
+    # Filter my season 
+    aux_spatial_event_season <- aux_spatial_event[aux_spatial_event$seasonF == m,]
+    
+    for (i in resilience_indicators) { 
+      aux_spatial <- aux_spatial_event_season 
+      
+      # raster auxiliar 
+      aux_rast <- raster(aux_spatial, resolution=250)
+      # variable z
+      zvar <- i
+      
+      # raster_layer 
+      r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
+      names(r_resi) <- i 
+      
+      # reprojected raster
+      r_resi_re <- projectRaster(r_resi, crs=crs("+init=epsg:4326"))
+      names(r_resi_re) <- i 
+      
+      # assign 
+      name_raster <- paste("r_", i, "_", m, "_", j, sep="")
+      name_raster_re <- paste("r_",i,"_re", "_", m, "_", j, sep="")
+      
+      assign(name_raster, r_resi)
+      assign(name_raster_re, r_resi_re)
+      
+      writeRaster(r_resi, file=paste(di, "/data/raster/r_", i, "_", m, "_", j, ".asc", sep=""), overwrite=TRUE)
+      writeRaster(r_resi_re, file=paste(di, "/data/raster/r_", i, "_re", "_", m, "_", j, ".tif", sep=""), overwrite=TRUE)
+      
+      
+    }
   }
+}
+
+
+
+# Create stack of raster 
+stack_resi <- stack(r_rc, r_rs, r_rt, r_rrs) 
+stack_resi_re <- stack(r_rc_re, r_rs_re, r_rt_re, r_rrs_re)
+
+# Export stack 
+temp <- getwd()
+setwd(paste(di, "/data/raster/", sep=""))
+writeRaster(stack_resi, filename = 'r_resi_stack', overwrite =TRUE) 
+writeRaster(stack_resi_re, filename = 'r_resi_re_stack', overwrite =TRUE) 
+setwd(temp)
+
+
+# Create stacks
+stack_rc <- stack(r_rc_annual_1, r_rc_annual_2, r_rc_spring_1, r_rc_spring_2, r_rc_summer_1, r_rc_summer_2)
+stack_rc_re <- stack(r_rc_re_annual_1, r_rc_re_annual_2, r_rc_re_spring_1, r_rc_re_spring_2, r_rc_re_summer_1, r_rc_re_summer_2)
+
+stack_rs <- stack(r_rs_annual_1, r_rs_annual_2, r_rs_spring_1, r_rs_spring_2, r_rs_summer_1, r_rs_summer_2)
+stack_rs_re <- stack(r_rs_re_annual_1, r_rs_re_annual_2, r_rs_re_spring_1, r_rs_re_spring_2, r_rs_re_summer_1, r_rs_re_summer_2)
+
+stack_rt <- stack(r_rt_annual_1, r_rt_annual_2, r_rt_spring_1, r_rt_spring_2, r_rt_summer_1, r_rt_summer_2)
+stack_rt_re <- stack(r_rt_re_annual_1, r_rt_re_annual_2, r_rt_re_spring_1, r_rt_re_spring_2, r_rt_re_summer_1, r_rt_re_summer_2)
+
+stack_rrs <- stack(r_rrs_annual_1, r_rrs_annual_2, r_rrs_spring_1, r_rrs_spring_2, r_rrs_summer_1, r_rrs_summer_2)
+stack_rrs_re <- stack(r_rrs_re_annual_1, r_rrs_re_annual_2, r_rrs_re_spring_1, r_rrs_re_spring_2, r_rrs_re_summer_1, r_rrs_re_summer_2)
+
+
+# Export stacks 
+temp <- getwd()
+setwd(paste(di, "/data/raster/", sep=""))
+writeRaster(stack_rc, filename = 'r_stack_rc', overwrite =TRUE) 
+writeRaster(stack_rc_re, filename = 'r_stack_rc_re', overwrite =TRUE) 
+writeRaster(stack_rs, filename = 'r_stack_rs', overwrite =TRUE) 
+writeRaster(stack_rs_re, filename = 'r_stack_rs_re', overwrite =TRUE) 
+writeRaster(stack_rt, filename = 'r_stack_rt', overwrite =TRUE) 
+writeRaster(stack_rt_re, filename = 'r_stack_rt_re', overwrite =TRUE) 
+writeRaster(stack_rrs, filename = 'r_stack_rrs', overwrite =TRUE) 
+writeRaster(stack_rrs_re, filename = 'r_stack_rrs_re', overwrite =TRUE) 
+setwd(temp)
+```  
+    
+    
+    
+    
+    
+    
+    
+      
+      
+
+
+Loop to create raster map
+
+  
+  for (i in resilience_indicators) { 
+    aux_spatial <- aux_spatial_event_season  
+    
+    # raster auxiliar 
+    aux_rast <- raster(aux_spatial, resolution=250)
+    
+    # variable z
+    zvar <- i
+    
+    # raster_layer 
+    r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
+    names(r_resi) <- paste0(i,'_', event, '_', season)
+    
+    # reprojected raster
+    r_resi_re <- projectRaster(r_resi, crs=crs("+init=epsg:4326"))
+    names(r_resi_re) <- paste0(i,'_', event, '_', season)
+    
+    # assign 
+    name_raster <- paste0("r_",i,'_', event, '_', season)
+    name_raster_re <- paste("r_",i,'_', event, '_', season, "_re")
+    
+    out <- writeStart(r_resi, name_raster)
+    out_re <- writeStart(r_resi_re, name_raster_re)
+    
+    # assign(name_raster, r_resi)
+    # assign(name_raster_re, r_resi_re)
+
+  } 
+  out <- writeStop(out)
+  out_re <- writeStop(out_re)
+  return(out)
+  return(out_re) 
+} 
+
+
+createMapsResi(eviresi1_summer, event=1, season='summer')
+
+
+
+df_sel <- eviresi1_summer
+event <- 1
+season <- 'summer' 
+
+
+    
+    writeRaster(r_resi, file=paste(di, "/data/raster/r_", i, ".asc", sep=""), overwrite=TRUE)
+    writeRaster(r_resi_re, file=paste(di, "/data/raster/r_", i, "_re", ".tif", sep=""), overwrite=TRUE)
+    }
+
+
+
+
+
 
 
 # Create stack of raster 
