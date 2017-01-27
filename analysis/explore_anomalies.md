@@ -250,8 +250,29 @@ Maps
 
 -   Create raster maps (two projections: `epsg:4326` and `epsg:23030`)
 
+``` r
+# Create stack of raster 
+stack_a <- stack(r_anomalia_annual_2005, r_anomalia_spring_2005, r_anomalia_summer_2005, r_anomalia_autumn_2005,
+             r_anomalia_winter_2005, r_anomalia_annual_2012, r_anomalia_spring_2012, r_anomalia_summer_2012,
+             r_anomalia_autumn_2012, r_anomalia_winter_2012)
+
+stack_a_re <- stack(r_anomalia_annual_2005_re, r_anomalia_spring_2005_re, r_anomalia_summer_2005_re,
+                    r_anomalia_autumn_2005_re, r_anomalia_winter_2005_re, r_anomalia_annual_2012_re,
+                    r_anomalia_spring_2012_re, r_anomalia_summer_2012_re,
+                    r_anomalia_autumn_2012_re, r_anomalia_winter_2012_re)
+
+# Export stack 
+temp <- getwd()
+setwd(paste(di, "/data/raster/", sep=""))
+writeRaster(stack_a, filename = 'r_a_stack', overwrite =TRUE) 
+writeRaster(stack_a_re, filename = 'r_a_re_stack', overwrite =TRUE) 
+setwd(temp)
+```
+
 Spatial exploration of the anomaly
 ----------------------------------
+
+### Annual
 
 ``` r
 # Select a palette http://colorbrewer2.org/
@@ -259,25 +280,114 @@ mypal <- brewer.pal(11, "RdYlGn")
 # Specify the color palette
 myTheme=rasterTheme(region=mypal)
 
-lp <- levelplot(stack_a, 
+lp <- levelplot(stack_a_re, 
           margin=FALSE,
-          layer=c('anomaly_2005', 'anomaly_2012'),
+          layer=c('a_annual_2005', 'a_annual_2012'),
           #par.settings=myTheme, 
           par.settings=RdBuTheme, 
           names.attr=c("2005", "2012"),
           pretty=TRUE,
-          main='Anomaly', xlab=NULL, ylab=NULL) 
+          layout=c(2,1),
+          main='EVI Annual Anomaly', xlab=NULL, ylab=NULL) 
 
 print(lp)
 ```
 
-<img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-14-1.png" style="display: block; margin: auto;" />
 
 ``` r
-# tiff(filename=paste0(di, '/images/raster_maps/anomalies_2005_2012_blue.tiff'), 
-#     height = 1600, width = 2500, res=150, pointsize = 20, bg='transparent')
-# print(lp)
-# dev.off()
-
-#exportpdf(mypdf=paste0(di, '/man/images/raster_rs.pdf'), lp) 
+tiff(filename=paste0(di, '/images/raster_maps/a_2005_2012_annual.tiff'), 
+     height = 1600, width = 2500, res=150, pointsize = 20, bg='transparent')
+print(lp)
+dev.off()
 ```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+exportpdf(mypdf=paste0(di, '/images/raster_maps/a_2005_2012_annual.pdf'), lp) 
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+### Spring
+
+``` r
+# Select a palette http://colorbrewer2.org/
+mypal <- brewer.pal(11, "RdYlGn")
+# Specify the color palette
+myTheme=rasterTheme(region=mypal)
+
+lp <- levelplot(stack_a_re, 
+          margin=FALSE,
+          layer=c('a_spring_2005', 'a_spring_2012'),
+          #par.settings=myTheme, 
+          par.settings=RdBuTheme, 
+          names.attr=c("2005", "2012"),
+          pretty=TRUE,
+          layout=c(2,1),
+          main='EVI Spring Anomaly', xlab=NULL, ylab=NULL) 
+
+print(lp)
+```
+
+<img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-15-1.png" style="display: block; margin: auto;" />
+
+``` r
+tiff(filename=paste0(di, '/images/raster_maps/a_2005_2012_spring.tiff'), 
+     height = 1600, width = 2500, res=150, pointsize = 20, bg='transparent')
+print(lp)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+exportpdf(mypdf=paste0(di, '/images/raster_maps/a_2005_2012_spring.pdf'), lp) 
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+### Summer
+
+``` r
+# Select a palette http://colorbrewer2.org/
+mypal <- brewer.pal(11, "RdYlGn")
+# Specify the color palette
+myTheme=rasterTheme(region=mypal)
+
+lp <- levelplot(stack_a_re, 
+          margin=FALSE,
+          layer=c('a_summer_2005', 'a_summer_2012'),
+          #par.settings=myTheme, 
+          par.settings=RdBuTheme, 
+          names.attr=c("2005", "2012"),
+          pretty=TRUE,
+          layout=c(2,1),
+          main='EVI Summer Anomaly', xlab=NULL, ylab=NULL) 
+
+print(lp)
+```
+
+<img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+
+``` r
+tiff(filename=paste0(di, '/images/raster_maps/a_2005_2012_summer.tiff'), 
+     height = 1600, width = 2500, res=150, pointsize = 20, bg='transparent')
+print(lp)
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+exportpdf(mypdf=paste0(di, '/images/raster_maps/a_2005_2012_summer.pdf'), lp) 
+```
+
+    ## quartz_off_screen 
+    ##                 2
