@@ -73,11 +73,11 @@ for (j in myevent){
       
       # raster_layer 
       r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
-      names(r_resi) <- i 
+      names(r_resi) <- paste0(i, "_", m, "_", j, sep="")
       
       # reprojected raster
       r_resi_re <- projectRaster(r_resi, crs=crs("+init=epsg:4326"))
-      names(r_resi_re) <- i 
+      names(r_resi_re) <- paste0(i, "_", m, "_", j, sep="")
       
       # assign 
       name_raster <- paste("r_", i, "_", m, "_", j, sep="")
@@ -93,19 +93,6 @@ for (j in myevent){
     }
   }
 }
-
-
-
-# Create stack of raster 
-stack_resi <- stack(r_rc, r_rs, r_rt, r_rrs) 
-stack_resi_re <- stack(r_rc_re, r_rs_re, r_rt_re, r_rrs_re)
-
-# Export stack 
-temp <- getwd()
-setwd(paste(di, "/data/raster/", sep=""))
-writeRaster(stack_resi, filename = 'r_resi_stack', overwrite =TRUE) 
-writeRaster(stack_resi_re, filename = 'r_resi_re_stack', overwrite =TRUE) 
-setwd(temp)
 
 
 # Create stacks
@@ -137,85 +124,6 @@ setwd(temp)
 ```  
     
     
-    
-    
-    
-    
-    
-      
-      
-
-
-Loop to create raster map
-
-  
-  for (i in resilience_indicators) { 
-    aux_spatial <- aux_spatial_event_season  
-    
-    # raster auxiliar 
-    aux_rast <- raster(aux_spatial, resolution=250)
-    
-    # variable z
-    zvar <- i
-    
-    # raster_layer 
-    r_resi <- rasterize(aux_spatial, aux_rast, i, fun=mean)
-    names(r_resi) <- paste0(i,'_', event, '_', season)
-    
-    # reprojected raster
-    r_resi_re <- projectRaster(r_resi, crs=crs("+init=epsg:4326"))
-    names(r_resi_re) <- paste0(i,'_', event, '_', season)
-    
-    # assign 
-    name_raster <- paste0("r_",i,'_', event, '_', season)
-    name_raster_re <- paste("r_",i,'_', event, '_', season, "_re")
-    
-    out <- writeStart(r_resi, name_raster)
-    out_re <- writeStart(r_resi_re, name_raster_re)
-    
-    # assign(name_raster, r_resi)
-    # assign(name_raster_re, r_resi_re)
-
-  } 
-  out <- writeStop(out)
-  out_re <- writeStop(out_re)
-  return(out)
-  return(out_re) 
-} 
-
-
-createMapsResi(eviresi1_summer, event=1, season='summer')
-
-
-
-df_sel <- eviresi1_summer
-event <- 1
-season <- 'summer' 
-
-
-    
-    writeRaster(r_resi, file=paste(di, "/data/raster/r_", i, ".asc", sep=""), overwrite=TRUE)
-    writeRaster(r_resi_re, file=paste(di, "/data/raster/r_", i, "_re", ".tif", sep=""), overwrite=TRUE)
-    }
-
-
-
-
-
-
-
-# Create stack of raster 
-stack_resi <- stack(r_rc, r_rs, r_rt, r_rrs) 
-stack_resi_re <- stack(r_rc_re, r_rs_re, r_rt_re, r_rrs_re)
-
-# Export stack 
-temp <- getwd()
-setwd(paste(di, "/data/raster/", sep=""))
-writeRaster(stack_resi, filename = 'r_resi_stack', overwrite =TRUE) 
-writeRaster(stack_resi_re, filename = 'r_resi_re_stack', overwrite =TRUE) 
-setwd(temp)
-```
-
 
 ## Spatial exploration of the resilience components 
 
@@ -228,16 +136,20 @@ mypal <- brewer.pal(9, "RdYlGn")
 # Specify the color palette
 myTheme=rasterTheme(region=mypal)
 
-lp <- levelplot(stack_resi_re, 
+lp <- levelplot(stack_rs, 
           margin=FALSE,
-          layer='rs', 
+          layer=c('rs_annual_1', 'rs_spring_1','rs_summer_1',
+                  'rs_annual_2', 'rs_spring_2','rs_summer_2'),
           par.settings=myTheme,
           pretty=TRUE,
+          names.attr=c("Annual 2005", "Spring 2005", "Summer 2005",
+                       "Annual 2012", "Summer 2012", "Spring 2012"),
+          layout=c(3,2),
           main='Resilience (rs)', xlab=NULL, ylab=NULL)
 
 print(lp)
 
-exportpdf(mypdf=paste0(di, '/man/images/raster_rs.pdf'), lp) 
+exportpdf(mypdf=paste0(di, '/images/raster_maps/raster_rs.pdf'), lp) 
 ```
 
 ### Resistance 
@@ -249,16 +161,20 @@ mypal <- brewer.pal(9, "RdYlGn")
 # Specify the color palette
 myTheme=rasterTheme(region=mypal)
 
-lp <- levelplot(stack_resi_re, 
-          margin=FALSE,
-          layer='rt', 
-          par.settings=myTheme,
-          pretty=TRUE,
-          main='Resistance (rt)', xlab=NULL, ylab=NULL)
+lp <- levelplot(stack_rt, 
+                margin=FALSE,
+                layer=c('rt_annual_1', 'rt_spring_1','rt_summer_1',
+                        'rt_annual_2', 'rt_spring_2','rt_summer_2'),
+                par.settings=myTheme,
+                pretty=TRUE,
+                names.attr=c("Annual 2005", "Spring 2005", "Summer 2005",
+                             "Annual 2012", "Summer 2012", "Spring 2012"),
+                layout=c(3,2),
+                main='Resistance (rt)', xlab=NULL, ylab=NULL)
 
 print(lp)
 
-exportpdf(mypdf=paste0(di, '/man/images/raster_rt.pdf'), lp) 
+exportpdf(mypdf=paste0(di, '/images/raster_maps/raster_rt.pdf'), lp) 
 ```
 
 
@@ -271,16 +187,20 @@ mypal <- brewer.pal(9, "RdYlGn")
 # Specify the color palette
 myTheme=rasterTheme(region=mypal)
 
-lp <- levelplot(stack_resi_re, 
-          margin=FALSE,
-          layer='rc', 
-          par.settings=myTheme, 
-          pretty=TRUE,
-          main='Recovery (rc)', xlab=NULL, ylab=NULL)
+lp <- levelplot(stack_rc, 
+                margin=FALSE,
+                layer=c('rc_annual_1', 'rc_spring_1','rc_summer_1',
+                        'rc_annual_2', 'rc_spring_2','rc_summer_2'),
+                par.settings=myTheme,
+                pretty=TRUE,
+                names.attr=c("Annual 2005", "Spring 2005", "Summer 2005",
+                             "Annual 2012", "Summer 2012", "Spring 2012"),
+                layout=c(3,2),
+                main='Recovery (rc)', xlab=NULL, ylab=NULL)
 
 print(lp)
 
-exportpdf(mypdf=paste0(di, '/man/images/raster_rc.pdf'), lp) 
+exportpdf(mypdf=paste0(di, '/images/raster_maps/raster_rc.pdf'), lp) 
 ```
 
 
@@ -293,16 +213,20 @@ mypal <- brewer.pal(9, "RdYlGn")
 # Specify the color palette
 myTheme=rasterTheme(region=mypal)
 
-lp <- levelplot(stack_resi_re, 
-          margin=FALSE,
-          layer='rrs', 
-          par.settings=myTheme,
-          pretty=TRUE,
-          main='Relative Resilience (rs)', xlab=NULL, ylab=NULL)
+lp <- levelplot(stack_rrs, 
+                margin=FALSE,
+                layer=c('rrs_annual_1', 'rrs_spring_1','rrs_summer_1',
+                        'rrs_annual_2', 'rrs_spring_2','rrs_summer_2'),
+                par.settings=myTheme,
+                pretty=TRUE,
+                names.attr=c("Annual 2005", "Spring 2005", "Summer 2005",
+                             "Annual 2012", "Summer 2012", "Spring 2012"),
+                layout=c(3,2),
+                main='Relative Resilience (rs)', xlab=NULL, ylab=NULL)
 
 print(lp)
 
-exportpdf(mypdf=paste0(di, '/man/images/raster_rrs.pdf'), lp) 
+exportpdf(mypdf=paste0(di, '/images/raster_maps/raster_rrs.pdf'), lp) 
 ```
 
 
@@ -315,24 +239,22 @@ exportpdf(mypdf=paste0(di, '/man/images/raster_rrs.pdf'), lp)
 # Prepare data
 elev <- read.csv(file=paste(di, "/data/elev.csv", sep=""), header = TRUE, sep = ',')
 
-eviresi <- eviresi %>% 
+eviresi <- evi_resilience %>% 
   # join elevation data
   dplyr::inner_join(elev, by='iv_malla_modi_id') %>% 
   # Add a variable for population cluster
-  mutate(clu_pop = ifelse(poblacion == 1, 'a', 
-                          ifelse(poblacion %in% c(2,3,4,5), 'b', 
-                                 ifelse(poblacion %in% c(6,7,8), 'c', 'out'))))
+  mutate(clu_pop = ifelse(pop %in% c(1,2,3,4,5), 'a', 'b'))
 
-# Filter out cluster 
-eviresi_f <- eviresi %>% filter(clu_pop != 'out')
+
 ```
 
 ## Explore elevation pattern general and by cluster of populations
 
 ```{r}
 # Change format of the dataset (wide to long)
-df_melt <- melt(eviresi_f, id.vars = c('iv_malla_modi_id', 'poblacion',
-                                      'lng', 'lat', 'elev', 'clu_pop'))
+df_melt <- melt(eviresi, id.vars = c('iv_malla_modi_id', 'pop',
+                                      'long', 'lat', 'elev', 'clu_pop', 
+                                     'event', 'seasonF'))
 
 df_aux <- df_melt %>% filter(variable %in% c('rs','rt','rc', 'rrs'))
 
@@ -341,106 +263,192 @@ label_variable <- c('rt' = 'Resistance',
                     'rc' = 'Recovery',
                     'rs' = 'Resilience',
                     'rrs' = 'Relative Resilience')
-label_cluster <- c('a' = 'Camarate',
-                   'b' = 'Northern slope',
-                   'c' = 'Southern slope')
+label_cluster <- c('a' = 'Northern slope',
+                   'b' = 'Southern slope')
+
+label_season <- c('annual' = 'Annual',
+                  'summer' = 'Summer',
+                  'spring' = 'Spring')
 ```
 
 ### General pattern 
 ```{r, fig.cap='Resilience components vs. elevation', fig.width=12, fig.height=8}
-
-g <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) + 
+g <- df_aux %>% 
+  filter(variable %in% c('rt', 'rc', 'rs')) %>% 
+  ggplot(aes(x=elev, y=value)) + 
   geom_point(col='gray') + 
   geom_smooth(method = 'lm') + 
-  facet_wrap(~variable, nrow=1, labeller = as_labeller(label_variable)) + 
+  facet_grid(seasonF~variable,
+             labeller = labeller(.cols = label_variable,
+                                 .rows = label_season)) +
+             # labeller = as_labeller(label_variable)) + 
   theme_bw() + 
   theme(strip.background = element_rect(fill = "white")) 
 
 g
-pdf(file=paste0(di, "/man/images/plot_resicomp_elev.pdf"), height = 5, width = 8)
+pdf(file=paste0(di, "/images/plot_resi_elev.pdf"), height = 9, width = 9)
 g
 dev.off() 
 ```
 
 
 ```{r, fig.cap='Relative Resilience vs. elevation'}
-gr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) + 
+gr <- df_aux %>% 
+  filter(variable == 'rrs') %>%
+  ggplot(aes(x=elev, y=value)) + 
   geom_point(col='gray') + 
   theme_bw() +
   geom_smooth(method = 'lm') + 
+  facet_grid(seasonF~.)
   ggtitle('Relative Resilience')
 
 gr
 
-pdf(file=paste0(di, "/man/images/plot_resi_rel_elev.pdf"), height = 5, width = 5)
+pdf(file=paste0(di, "/images/plot_resi_rel_elev.pdf"), height = 8, width = 5)
 gr
 dev.off() 
 ```
 
 
 ### Elevational pattern by population 
-```{r, fig.cap='Resilience components vs. elevation (grouped by cluster) ', fig.width=12, fig.height=10}
+#### Annual 
 
-gp <- ggplot(df_aux[df_aux$variable != 'rrs',], aes(x=elev, y=value)) +
+```{r, fig.cap='Resilience components vs. elevation (grouped by cluster) - Annual', fig.width=12, fig.height=10}
+gp <- 
+  df_aux %>% filter(variable %in% c('rt', 'rc', 'rs')) %>% filter(seasonF == 'annual') %>%  
+  ggplot( aes(x=elev, y=value)) +
   geom_point(col='gray') + 
   geom_smooth(method = 'lm') + 
-  facet_grid(variable ~clu_pop, scales = 'free_y',
+  facet_grid(variable ~ clu_pop, scales = 'free_y',
              labeller = labeller(.rows = label_variable,
                                  .cols = label_cluster)) +
   # facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
-  theme_bw() + 
+  theme_bw() + ggtitle('Annual') +
   theme(strip.background = element_rect(fill = "white")) 
 gp 
 
-pdf(file=paste0(di, "/man/images/plot_resicomp_elev_grouped.pdf"), height = 8, width = 8)
+pdf(file=paste0(di, "/images/plot_resicomp_elev_grouped_annual.pdf"), height = 8, width = 8)
+gp
+dev.off() 
+```
+
+#### Spring
+```{r, fig.cap='Resilience components vs. elevation (grouped by cluster) - Spring', fig.width=12, fig.height=10}
+gp <- 
+  df_aux %>% filter(variable %in% c('rt', 'rc', 'rs')) %>% filter(seasonF == 'spring') %>%  
+  ggplot( aes(x=elev, y=value)) +
+  geom_point(col='gray') + 
+  geom_smooth(method = 'lm') + 
+  facet_grid(variable ~ clu_pop, scales = 'free_y',
+             labeller = labeller(.rows = label_variable,
+                                 .cols = label_cluster)) +
+  # facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
+  theme_bw() + ggtitle('Spring') +
+  theme(strip.background = element_rect(fill = "white")) 
+gp 
+
+pdf(file=paste0(di, "/images/plot_resicomp_elev_grouped_spring.pdf"), height = 8, width = 8)
+gp
+dev.off() 
+```
+
+#### Summer
+```{r, fig.cap='Resilience components vs. elevation (grouped by cluster) - Spring', fig.width=12, fig.height=10}
+gp <- 
+  df_aux %>% filter(variable %in% c('rt', 'rc', 'rs')) %>% filter(seasonF == 'summer') %>%  
+  ggplot( aes(x=elev, y=value)) +
+  geom_point(col='gray') + 
+  geom_smooth(method = 'lm') + 
+  facet_grid(variable ~ clu_pop, scales = 'free_y',
+             labeller = labeller(.rows = label_variable,
+                                 .cols = label_cluster)) +
+  # facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
+  theme_bw() + ggtitle('Summer') +
+  theme(strip.background = element_rect(fill = "white")) 
+gp 
+
+pdf(file=paste0(di, "/images/plot_resicomp_elev_grouped_summer.pdf"), height = 8, width = 8)
 gp
 dev.off() 
 ```
 
 
 
-```{r, fig.cap='Relative resilience vs. elevation (grouped by cluster) ', fig.width=12, fig.height=7}
-
-gpr <- ggplot(df_aux[df_aux$variable == 'rrs',], aes(x=elev, y=value)) +
-  geom_point(col='gray') + 
-  geom_smooth(method = 'lm') + 
-  facet_wrap(~clu_pop, labeller = as_labeller(label_cluster)) +
-  theme_bw() + 
-  theme(strip.background = element_rect(fill = "white")) 
-gpr 
-
-pdf(file=paste0(di, "/man/images/plot_resi_rel_elev_grouped.pdf"), height = 6, width = 12)
-gpr
-dev.off()
-```
-
 
 # Explore pattern by population (cluster)
-```{r, fig.cap='Resilience components by cluster (populations)', fig.width=8, fig.height=8}
-gpop <- ggplot(df_aux, aes(x=clu_pop, y=value)) + 
+### Event 1 (2005)
+```{r, fig.cap='Resilience components by cluster (populations)', fig.width=9, fig.height=9}
+gpop_2005 <- df_aux %>% filter(event == 1) %>% 
+  ggplot(aes(x=clu_pop, y=value)) + 
   geom_boxplot() + 
-  facet_wrap(~variable, scales = 'free_y', labeller = as_labeller(label_variable)) + 
+  facet_grid(variable~seasonF, scales = 'free_y',
+             labeller = labeller(.rows = label_variable,
+                                 .cols = label_season)) +
+  # facet_wrap(~variable, scales = 'free_y', labeller = as_labeller(label_variable)) + 
   theme_bw() + xlab('')+
   theme(strip.background = element_rect(fill = "white")) +  
+  ggtitle('2005') + 
   scale_x_discrete(labels = label_cluster)
 
-gpop
-pdf(file=paste0(di, "/man/images/plot_resicomp_by_cluster.pdf"), height = 7, width = 8)
-gpop
+gpop_2005
+pdf(file=paste0(di, "/images/plot_resicomp_by_cluster_event1.pdf"), height = 7, width = 8)
+gpop_2005
 dev.off()
 ```
 
+### Event 2 (2012)
+```{r, fig.cap='Resilience components by cluster (populations)', fig.width=9, fig.height=9}
+gpop_2012 <- df_aux %>% filter(event == 2) %>% 
+  ggplot(aes(x=clu_pop, y=value)) + 
+  geom_boxplot() + 
+  facet_grid(variable~seasonF, scales = 'free_y',
+             labeller = labeller(.rows = label_variable,
+                                 .cols = label_season)) +
+  # facet_wrap(~variable, scales = 'free_y', labeller = as_labeller(label_variable)) + 
+  theme_bw() + xlab('')+
+  theme(strip.background = element_rect(fill = "white")) + 
+  ggtitle('2012') + 
+  scale_x_discrete(labels = label_cluster)
+
+gpop_2012
+pdf(file=paste0(di, "/images/plot_resicomp_by_cluster_event2.pdf"), height = 7, width = 8)
+gpop_2012
+dev.off()
+```
+
+# Bar plots
+## Annual 
+### Event 1
+
 ```{r, fig.cap='Resilience components by cluster (populations)', fig.width=10, fig.height=4}
+
+# Annual 
+auxilio <- eviresi %>% filter(seasonF == 'annual') 
+
 # Bar plot 
 variables <- c('rs','rc','rt','rrs')
-auxdf <- data.frame() 
+auxdf <- data.frame()
+auxaux <- data.frame()
 
-for (i in variables){ 
-aux <- eviresi_f %>% 
-  dplyr::group_by(clu_pop) %>% 
-  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+for (j in c(1:2)){ 
+  auxilio <- auxilio %>% filter(event==j) 
+  
+  for (i in variables){ 
+    aux <- auxilio %>% 
+      dplyr::group_by(clu_pop) %>% 
+      summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), i) %>% mutate(variable=i) 
+    
+    auxdf <- rbind(auxdf, aux) }
+  
+  auxdf <- auxdf %>% mutate(event = j)  
+  
+  auxaux <- rbind(auxaux, auxdf)} 
 
-auxdf <- rbind(auxdf, aux) }
+
+
+
+
+
 
 gpop_bar <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_pop, y=mean)) + 
   geom_bar(stat='identity', fill='black', colour='black') + 
@@ -449,20 +457,20 @@ gpop_bar <- ggplot(auxdf[auxdf$variable != 'rrs',], aes(x=clu_pop, y=mean)) +
   facet_wrap(~variable, labeller = as_labeller(label_variable)) + 
   theme_bw() + xlab('')+
   theme(strip.background = element_rect(fill = "white")) +  
+  ggtitle('Annual 2005') + 
   scale_x_discrete(labels = label_cluster)
 
 gpop_bar
-pdf(file=paste0(di, "/man/images/plot_resicomp_bar_by_cluster.pdf"), height = 7, width = 8)
+pdf(file=paste0(di, "/images/plot_resicomp_bar_by_cluster_annual_event1.pdf"), height = 7, width = 8)
 gpop
 dev.off()
-
 
 ```
 
 
 # Exploring relationships 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 # https://cran.r-project.org/web/packages/broom/vignettes/broom_and_dplyr.html
 
 # Regresssion models resilience component ~ elevation by cluster pop 

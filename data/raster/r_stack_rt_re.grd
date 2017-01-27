@@ -1,6 +1,6 @@
 [general]
 creator=R package 'raster'
-created=2017-01-27 16:25:15
+created=2017-01-27 16:30:20
 [georeference]
 nrows=128
 ncols=140
@@ -22,4 +22,4 @@ legendtype=
 values=
 color=
 [description]
-layername=rt.1:rt.2:rt.3:rt.4:rt.5:rt.6
+layername=rt_annual_1:rt_annual_2:rt_spring_1:rt_spring_2:rt_summer_1:rt_summer_2
