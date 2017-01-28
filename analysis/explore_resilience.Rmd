@@ -33,7 +33,7 @@ library("knitr")
 ## Read and prepare data 
 
 ```{r}
-# Read Summer resilience
+# Read resilience
 evi_resilience <- read.csv(file=paste(di, "/data/evi_resilience.csv", sep=""), header = TRUE, sep = ',')
 ```
 
@@ -648,12 +648,11 @@ reg_coef <- rbind(reg_coef_rs, reg_coef_rt, reg_coef_rc, reg_coef_rrs)
 reg_summ <- rbind(reg_summ_rs, reg_summ_rt, reg_summ_rc, reg_summ_rrs)
 ```
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 kable(reg_coef, caption = "Coefficients of Regression")
 
 kable(reg_summ[,c(1:3,6,13)], caption = "Coefficients of Regression")
 ```
-
 
 
 ```{r, echo=FALSE, eval=FALSE} 
@@ -662,8 +661,6 @@ m <-
   split(.$clu_pop) %>% 
   map(~ lm(rs ~ elev, data =.)) %>% 
   map_df(broom::tidy, .id="i") 
-
-
 
 
 
