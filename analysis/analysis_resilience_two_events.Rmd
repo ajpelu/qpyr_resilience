@@ -185,7 +185,19 @@ phc <- function(mymodel){
 
   # interaction 
   ph_i <- lsmeans(mymodel, pairwise ~ event:clu_pop, adjust = "tukey")
-
+  
+  # Objets for plot
+  aux_ph_clu <- as.data.frame(summary(ph_clu$lsmeans)) 
+  aux_ph_clu <- aux_ph_clu %>% mutate(var = mivariable, season = myseason)
+  aux_ph_event <- as.data.frame(summary(ph_event$lsmeans)) 
+  aux_ph_event <- aux_ph_event %>% mutate(var = mivariable, season = myseason)
+  aux_ph_i <- as.data.frame(summary(ph_i$lsmeans)) 
+  aux_ph_i <- aux_ph_i %>% mutate(var = mivariable, season = myseason)
+  
+  # assign(paste0('df_',mivariable, myseason), aux_ph_event)
+  # assign(paste0('df_',mivariable, myseason), aux_ph_clu)
+  # assign(paste0('df_',mivariable, myseason), aux_ph_i)
+  # 
   # Return objects
   cat('\n### Event ###\n')
   print(ph_event)
@@ -195,9 +207,11 @@ phc <- function(mymodel){
   print(cld_clu)
   cat('\n### Event:Clu pop ###\n')
   print(ph_i)
+  return(list(aux_ph_clu, aux_ph_event, aux_ph_i))
 }
 
-phc(mymodel = mymodel)
+yu <- phc(mymodel = mymodel)
+yu
 ```
 
 
@@ -759,6 +773,28 @@ plot(effect("event:clu_pop",mymodel),
 ### Post-hoc comparison 
 ```{r}
 phc(mymodel = mymodel)
+```
+
+
+# Otros plots 
+```{r}
+
+
+
+
+
+
+
+
+auxplotdf %>% 
+  ggplot(aes(x=clu_pop, y=lsmean)) + 
+  geom_point() + 
+  geom_line
+  
+
+xx <- as.data.frame(summary(ph_clu$lsmeans))
+
+
 ```
 
 
