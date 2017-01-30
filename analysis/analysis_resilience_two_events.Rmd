@@ -13,7 +13,6 @@ opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE, warning = FALS
 ```
 
 
-# Exploring patterns of resilience components (models)
 
 ```{r}
 #---------------------------------
@@ -59,7 +58,7 @@ eviresi <- evi_resilience %>%
   
 ```
 
-# Obtain means values by cluster population
+
 ```{r}
 variables <- c('dr','post', 'pre','rs','rc','rt','rrs')
 myseasons <- unique(eviresi$seasonF)
@@ -110,7 +109,7 @@ mivariable <- 'rs'
 auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
 ```
 
-### Summer 
+## Summer 
 ```{r}
 # Select season 
 myseason <- 'summer'
@@ -121,7 +120,7 @@ myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
 mymodel <- aov(myformula, data=df)
 ```
 
-#### Summary ANOVA model
+### Summary ANOVA model
 ```{r}
 ## Summary model 
 tm <- broom::tidy(mymodel)
@@ -140,8 +139,9 @@ rownames(gm) <- "Statistic"
 pander(t(gm))
 ```
 
-#### Effects plot 
-##### . ~ Cluster population 
+### Effects plot 
+#### . ~ Cluster population 
+
 ```{r}
 ### Population 
 plot(effect("clu_pop",mymodel), 
@@ -149,7 +149,8 @@ plot(effect("clu_pop",mymodel),
                xlab='Cluster population')
 ```
 
-##### . ~ Disturbance Event
+#### . ~ Disturbance Event
+
 ```{r}
 ### Event
 plot(effect("event",mymodel), 
@@ -165,9 +166,9 @@ plot(effect("event:clu_pop",mymodel),
      xlab='Drought event')
 ```
 
-#### Post-hoc comparison 
-```{r}
+### Post-hoc comparison 
 
+```{r}
 phc <- function(mymodel){ 
   # Event 
   ph_event <- lsmeans(mymodel, pairwise ~ event, adjust = "tukey")
@@ -200,7 +201,7 @@ phc(mymodel = mymodel)
 ```
 
 
-### Spring 
+## Spring 
 ```{r}
 # Select season 
 myseason <- 'spring'
@@ -211,7 +212,7 @@ myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
 mymodel <- aov(myformula, data=df)
 ```
 
-#### Summary ANOVA model
+### Summary ANOVA model
 ```{r}
 ## Summary model 
 tm <- broom::tidy(mymodel)
@@ -230,8 +231,8 @@ rownames(gm) <- "Statistic"
 pander(t(gm))
 ```
 
-#### Effects plot 
-##### . ~ Cluster population 
+### Effects plot 
+#### . ~ Cluster population 
 ```{r}
 ### Population 
 plot(effect("clu_pop",mymodel), 
@@ -239,7 +240,7 @@ plot(effect("clu_pop",mymodel),
                xlab='Cluster population')
 ```
 
-##### . ~ Disturbance Event
+#### . ~ Disturbance Event
 ```{r}
 ### Event
 plot(effect("event",mymodel), 
@@ -247,7 +248,7 @@ plot(effect("event",mymodel),
      xlab='Drought event')
 ```
 
-##### . ~ Cluster population:Elevation  
+#### . ~ Cluster population:Elevation  
 ```{r} 
 ### Both 
 plot(effect("event:clu_pop",mymodel), 
@@ -255,12 +256,12 @@ plot(effect("event:clu_pop",mymodel),
      xlab='Drought event')
 ```
 
-#### Post-hoc comparison 
+### Post-hoc comparison 
 ```{r}
 phc(mymodel = mymodel)
 ```
 
-### Annual 
+## Annual 
 ```{r}
 # Select season 
 myseason <- 'annual'
@@ -271,7 +272,7 @@ myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
 mymodel <- aov(myformula, data=df)
 ```
 
-#### Summary ANOVA model
+### Summary ANOVA model
 ```{r}
 ## Summary model 
 tm <- broom::tidy(mymodel)
@@ -290,8 +291,8 @@ rownames(gm) <- "Statistic"
 pander(t(gm))
 ```
 
-#### Effects plot 
-##### . ~ Cluster population 
+### Effects plot 
+#### . ~ Cluster population 
 ```{r}
 ### Population 
 plot(effect("clu_pop",mymodel), 
@@ -299,7 +300,7 @@ plot(effect("clu_pop",mymodel),
                xlab='Cluster population')
 ```
 
-##### . ~ Disturbance Event
+#### . ~ Disturbance Event
 ```{r}
 ### Event
 plot(effect("event",mymodel), 
@@ -307,7 +308,7 @@ plot(effect("event",mymodel),
      xlab='Drought event')
 ```
 
-##### . ~ Cluster population:Elevation  
+#### . ~ Cluster population:Elevation  
 ```{r} 
 ### Both 
 plot(effect("event:clu_pop",mymodel), 
@@ -315,7 +316,7 @@ plot(effect("event:clu_pop",mymodel),
      xlab='Drought event')
 ```
 
-#### Post-hoc comparison 
+### Post-hoc comparison 
 ```{r}
 phc(mymodel = mymodel)
 ```

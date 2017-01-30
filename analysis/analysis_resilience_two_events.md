@@ -1,16 +1,17 @@
--   [Exploring patterns of resilience components (models)](#exploring-patterns-of-resilience-components-models)
--   [Obtain means values by cluster population](#obtain-means-values-by-cluster-population)
 -   [Resilience](#resilience)
     -   [Mean values (Cluster population)](#mean-values-cluster-population)
-        -   [Summer](#summer)
-        -   [Spring](#spring)
-        -   [Annual](#annual)
-
-Exploring patterns of resilience components (models)
-====================================================
-
-Obtain means values by cluster population
-=========================================
+    -   [Summer](#summer)
+        -   [Summary ANOVA model](#summary-anova-model)
+        -   [Effects plot](#effects-plot)
+        -   [Post-hoc comparison](#post-hoc-comparison)
+    -   [Spring](#spring)
+        -   [Summary ANOVA model](#summary-anova-model-1)
+        -   [Effects plot](#effects-plot-1)
+        -   [Post-hoc comparison](#post-hoc-comparison-1)
+    -   [Annual](#annual)
+        -   [Summary ANOVA model](#summary-anova-model-2)
+        -   [Effects plot](#effects-plot-2)
+        -   [Post-hoc comparison](#post-hoc-comparison-2)
 
 Resilience
 ==========
@@ -152,9 +153,10 @@ Mean values (Cluster population)
 </tbody>
 </table>
 
-### Summer
+Summer
+------
 
-#### Summary ANOVA model
+### Summary ANOVA model
 
 <table style="width:79%;">
 <caption>ANOVA table: rs summer</caption>
@@ -271,13 +273,13 @@ Mean values (Cluster population)
 </tbody>
 </table>
 
-#### Effects plot
+### Effects plot
 
-##### . ~ Cluster population
+#### . ~ Cluster population
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
-##### . ~ Disturbance Event
+#### . ~ Disturbance Event
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
@@ -285,7 +287,7 @@ Mean values (Cluster population)
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
-#### Post-hoc comparison
+### Post-hoc comparison
 
     ## 
     ## ### Event ###
@@ -357,9 +359,10 @@ Mean values (Cluster population)
     ## 
     ## P value adjustment: tukey method for comparing a family of 4 estimates
 
-### Spring
+Spring
+------
 
-#### Summary ANOVA model
+### Summary ANOVA model
 
 <table style="width:79%;">
 <caption>ANOVA table: rs spring</caption>
@@ -476,21 +479,21 @@ Mean values (Cluster population)
 </tbody>
 </table>
 
-#### Effects plot
+### Effects plot
 
-##### . ~ Cluster population
+#### . ~ Cluster population
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
 
-##### . ~ Disturbance Event
+#### . ~ Disturbance Event
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
 
-##### . ~ Cluster population:Elevation
+#### . ~ Cluster population:Elevation
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
 
-#### Post-hoc comparison
+### Post-hoc comparison
 
     ## 
     ## ### Event ###
@@ -562,9 +565,10 @@ Mean values (Cluster population)
     ## 
     ## P value adjustment: tukey method for comparing a family of 4 estimates
 
-### Annual
+Annual
+------
 
-#### Summary ANOVA model
+### Summary ANOVA model
 
 <table style="width:83%;">
 <caption>ANOVA table: rs annual</caption>
@@ -681,21 +685,21 @@ Mean values (Cluster population)
 </tbody>
 </table>
 
-#### Effects plot
+### Effects plot
 
-##### . ~ Cluster population
+#### . ~ Cluster population
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
 
-##### . ~ Disturbance Event
+#### . ~ Disturbance Event
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-24-1.png" style="display: block; margin: auto;" />
 
-##### . ~ Cluster population:Elevation
+#### . ~ Cluster population:Elevation
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-25-1.png" style="display: block; margin: auto;" />
 
-#### Post-hoc comparison
+### Post-hoc comparison
 
     ## 
     ## ### Event ###
