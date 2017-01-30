@@ -321,5 +321,446 @@ plot(effect("event:clu_pop",mymodel),
 phc(mymodel = mymodel)
 ```
 
+# Resistance
+## Mean values (Cluster population)
+```{r}
+mivariable <- 'rt'
+
+auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
+```
+
+## Summer 
+```{r}
+# Select season 
+myseason <- 'summer'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+               main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+               xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+##### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+
+```{r}
+phc <- function(mymodel){ 
+  # Event 
+  ph_event <- lsmeans(mymodel, pairwise ~ event, adjust = "tukey")
+  # differences letters 
+  cld_event <- cld(ph_event, alpha   = 0.01, 
+                   Letters = letters, 
+                   adjust  = "tukey")
+  
+  # Clu pop  
+  ph_clu <- lsmeans(mymodel, pairwise ~ clu_pop, adjust = "tukey")
+  cld_clu <- cld(ph_clu, alpha   = 0.01, 
+                 Letters = letters, 
+                 adjust  = "tukey")
+
+  # interaction 
+  ph_i <- lsmeans(mymodel, pairwise ~ event:clu_pop, adjust = "tukey")
+
+  # Return objects
+  cat('\n### Event ###\n')
+  print(ph_event)
+  print(cld_event)
+  cat('\n### Clu pop ###\n')
+  print(ph_clu)
+  print(cld_clu)
+  cat('\n### Event:Clu pop ###\n')
+  print(ph_i)
+}
+
+phc(mymodel = mymodel)
+```
+
+
+## Spring 
+```{r}
+# Select season 
+myseason <- 'spring'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+               main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+               xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+#### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+```{r}
+phc(mymodel = mymodel)
+```
+
+## Annual 
+```{r}
+# Select season 
+myseason <- 'annual'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+               main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+               xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+#### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+```{r}
+phc(mymodel = mymodel)
+```
+
+# Recovery
+## Mean values (Cluster population)
+```{r}
+mivariable <- 'rc'
+
+auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
+```
+
+## Summer 
+```{r}
+# Select season 
+myseason <- 'summer'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+               main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+               xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+##### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+
+```{r}
+phc <- function(mymodel){ 
+  # Event 
+  ph_event <- lsmeans(mymodel, pairwise ~ event, adjust = "tukey")
+  # differences letters 
+  cld_event <- cld(ph_event, alpha   = 0.01, 
+                   Letters = letters, 
+                   adjust  = "tukey")
+  
+  # Clu pop  
+  ph_clu <- lsmeans(mymodel, pairwise ~ clu_pop, adjust = "tukey")
+  cld_clu <- cld(ph_clu, alpha   = 0.01, 
+                 Letters = letters, 
+                 adjust  = "tukey")
+
+  # interaction 
+  ph_i <- lsmeans(mymodel, pairwise ~ event:clu_pop, adjust = "tukey")
+
+  # Return objects
+  cat('\n### Event ###\n')
+  print(ph_event)
+  print(cld_event)
+  cat('\n### Clu pop ###\n')
+  print(ph_clu)
+  print(cld_clu)
+  cat('\n### Event:Clu pop ###\n')
+  print(ph_i)
+}
+
+phc(mymodel = mymodel)
+```
+
+
+## Spring 
+```{r}
+# Select season 
+myseason <- 'spring'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+               main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+               xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+#### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+```{r}
+phc(mymodel = mymodel)
+```
+
+## Annual 
+```{r}
+# Select season 
+myseason <- 'annual'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+               main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+               xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+#### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+```{r}
+phc(mymodel = mymodel)
+```
+
+
 
 
