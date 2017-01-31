@@ -44,6 +44,7 @@
     -   [Resilience](#resilience-1)
     -   [Resistance](#resistance-1)
     -   [Recovery](#recovery-1)
+-   [Correlation](#correlation)
 
     ## Warning: package 'knitr' was built under R version 3.2.5
 
@@ -2377,3 +2378,19 @@ Recovery
 
     ## quartz_off_screen 
     ##                 2
+
+Correlation
+===========
+
+    ## Source: local data frame [3 x 9]
+    ## Groups: seasonF [3]
+    ## 
+    ##   seasonF    estimate  statistic    p.value parameter     conf.low
+    ##    <fctr>       <dbl>      <dbl>      <dbl>     <int>        <dbl>
+    ## 1  annual  0.01139678  0.4851651 0.62761788      1812 -0.034645134
+    ## 2  spring -0.02570777 -1.0946799 0.27380240      1812 -0.071646748
+    ## 3  summer  0.04685164  1.9965541 0.04602302      1812  0.000829686
+    ## # ... with 3 more variables: conf.high <dbl>, method <fctr>,
+    ## #   alternative <fctr>
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-84-1.png" style="display: block; margin: auto;" />

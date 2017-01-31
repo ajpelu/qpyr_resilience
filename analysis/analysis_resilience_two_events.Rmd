@@ -934,3 +934,32 @@ dev.off()
 ```
 
 
+# Correlation
+```{r}
+dc <- eviresi %>% 
+  mutate(event = paste0('rs_',event)) %>% 
+  dplyr::select(iv_malla_modi_id, seasonF, clu_popf, rs, event) %>% 
+  dcast(formula = iv_malla_modi_id + seasonF + clu_popf ~ event, value.var = "rs") 
+
+correla <- dc %>% group_by(seasonF) %>% 
+  summarise(r = cor(rs_2005, rs_2012))
+
+correla_test <- dc %>% group_by(seasonF) %>% 
+  do(tidy(cor.test(.$rs_2005, .$rs_2012)))
+
+correla_test 
+```
+
+```{r}
+dc %>% 
+  ggplot(aes(rs_2005, rs_2012)) + 
+  geom_point(col='gray') + 
+  geom_smooth(method = 'lm') + 
+  facet_wrap(~seasonF) +
+  theme_bw() +
+  theme(strip.background = element_rect(fill = "white")) 
+```
+
+
+
+
