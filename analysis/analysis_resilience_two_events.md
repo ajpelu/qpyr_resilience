@@ -40,6 +40,12 @@
         -   [Summary ANOVA model](#summary-anova-model-8)
         -   [Effects plot](#effects-plot-8)
         -   [Post-hoc comparison](#post-hoc-comparison-8)
+-   [Otros plots](#otros-plots)
+    -   [Resilience](#resilience-1)
+    -   [Resistance](#resistance-1)
+    -   [Recovery](#recovery-1)
+
+    ## Warning: package 'knitr' was built under R version 3.2.5
 
 Resilience
 ==========
@@ -2314,3 +2320,60 @@ Annual
     ##  2005,S - 2012,S  0.005761534 0.003048421 3624   1.890  0.2325
     ## 
     ## P value adjustment: tukey method for comparing a family of 4 estimates
+
+Otros plots
+===========
+
+Resilience
+----------
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-72-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-73-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-74-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+Resistance
+----------
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-76-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-77-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-78-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+Recovery
+--------
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-80-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-81-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-82-1.png" style="display: block; margin: auto;" />
+
+    ## quartz_off_screen 
+    ##                 2

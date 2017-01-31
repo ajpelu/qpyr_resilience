@@ -16,8 +16,8 @@ opts_chunk$set(fig.align='center', message = FALSE, echo = FALSE, warning = FALS
 
 ```{r}
 #---------------------------------
-machine <- 'ajpelu'
-#machine <- 'ajpeluLap'
+# machine <- 'ajpelu'
+machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
@@ -210,8 +210,7 @@ phc <- function(mymodel){
   return(list(aux_ph_clu, aux_ph_event, aux_ph_i))
 }
 
-yu <- phc(mymodel = mymodel)
-yu
+rs_summer <- phc(mymodel = mymodel)
 ```
 
 
@@ -272,7 +271,7 @@ plot(effect("event:clu_pop",mymodel),
 
 ### Post-hoc comparison 
 ```{r}
-phc(mymodel = mymodel)
+rs_spring <- phc(mymodel = mymodel)
 ```
 
 ## Annual 
@@ -332,7 +331,7 @@ plot(effect("event:clu_pop",mymodel),
 
 ### Post-hoc comparison 
 ```{r}
-phc(mymodel = mymodel)
+rs_annual <- phc(mymodel = mymodel)
 ```
 
 # Resistance
@@ -403,35 +402,7 @@ plot(effect("event:clu_pop",mymodel),
 ### Post-hoc comparison 
 
 ```{r}
-phc <- function(mymodel){ 
-  # Event 
-  ph_event <- lsmeans(mymodel, pairwise ~ event, adjust = "tukey")
-  # differences letters 
-  cld_event <- cld(ph_event, alpha   = 0.01, 
-                   Letters = letters, 
-                   adjust  = "tukey")
-  
-  # Clu pop  
-  ph_clu <- lsmeans(mymodel, pairwise ~ clu_pop, adjust = "tukey")
-  cld_clu <- cld(ph_clu, alpha   = 0.01, 
-                 Letters = letters, 
-                 adjust  = "tukey")
-
-  # interaction 
-  ph_i <- lsmeans(mymodel, pairwise ~ event:clu_pop, adjust = "tukey")
-
-  # Return objects
-  cat('\n### Event ###\n')
-  print(ph_event)
-  print(cld_event)
-  cat('\n### Clu pop ###\n')
-  print(ph_clu)
-  print(cld_clu)
-  cat('\n### Event:Clu pop ###\n')
-  print(ph_i)
-}
-
-phc(mymodel = mymodel)
+rt_summer <- phc(mymodel)
 ```
 
 
@@ -492,7 +463,7 @@ plot(effect("event:clu_pop",mymodel),
 
 ### Post-hoc comparison 
 ```{r}
-phc(mymodel = mymodel)
+rt_spring <- phc(mymodel = mymodel)
 ```
 
 ## Annual 
@@ -552,7 +523,7 @@ plot(effect("event:clu_pop",mymodel),
 
 ### Post-hoc comparison 
 ```{r}
-phc(mymodel = mymodel)
+rt_annual <- phc(mymodel = mymodel)
 ```
 
 # Recovery
@@ -623,35 +594,7 @@ plot(effect("event:clu_pop",mymodel),
 ### Post-hoc comparison 
 
 ```{r}
-phc <- function(mymodel){ 
-  # Event 
-  ph_event <- lsmeans(mymodel, pairwise ~ event, adjust = "tukey")
-  # differences letters 
-  cld_event <- cld(ph_event, alpha   = 0.01, 
-                   Letters = letters, 
-                   adjust  = "tukey")
-  
-  # Clu pop  
-  ph_clu <- lsmeans(mymodel, pairwise ~ clu_pop, adjust = "tukey")
-  cld_clu <- cld(ph_clu, alpha   = 0.01, 
-                 Letters = letters, 
-                 adjust  = "tukey")
-
-  # interaction 
-  ph_i <- lsmeans(mymodel, pairwise ~ event:clu_pop, adjust = "tukey")
-
-  # Return objects
-  cat('\n### Event ###\n')
-  print(ph_event)
-  print(cld_event)
-  cat('\n### Clu pop ###\n')
-  print(ph_clu)
-  print(cld_clu)
-  cat('\n### Event:Clu pop ###\n')
-  print(ph_i)
-}
-
-phc(mymodel = mymodel)
+rc_summer <- phc(mymodel = mymodel)
 ```
 
 
@@ -712,7 +655,7 @@ plot(effect("event:clu_pop",mymodel),
 
 ### Post-hoc comparison 
 ```{r}
-phc(mymodel = mymodel)
+rc_spring <- phc(mymodel = mymodel)
 ```
 
 ## Annual 
@@ -772,31 +715,222 @@ plot(effect("event:clu_pop",mymodel),
 
 ### Post-hoc comparison 
 ```{r}
-phc(mymodel = mymodel)
+rc_annual <- phc(mymodel = mymodel)
 ```
 
 
 # Otros plots 
+
+## Resilience 
 ```{r}
+rs_clu_pop  <- rbind(rs_summer[[1]], rs_spring[[1]], rs_annual[[1]])
+rs_event  <- rbind(rs_summer[[2]], rs_spring[[2]], rs_annual[[2]])
+rs_clu_event  <- rbind(rs_summer[[3]], rs_spring[[3]], rs_annual[[3]])
+```
 
+```{r} 
+dodge <- position_dodge(width = 0.3)
+micolor <- '#455883'
 
+plot_rs_event <- rs_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+    geom_point(aes(shape=season), colour=micolor, 
+             size=4, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Resilience') + 
+  theme(text = element_text(size=20),
+        legend.position = "none")
 
+plot_rs_event
+pdf(file=paste0(di, "/images/plot_rs_event.pdf"), height = 4, width = 4.5)
+plot_rs_event
+dev.off()
+```
 
+```{r}
+label_cluster <- c('N' = 'Northern slope',
+                   'S' = 'Southern slope')
 
+plot_rs_clupop <- rs_clu_pop %>% 
+  ggplot(aes(x=clu_pop, y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+    geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Resilience') + 
+  theme(text = element_text(size=20),
+        legend.position = "none") + 
+  scale_x_discrete(labels = label_cluster) 
 
+plot_rs_clupop
+pdf(file=paste0(di, "/images/plot_rs_clupop.pdf"), height = 4, width = 4.5)
+plot_rs_clupop
+dev.off()
+```
 
+```{r}
+plot_rs_clu_event <- rs_clu_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+    geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  facet_wrap(~clu_pop, labeller = as_labeller(label_cluster))+
+  theme_bw() + xlab('') + 
+  ylab('Resilience') + 
+  theme(text = element_text(size=16),
+        strip.background = element_rect(fill = "white"),
+        legend.position = "none")
 
-auxplotdf %>% 
-  ggplot(aes(x=clu_pop, y=lsmean)) + 
-  geom_point() + 
-  geom_line
-  
+plot_rs_clu_event
+pdf(file=paste0(di, "/images/plot_rs_clu_event.pdf"), height = 2.8, width = 4.5)
+plot_rs_clu_event
+dev.off()
+```
 
-xx <- as.data.frame(summary(ph_clu$lsmeans))
+## Resistance 
+```{r}
+rt_clu_pop  <- rbind(rt_summer[[1]], rt_spring[[1]], rt_annual[[1]])
+rt_event  <- rbind(rt_summer[[2]], rt_spring[[2]], rt_annual[[2]])
+rt_clu_event  <- rbind(rt_summer[[3]], rt_spring[[3]], rt_annual[[3]])
+```
 
+```{r} 
+dodge <- position_dodge(width = 0.3)
+micolor <- '#455883'
 
+plot_rt_event <- rt_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=4, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Resistance') + 
+  theme(text = element_text(size=20),
+        legend.position = "none")
+
+plot_rt_event
+pdf(file=paste0(di, "/images/plot_rt_event.pdf"), height = 4, width = 4.5)
+plot_rt_event
+dev.off()
 ```
 
 
+```{r}
+label_cluster <- c('N' = 'Northern slope',
+                   'S' = 'Southern slope')
+
+plot_rt_clupop <- rt_clu_pop %>% 
+  ggplot(aes(x=clu_pop, y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Resistance') + 
+  theme(text = element_text(size=20),
+        legend.position = "none") + 
+  scale_x_discrete(labels = label_cluster) 
+
+plot_rt_clupop
+pdf(file=paste0(di, "/images/plot_rt_clupop.pdf"), height = 4, width = 4.5)
+plot_rt_clupop
+dev.off()
+```
+
+```{r}
+plot_rt_clu_event <- rt_clu_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  facet_wrap(~clu_pop, labeller = as_labeller(label_cluster))+
+  theme_bw() + xlab('') + 
+  ylab('Resistance') + 
+  theme(text = element_text(size=16),
+        strip.background = element_rect(fill = "white"),
+        legend.position = "none")
+
+plot_rt_clu_event
+pdf(file=paste0(di, "/images/plot_rt_clu_event.pdf"), height = 2.8, width = 4.5)
+plot_rt_clu_event
+dev.off()
+```
+
+## Recovery 
+```{r}
+rc_clu_pop  <- rbind(rc_summer[[1]], rc_spring[[1]], rc_annual[[1]])
+rc_event  <- rbind(rc_summer[[2]], rc_spring[[2]], rc_annual[[2]])
+rc_clu_event  <- rbind(rc_summer[[3]], rc_spring[[3]], rc_annual[[3]])
+```
+
+```{r} 
+dodge <- position_dodge(width = 0.3)
+micolor <- '#455883'
+
+plot_rc_event <- rc_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=4, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Recovery') + 
+  theme(text = element_text(size=20),
+        legend.position = "none")
+
+plot_rc_event
+pdf(file=paste0(di, "/images/plot_rc_event.pdf"), height = 4, width = 4.5)
+plot_rc_event
+dev.off()
+```
+
+
+```{r}
+label_cluster <- c('N' = 'Northern slope',
+                   'S' = 'Southern slope')
+
+plot_rc_clupop <- rc_clu_pop %>% 
+  ggplot(aes(x=clu_pop, y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Recovery') + 
+  theme(text = element_text(size=20),
+        legend.position = "none") + 
+  scale_x_discrete(labels = label_cluster) 
+
+plot_rc_clupop
+pdf(file=paste0(di, "/images/plot_rc_clupop.pdf"), height = 4, width = 4.5)
+plot_rc_clupop
+dev.off()
+```
+
+```{r}
+plot_rc_clu_event <- rc_clu_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  facet_wrap(~clu_pop, labeller = as_labeller(label_cluster))+
+  theme_bw() + xlab('') + 
+  ylab('Recovery') + 
+  theme(text = element_text(size=16),
+        strip.background = element_rect(fill = "white"),
+        legend.position = "none")
+
+plot_rc_clu_event
+pdf(file=paste0(di, "/images/plot_rc_clu_event.pdf"), height = 2.8, width = 4.5)
+plot_rc_clu_event
+dev.off()
+```
 
 
