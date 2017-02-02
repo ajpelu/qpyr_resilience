@@ -959,7 +959,7 @@ npcor
 
 ```{r}
 dc %>% 
-  ggplot(aes(rs_2005, rs_2012)) + 
+  ggplot(aes(rs_2005, rs_2012, colour=clu_popf)) + 
   geom_point(col='gray') + 
   geom_smooth(method = 'lm') + 
   facet_wrap(~seasonF) +
@@ -968,8 +968,21 @@ dc %>%
 ```
 
 ```{r}
+dc %>% 
+  ggplot(aes(rs_2005, rs_2012)) + 
+  geom_point(col='gray') + 
+  geom_smooth(method = 'lm') + 
+  facet_wrap(~seasonF) +
+  theme_bw() +
+  theme(strip.background = element_rect(fill = "white")) 
+```
+
+
+
+```{r}
 dcg <- dc %>% group_by(seasonF, pop) %>% 
-  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), vars=c('rs_2005', 'rs_2012'))
+  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), vars=c('rs_2005', 'rs_2012')) %>% 
+  mutate(clu_pop = as.factor(ifelse(pop %in% c(1,2,3,4,5), 'N', 'S')))  
   
 dcg %>% 
   ggplot(aes(rs_2005_mean, rs_2012_mean)) + 
@@ -984,4 +997,22 @@ dcg %>%
   facet_wrap(~seasonF) +
   theme_bw() +
   theme(strip.background = element_rect(fill = "white")) 
+```
+
+
+```{r}
+dcg %>% 
+  ggplot(aes(rs_2005_mean, rs_2012_mean, colour=clu_pop)) + 
+  geom_errorbar(aes(ymin = rs_2012_mean - rs_2012_se, 
+                    ymax = rs_2012_mean + rs_2012_se),
+                width=.0015) + 
+  geom_errorbarh(aes(xmin = rs_2005_mean - rs_2005_se, 
+                    xmax = rs_2005_mean + rs_2005_se),
+                 height =.0015) +
+  geom_point(size=3, fill='white', shape=21) + 
+  geom_smooth(method = 'lm', se=FALSE) + 
+  facet_wrap(~seasonF) +
+  theme_bw() +
+  theme(strip.background = element_rect(fill = "white")) 
+
 ```

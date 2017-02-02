@@ -2406,3 +2406,7 @@ Correlation
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-84-1.png" style="display: block; margin: auto;" />
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-85-1.png" style="display: block; margin: auto;" />
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-86-1.png" style="display: block; margin: auto;" />
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-87-1.png" style="display: block; margin: auto;" />
