@@ -938,16 +938,23 @@ dev.off()
 ```{r}
 dc <- eviresi %>% 
   mutate(event = paste0('rs_',event)) %>% 
-  dplyr::select(iv_malla_modi_id, seasonF, clu_popf, rs, event) %>% 
-  dcast(formula = iv_malla_modi_id + seasonF + clu_popf ~ event, value.var = "rs") 
+  dplyr::select(iv_malla_modi_id, seasonF, clu_popf, pop, rs, event) %>% 
+  dcast(formula = iv_malla_modi_id + seasonF + clu_popf + pop ~ event, value.var = "rs") 
 
 correla <- dc %>% group_by(seasonF) %>% 
   summarise(r = cor(rs_2005, rs_2012))
 
 correla_test <- dc %>% group_by(seasonF) %>% 
-  do(tidy(cor.test(.$rs_2005, .$rs_2012)))
+  do(tidy(cor.test(.$rs_2005, .$rs_2012, method='spearman')))
 
 correla_test 
+
+
+# Kendall
+npcor <- dc %>% group_by(seasonF) %>% 
+  do(tidy(cor.test(.$rs_2005, .$rs_2012), method = 'kendall'))
+
+npcor
 ```
 
 ```{r}
@@ -960,6 +967,21 @@ dc %>%
   theme(strip.background = element_rect(fill = "white")) 
 ```
 
-
-
-
+```{r}
+dcg <- dc %>% group_by(seasonF, pop) %>% 
+  summarise_each_(funs(mean, sd, se=sd(.)/sqrt(n())), vars=c('rs_2005', 'rs_2012'))
+  
+dcg %>% 
+  ggplot(aes(rs_2005_mean, rs_2012_mean)) + 
+  geom_errorbar(aes(ymin = rs_2012_mean - rs_2012_se, 
+                    ymax = rs_2012_mean + rs_2012_se),
+                width=.0015) + 
+  geom_errorbarh(aes(xmin = rs_2005_mean - rs_2005_se, 
+                    xmax = rs_2005_mean + rs_2005_se),
+                 height =.0015) +
+  geom_point(size=3, fill='white', shape=21) + 
+  geom_smooth(method = 'lm', se=FALSE) + 
+  facet_wrap(~seasonF) +
+  theme_bw() +
+  theme(strip.background = element_rect(fill = "white")) 
+```

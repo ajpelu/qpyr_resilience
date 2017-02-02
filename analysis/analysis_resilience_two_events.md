@@ -2382,6 +2382,16 @@ Recovery
 Correlation
 ===========
 
+    ## Source: local data frame [3 x 6]
+    ## Groups: seasonF [3]
+    ## 
+    ##   seasonF     estimate  statistic     p.value
+    ##    <fctr>        <dbl>      <dbl>       <dbl>
+    ## 1  annual  0.008579461  986321222 0.714989480
+    ## 2  spring -0.022125341 1016868096 0.346291006
+    ## 3  summer  0.061001551  934168762 0.009356352
+    ## # ... with 2 more variables: method <fctr>, alternative <fctr>
+
     ## Source: local data frame [3 x 9]
     ## Groups: seasonF [3]
     ## 
@@ -2394,3 +2404,5 @@ Correlation
     ## #   alternative <fctr>
 
 <img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-84-1.png" style="display: block; margin: auto;" />
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-85-1.png" style="display: block; margin: auto;" />
