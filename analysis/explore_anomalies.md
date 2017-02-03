@@ -1,3 +1,5 @@
+    ## Warning: package 'knitr' was built under R version 3.2.5
+
 ``` r
 library("rgdal")
 library("sp")
@@ -391,3 +393,56 @@ exportpdf(mypdf=paste0(di, '/images/raster_maps/a_2005_2012_summer.pdf'), lp)
 
     ## quartz_off_screen 
     ##                 2
+
+``` r
+# IDEA of plot 
+traj <- anomalias_season %>% group_by(pop, composite, y) %>% 
+  summarise(mean = mean(anomaly),
+            sd = sd(anomaly))
+
+traj %>% filter(composite == 'annual') %>% 
+  group_by(y) %>% 
+  summarise(meanOfmean = mean(mean), 
+            sdOfmean = sd(mean),
+            seOfmean = sdOfmean/sqrt(length(mean)),
+            meanOfsd = mean(sd),
+            sdOfsd = sd(sd),
+            seOfsd = sdOfsd /sqrt(length(sd))) %>% 
+  ggplot(aes(x=meanOfmean, y=meanOfsd, label=y)) +
+  geom_errorbar(aes(ymin=meanOfsd - seOfsd, ymax=meanOfsd + seOfsd)) + 
+  geom_errorbarh(aes(xmin=meanOfmean - seOfmean, xmax=meanOfmean + seOfmean)) + 
+  geom_path(colour='gray') +
+  geom_point(size=3, shape=21, fill='white') + 
+  geom_text(hjust = 0.1, nudge_x = 0.05) +
+  geom_vline(xintercept = 0, colour='red') +
+  theme_bw() + xlab('mean') + ylab('variance') + 
+  theme(strip.background = element_rect(fill = "white"), 
+        legend.position="none") 
+```
+
+<img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+
+``` r
+traj %>% filter(composite == 'annual') %>% 
+  mutate(clu_pop = as.factor(ifelse(pop %in% c(1,2,3,4,5), 'N', 'S'))) %>% 
+  group_by(clu_pop,y) %>% 
+  summarise(meanOfmean = mean(mean), 
+            sdOfmean = sd(mean),
+            seOfmean = sdOfmean/sqrt(length(mean)),
+            meanOfsd = mean(sd),
+            sdOfsd = sd(sd),
+            seOfsd = sdOfsd /sqrt(length(sd))) %>%
+  ggplot(aes(x=meanOfmean, y=meanOfsd, label=y)) +
+    geom_errorbar(aes(ymin=meanOfsd - seOfsd, ymax=meanOfsd + seOfsd)) + 
+  geom_errorbarh(aes(xmin=meanOfmean - seOfmean, xmax=meanOfmean + seOfmean)) + 
+  geom_path(colour='gray') +
+  geom_point(size=3, shape=21, fill='white') +
+  geom_text(hjust = 0, nudge_x = 0.05) +
+  geom_vline(xintercept = 0, colour='red') +
+  facet_wrap(~clu_pop) +
+  theme_bw() + xlab('mean') + ylab('variance') + 
+  theme(strip.background = element_rect(fill = "white"), 
+        legend.position="none") 
+```
+
+<img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
