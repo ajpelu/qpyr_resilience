@@ -40,10 +40,25 @@
         -   [Summary ANOVA model](#summary-anova-model-8)
         -   [Effects plot](#effects-plot-8)
         -   [Post-hoc comparison](#post-hoc-comparison-8)
+-   [Relative Resilience](#relative-resilience)
+    -   [Mean values (Cluster population)](#mean-values-cluster-population-3)
+    -   [Summer](#summer-3)
+        -   [Summary ANOVA model](#summary-anova-model-9)
+        -   [Effects plot](#effects-plot-9)
+        -   [Post-hoc comparison](#post-hoc-comparison-9)
+    -   [Spring](#spring-3)
+        -   [Summary ANOVA model](#summary-anova-model-10)
+        -   [Effects plot](#effects-plot-10)
+        -   [Post-hoc comparison](#post-hoc-comparison-10)
+    -   [Annual](#annual-3)
+        -   [Summary ANOVA model](#summary-anova-model-11)
+        -   [Effects plot](#effects-plot-11)
+        -   [Post-hoc comparison](#post-hoc-comparison-11)
 -   [Otros plots](#otros-plots)
     -   [Resilience](#resilience-1)
     -   [Resistance](#resistance-1)
     -   [Recovery](#recovery-1)
+    -   [Relative Resilience](#relative-resilience-1)
 -   [Correlation](#correlation)
 
     ## Warning: package 'knitr' was built under R version 3.2.5
@@ -2322,23 +2337,781 @@ Annual
     ## 
     ## P value adjustment: tukey method for comparing a family of 4 estimates
 
+Relative Resilience
+===================
+
+Mean values (Cluster population)
+--------------------------------
+
+<table>
+<caption>Mean values (rrs)</caption>
+<colgroup>
+<col width="13%" />
+<col width="15%" />
+<col width="15%" />
+<col width="16%" />
+<col width="15%" />
+<col width="11%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">clu_pop</th>
+<th align="center">mean</th>
+<th align="center">sd</th>
+<th align="center">se</th>
+<th align="center">variable</th>
+<th align="center">event</th>
+<th align="center">seasonF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">N</td>
+<td align="center">0.09397334</td>
+<td align="center">0.05825527</td>
+<td align="center">0.001944004</td>
+<td align="center">rrs</td>
+<td align="center">2005</td>
+<td align="center">annual</td>
+</tr>
+<tr class="even">
+<td align="center">S</td>
+<td align="center">0.04350868</td>
+<td align="center">0.06929188</td>
+<td align="center">0.002289468</td>
+<td align="center">rrs</td>
+<td align="center">2005</td>
+<td align="center">annual</td>
+</tr>
+<tr class="odd">
+<td align="center">N</td>
+<td align="center">0.02814341</td>
+<td align="center">0.05170733</td>
+<td align="center">0.001725496</td>
+<td align="center">rrs</td>
+<td align="center">2012</td>
+<td align="center">annual</td>
+</tr>
+<tr class="even">
+<td align="center">S</td>
+<td align="center">0.04387093</td>
+<td align="center">0.04318591</td>
+<td align="center">0.001426903</td>
+<td align="center">rrs</td>
+<td align="center">2012</td>
+<td align="center">annual</td>
+</tr>
+<tr class="odd">
+<td align="center">N</td>
+<td align="center">0.10726186</td>
+<td align="center">0.08078358</td>
+<td align="center">0.002695783</td>
+<td align="center">rrs</td>
+<td align="center">2005</td>
+<td align="center">spring</td>
+</tr>
+<tr class="even">
+<td align="center">S</td>
+<td align="center">0.06099451</td>
+<td align="center">0.08963351</td>
+<td align="center">0.002961575</td>
+<td align="center">rrs</td>
+<td align="center">2005</td>
+<td align="center">spring</td>
+</tr>
+<tr class="odd">
+<td align="center">N</td>
+<td align="center">0.06125215</td>
+<td align="center">0.07833435</td>
+<td align="center">0.002614051</td>
+<td align="center">rrs</td>
+<td align="center">2012</td>
+<td align="center">spring</td>
+</tr>
+<tr class="even">
+<td align="center">S</td>
+<td align="center">0.09204596</td>
+<td align="center">0.06679599</td>
+<td align="center">0.002207002</td>
+<td align="center">rrs</td>
+<td align="center">2012</td>
+<td align="center">spring</td>
+</tr>
+<tr class="odd">
+<td align="center">N</td>
+<td align="center">0.12944207</td>
+<td align="center">0.06574381</td>
+<td align="center">0.002193899</td>
+<td align="center">rrs</td>
+<td align="center">2005</td>
+<td align="center">summer</td>
+</tr>
+<tr class="even">
+<td align="center">S</td>
+<td align="center">0.04988715</td>
+<td align="center">0.06324604</td>
+<td align="center">0.002089708</td>
+<td align="center">rrs</td>
+<td align="center">2005</td>
+<td align="center">summer</td>
+</tr>
+<tr class="odd">
+<td align="center">N</td>
+<td align="center">0.07006318</td>
+<td align="center">0.05265293</td>
+<td align="center">0.001757051</td>
+<td align="center">rrs</td>
+<td align="center">2012</td>
+<td align="center">summer</td>
+</tr>
+<tr class="even">
+<td align="center">S</td>
+<td align="center">0.08218710</td>
+<td align="center">0.05389782</td>
+<td align="center">0.001780834</td>
+<td align="center">rrs</td>
+<td align="center">2012</td>
+<td align="center">summer</td>
+</tr>
+</tbody>
+</table>
+
+Summer
+------
+
+### Summary ANOVA model
+
+<table style="width:79%;">
+<caption>ANOVA table: rrs summer</caption>
+<colgroup>
+<col width="19%" />
+<col width="6%" />
+<col width="11%" />
+<col width="12%" />
+<col width="16%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">term</th>
+<th align="center">df</th>
+<th align="center">sumsq</th>
+<th align="center">meansq</th>
+<th align="center">statistic</th>
+<th align="center">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">event</td>
+<td align="center">1</td>
+<td align="center">0.1553</td>
+<td align="center">0.1553</td>
+<td align="center">44.37</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="even">
+<td align="center">clu_pop</td>
+<td align="center">1</td>
+<td align="center">1.031</td>
+<td align="center">1.031</td>
+<td align="center">294.6</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="odd">
+<td align="center">event:clu_pop</td>
+<td align="center">1</td>
+<td align="center">1.906</td>
+<td align="center">1.906</td>
+<td align="center">544.6</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="even">
+<td align="center">Residuals</td>
+<td align="center">3624</td>
+<td align="center">12.68</td>
+<td align="center">0.0035</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<table style="width:49%;">
+<colgroup>
+<col width="33%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Statistic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.20</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>a</em><em>d</em><em>j</em><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.20</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>σ</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">0.06</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>F</em></span></strong></td>
+<td align="center">294.51</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>p</em></span></strong></td>
+<td align="center">0.00</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>m</em></sub></span></strong></td>
+<td align="center">4.00</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>l</em><em>o</em><em>g</em><em>L</em><em>i</em><em>k</em></span></strong></td>
+<td align="center">5112.54</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>A</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-10215.08</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>B</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-10184.10</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>e</em><em>v</em></span></strong></td>
+<td align="center">12.68</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">3624.00</td>
+</tr>
+</tbody>
+</table>
+
+### Effects plot
+
+#### . ~ Cluster population
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-75-1.png" style="display: block; margin: auto;" />
+
+#### . ~ Disturbance Event
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-76-1.png" style="display: block; margin: auto;" />
+
+##### . ~ Cluster population:Elevation
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-77-1.png" style="display: block; margin: auto;" />
+
+### Post-hoc comparison
+
+    ## 
+    ## ### Event ###
+    ## $lsmeans
+    ##  event     lsmean          SE   df   lower.CL   upper.CL
+    ##  2005  0.08966461 0.001388998 3624 0.08694131 0.09238790
+    ##  2012  0.07612514 0.001388998 3624 0.07340185 0.07884844
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast      estimate         SE   df t.ratio p.value
+    ##  2005 - 2012 0.01353946 0.00196434 3624   6.893  <.0001
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## 
+    ##  event     lsmean          SE   df   lower.CL   upper.CL .group
+    ##  2012  0.07612514 0.001388998 3624 0.07301740 0.07923289  a    
+    ##  2005  0.08966461 0.001388998 3624 0.08655686 0.09277236   b   
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## Confidence level used: 0.95 
+    ## Conf-level adjustment: sidak method for 2 estimates 
+    ## significance level used: alpha = 0.01 
+    ## 
+    ## ### Clu pop ###
+    ## $lsmeans
+    ##  clu_pop     lsmean          SE   df   lower.CL   upper.CL
+    ##  N       0.09975263 0.001395872 3624 0.09701585 0.10248940
+    ##  S       0.06603713 0.001382089 3624 0.06332738 0.06874688
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast  estimate         SE   df t.ratio p.value
+    ##  N - S    0.0337155 0.00196434 3624  17.164  <.0001
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## 
+    ##  clu_pop     lsmean          SE   df   lower.CL   upper.CL .group
+    ##  S       0.06603713 0.001382089 3624 0.06294484 0.06912942  a    
+    ##  N       0.09975263 0.001395872 3624 0.09662950 0.10287575   b   
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## Confidence level used: 0.95 
+    ## Conf-level adjustment: sidak method for 2 estimates 
+    ## significance level used: alpha = 0.01 
+    ## 
+    ## ### Event:Clu pop ###
+    ## $lsmeans
+    ##  event clu_pop     lsmean          SE   df   lower.CL   upper.CL
+    ##  2005  N       0.12944207 0.001974061 3624 0.12557168 0.13331245
+    ##  2012  N       0.07006318 0.001974061 3624 0.06619280 0.07393357
+    ##  2005  S       0.04988715 0.001954569 3624 0.04605498 0.05371932
+    ##  2012  S       0.08218710 0.001954569 3624 0.07835494 0.08601927
+    ## 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast           estimate          SE   df t.ratio p.value
+    ##  2005,N - 2012,N  0.05937888 0.002791745 3624  21.269  <.0001
+    ##  2005,N - 2005,S  0.07955492 0.002777996 3624  28.638  <.0001
+    ##  2005,N - 2012,S  0.04725496 0.002777996 3624  17.010  <.0001
+    ##  2012,N - 2005,S  0.02017603 0.002777996 3624   7.263  <.0001
+    ##  2012,N - 2012,S -0.01212392 0.002777996 3624  -4.364  0.0001
+    ##  2005,S - 2012,S -0.03229995 0.002764179 3624 -11.685  <.0001
+    ## 
+    ## P value adjustment: tukey method for comparing a family of 4 estimates
+
+Spring
+------
+
+### Summary ANOVA model
+
+<table style="width:83%;">
+<caption>ANOVA table: rrs spring</caption>
+<colgroup>
+<col width="19%" />
+<col width="6%" />
+<col width="11%" />
+<col width="12%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">term</th>
+<th align="center">df</th>
+<th align="center">sumsq</th>
+<th align="center">meansq</th>
+<th align="center">statistic</th>
+<th align="center">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">event</td>
+<td align="center">1</td>
+<td align="center">0.04568</td>
+<td align="center">0.04568</td>
+<td align="center">7.263</td>
+<td align="center"><strong>0.00707</strong></td>
+</tr>
+<tr class="even">
+<td align="center">clu_pop</td>
+<td align="center">1</td>
+<td align="center">0.05429</td>
+<td align="center">0.05429</td>
+<td align="center">8.632</td>
+<td align="center"><strong>0.00332</strong></td>
+</tr>
+<tr class="odd">
+<td align="center">event:clu_pop</td>
+<td align="center">1</td>
+<td align="center">1.346</td>
+<td align="center">1.346</td>
+<td align="center">214.1</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="even">
+<td align="center">Residuals</td>
+<td align="center">3624</td>
+<td align="center">22.79</td>
+<td align="center">0.00629</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<table style="width:49%;">
+<colgroup>
+<col width="33%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Statistic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.06</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>a</em><em>d</em><em>j</em><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.06</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>σ</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">0.08</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>F</em></span></strong></td>
+<td align="center">76.66</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>p</em></span></strong></td>
+<td align="center">0.00</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>m</em></sub></span></strong></td>
+<td align="center">4.00</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>l</em><em>o</em><em>g</em><em>L</em><em>i</em><em>k</em></span></strong></td>
+<td align="center">4049.14</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>A</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-8088.28</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>B</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-8057.30</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>e</em><em>v</em></span></strong></td>
+<td align="center">22.79</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">3624.00</td>
+</tr>
+</tbody>
+</table>
+
+### Effects plot
+
+#### . ~ Cluster population
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-82-1.png" style="display: block; margin: auto;" />
+
+#### . ~ Disturbance Event
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-83-1.png" style="display: block; margin: auto;" />
+
+#### . ~ Cluster population:Elevation
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-84-1.png" style="display: block; margin: auto;" />
+
+### Post-hoc comparison
+
+    ## 
+    ## ### Event ###
+    ## $lsmeans
+    ##  event     lsmean          SE   df   lower.CL   upper.CL
+    ##  2005  0.08412819 0.001862077 3624 0.08047736 0.08777901
+    ##  2012  0.07664906 0.001862077 3624 0.07299823 0.08029988
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast       estimate          SE   df t.ratio p.value
+    ##  2005 - 2012 0.007479131 0.002633375 3624    2.84  0.0045
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## 
+    ##  event     lsmean          SE   df   lower.CL   upper.CL .group
+    ##  2012  0.07664906 0.001862077 3624 0.07248284 0.08081527  a    
+    ##  2005  0.08412819 0.001862077 3624 0.07996197 0.08829440   b   
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## Confidence level used: 0.95 
+    ## Conf-level adjustment: sidak method for 2 estimates 
+    ## significance level used: alpha = 0.01 
+    ## 
+    ## ### Clu pop ###
+    ## $lsmeans
+    ##  clu_pop     lsmean          SE   df   lower.CL  upper.CL
+    ##  N       0.08425701 0.001871293 3624 0.08058812 0.0879259
+    ##  S       0.07652024 0.001852816 3624 0.07288757 0.0801529
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast    estimate          SE   df t.ratio p.value
+    ##  N - S    0.007736771 0.002633375 3624   2.938  0.0033
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## 
+    ##  clu_pop     lsmean          SE   df   lower.CL   upper.CL .group
+    ##  S       0.07652024 0.001852816 3624 0.07237474 0.08066573  a    
+    ##  N       0.08425701 0.001871293 3624 0.08007017 0.08844384   b   
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## Confidence level used: 0.95 
+    ## Conf-level adjustment: sidak method for 2 estimates 
+    ## significance level used: alpha = 0.01 
+    ## 
+    ## ### Event:Clu pop ###
+    ## $lsmeans
+    ##  event clu_pop     lsmean          SE   df   lower.CL   upper.CL
+    ##  2005  N       0.10726186 0.002646408 3624 0.10207327 0.11245046
+    ##  2012  N       0.06125215 0.002646408 3624 0.05606356 0.06644075
+    ##  2005  S       0.06099451 0.002620277 3624 0.05585715 0.06613188
+    ##  2012  S       0.09204596 0.002620277 3624 0.08690860 0.09718333
+    ## 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast             estimate          SE   df t.ratio p.value
+    ##  2005,N - 2012,N  0.0460097108 0.003742586 3624  12.294  <.0001
+    ##  2005,N - 2005,S  0.0462673506 0.003724154 3624  12.424  <.0001
+    ##  2005,N - 2012,S  0.0152159015 0.003724154 3624   4.086  0.0003
+    ##  2012,N - 2005,S  0.0002576398 0.003724154 3624   0.069  0.9999
+    ##  2012,N - 2012,S -0.0307938093 0.003724154 3624  -8.269  <.0001
+    ##  2005,S - 2012,S -0.0310514491 0.003705631 3624  -8.380  <.0001
+    ## 
+    ## P value adjustment: tukey method for comparing a family of 4 estimates
+
+Annual
+------
+
+### Summary ANOVA model
+
+<table style="width:79%;">
+<caption>ANOVA table: rrs annual</caption>
+<colgroup>
+<col width="19%" />
+<col width="6%" />
+<col width="11%" />
+<col width="12%" />
+<col width="16%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">term</th>
+<th align="center">df</th>
+<th align="center">sumsq</th>
+<th align="center">meansq</th>
+<th align="center">statistic</th>
+<th align="center">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">event</td>
+<td align="center">1</td>
+<td align="center">0.9525</td>
+<td align="center">0.9525</td>
+<td align="center">299.1</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="even">
+<td align="center">clu_pop</td>
+<td align="center">1</td>
+<td align="center">0.2736</td>
+<td align="center">0.2736</td>
+<td align="center">85.9</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="odd">
+<td align="center">event:clu_pop</td>
+<td align="center">1</td>
+<td align="center">0.9934</td>
+<td align="center">0.9934</td>
+<td align="center">311.9</td>
+<td align="center"><strong>0</strong></td>
+</tr>
+<tr class="even">
+<td align="center">Residuals</td>
+<td align="center">3624</td>
+<td align="center">11.54</td>
+<td align="center">0.00318</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+
+<table style="width:49%;">
+<colgroup>
+<col width="33%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Statistic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.16</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>a</em><em>d</em><em>j</em><em>R</em><sup>2</sup></span></strong></td>
+<td align="center">0.16</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>σ</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">0.06</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>F</em></span></strong></td>
+<td align="center">232.28</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>p</em></span></strong></td>
+<td align="center">0.00</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>m</em></sub></span></strong></td>
+<td align="center">4.00</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>l</em><em>o</em><em>g</em><em>L</em><em>i</em><em>k</em></span></strong></td>
+<td align="center">5283.38</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>A</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-10556.75</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>B</em><em>I</em><em>C</em></span></strong></td>
+<td align="center">-10525.77</td>
+</tr>
+<tr class="even">
+<td align="center"><strong><span class="math inline"><em>d</em><em>e</em><em>v</em></span></strong></td>
+<td align="center">11.54</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong><span class="math inline"><em>d</em><em>f</em><sub><em>e</em></sub></span></strong></td>
+<td align="center">3624.00</td>
+</tr>
+</tbody>
+</table>
+
+### Effects plot
+
+#### . ~ Cluster population
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-89-1.png" style="display: block; margin: auto;" />
+
+#### . ~ Disturbance Event
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-90-1.png" style="display: block; margin: auto;" />
+
+#### . ~ Cluster population:Elevation
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-91-1.png" style="display: block; margin: auto;" />
+
+### Post-hoc comparison
+
+    ## 
+    ## ### Event ###
+    ## $lsmeans
+    ##  event     lsmean          SE   df   lower.CL   upper.CL
+    ##  2005  0.06874101 0.001325109 3624 0.06614297 0.07133904
+    ##  2012  0.03600717 0.001325109 3624 0.03340913 0.03860520
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast      estimate          SE   df t.ratio p.value
+    ##  2005 - 2012 0.03273384 0.001873988 3624  17.467  <.0001
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## 
+    ##  event     lsmean          SE   df   lower.CL   upper.CL .group
+    ##  2012  0.03600717 0.001325109 3624 0.03304237 0.03897197  a    
+    ##  2005  0.06874101 0.001325109 3624 0.06577621 0.07170581   b   
+    ## 
+    ## Results are averaged over the levels of: clu_pop 
+    ## Confidence level used: 0.95 
+    ## Conf-level adjustment: sidak method for 2 estimates 
+    ## significance level used: alpha = 0.01 
+    ## 
+    ## ### Clu pop ###
+    ## $lsmeans
+    ##  clu_pop     lsmean          SE   df   lower.CL   upper.CL
+    ##  N       0.06105837 0.001331668 3624 0.05844748 0.06366927
+    ##  S       0.04368980 0.001318519 3624 0.04110469 0.04627492
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast   estimate          SE   df t.ratio p.value
+    ##  N - S    0.01736857 0.001873988 3624   9.268  <.0001
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## 
+    ##  clu_pop     lsmean          SE   df   lower.CL   upper.CL .group
+    ##  S       0.04368980 0.001318519 3624 0.04073975 0.04663986  a    
+    ##  N       0.06105837 0.001331668 3624 0.05807890 0.06403785   b   
+    ## 
+    ## Results are averaged over the levels of: event 
+    ## Confidence level used: 0.95 
+    ## Conf-level adjustment: sidak method for 2 estimates 
+    ## significance level used: alpha = 0.01 
+    ## 
+    ## ### Event:Clu pop ###
+    ## $lsmeans
+    ##  event clu_pop     lsmean          SE   df   lower.CL   upper.CL
+    ##  2005  N       0.09397334 0.001883262 3624 0.09028098 0.09766570
+    ##  2012  N       0.02814341 0.001883262 3624 0.02445105 0.03183577
+    ##  2005  S       0.04350868 0.001864667 3624 0.03985278 0.04716458
+    ##  2012  S       0.04387093 0.001864667 3624 0.04021503 0.04752683
+    ## 
+    ## Confidence level used: 0.95 
+    ## 
+    ## $contrasts
+    ##  contrast             estimate          SE   df t.ratio p.value
+    ##  2005,N - 2012,N  0.0658299293 0.002663335 3624  24.717  <.0001
+    ##  2005,N - 2005,S  0.0504646594 0.002650219 3624  19.042  <.0001
+    ##  2005,N - 2012,S  0.0501024101 0.002650219 3624  18.905  <.0001
+    ##  2012,N - 2005,S -0.0153652699 0.002650219 3624  -5.798  <.0001
+    ##  2012,N - 2012,S -0.0157275192 0.002650219 3624  -5.934  <.0001
+    ##  2005,S - 2012,S -0.0003622493 0.002637037 3624  -0.137  0.9991
+    ## 
+    ## P value adjustment: tukey method for comparing a family of 4 estimates
+
 Otros plots
 ===========
 
 Resilience
 ----------
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-72-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-94-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-73-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-95-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-74-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-96-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
@@ -2346,17 +3119,17 @@ Resilience
 Resistance
 ----------
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-76-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-98-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-77-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-99-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-78-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-100-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
@@ -2364,17 +3137,26 @@ Resistance
 Recovery
 --------
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-80-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-102-1.png" style="display: block; margin: auto;" />
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-103-1.png" style="display: block; margin: auto;" />
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-104-1.png" style="display: block; margin: auto;" />
+
+Relative Resilience
+-------------------
+
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-106-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-81-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-107-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-82-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-108-1.png" style="display: block; margin: auto;" />
 
     ## quartz_off_screen 
     ##                 2
@@ -2403,10 +3185,10 @@ Correlation
     ## # ... with 3 more variables: conf.high <dbl>, method <fctr>,
     ## #   alternative <fctr>
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-84-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-110-1.png" style="display: block; margin: auto;" />
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-85-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-111-1.png" style="display: block; margin: auto;" />
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-86-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-112-1.png" style="display: block; margin: auto;" />
 
-<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-87-1.png" style="display: block; margin: auto;" />
+<img src="analysis_resilience_two_events_files/figure-markdown_github/unnamed-chunk-113-1.png" style="display: block; margin: auto;" />

@@ -718,6 +718,197 @@ plot(effect("event:clu_pop",mymodel),
 rc_annual <- phc(mymodel = mymodel)
 ```
 
+# Relative Resilience
+## Mean values (Cluster population)
+```{r}
+mivariable <- 'rrs'
+
+auxdf %>% dplyr::filter(variable==mivariable) %>% pander(round=4, caption=paste0('Mean values (', mivariable,')'))
+```
+
+## Summer 
+```{r}
+# Select season 
+myseason <- 'summer'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+     xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+##### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+
+```{r}
+rrs_summer <- phc(mymodel)
+```
+
+
+## Spring 
+```{r}
+# Select season 
+myseason <- 'spring'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+     xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+#### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+```{r}
+rrs_spring <- phc(mymodel = mymodel)
+```
+
+## Annual 
+```{r}
+# Select season 
+myseason <- 'annual'
+df <- eviresi %>% filter(seasonF == myseason)
+
+# Model 
+myformula <- as.formula(paste0(mivariable, " ~ event*clu_pop"))
+mymodel <- aov(myformula, data=df)
+```
+
+### Summary ANOVA model
+```{r}
+## Summary model 
+tm <- broom::tidy(mymodel)
+
+# See http://my.ilstu.edu/~wjschne/444/ANOVA.html#(1) 
+pander(tm, round=5,
+       caption = paste0("ANOVA table: ", mivariable, " ", myseason), missing = '', 
+       emphasize.strong.cells = which(tm < 0.1 & tm == tm$p.value, arr.ind = T))
+```             
+
+```{r} 
+gm <- broom::glance(mymodel)
+gm <- apply(gm, 1, formatC, digits = 2, format = "f") %>% t()
+colnames(gm) <- paste0("$",c("R^2","\\mathrm{adj}R^2","\\sigma_e","F","p","df_m","\\mathrm{logLik}","AIC","BIC","\\mathrm{dev}","df_e"),"$")
+rownames(gm) <- "Statistic"
+pander(t(gm))
+```
+
+### Effects plot 
+#### . ~ Cluster population 
+```{r}
+### Population 
+plot(effect("clu_pop",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Cluster population'),
+     xlab='Cluster population')
+```
+
+#### . ~ Disturbance Event
+```{r}
+### Event
+plot(effect("event",mymodel), 
+     main=paste0(myseason, ' - ', mivariable, ' vs. Drought event'),
+     xlab='Drought event')
+```
+
+#### . ~ Cluster population:Elevation  
+```{r} 
+### Both 
+plot(effect("event:clu_pop",mymodel), 
+     main=paste0('Interaction plot (',mivariable, ') - ', myseason),
+     xlab='Drought event')
+```
+
+### Post-hoc comparison 
+```{r}
+rrs_annual <- phc(mymodel = mymodel)
+```
 
 # Otros plots 
 
@@ -885,9 +1076,9 @@ plot_rc_event <- rc_event %>%
         legend.position = "none")
 
 plot_rc_event
-pdf(file=paste0(di, "/images/plot_rc_event.pdf"), height = 4, width = 4.5)
-plot_rc_event
-dev.off()
+#pdf(file=paste0(di, "/images/plot_rc_event.pdf"), height = 4, width = 4.5)
+#plot_rc_event
+#dev.off()
 ```
 
 
@@ -908,9 +1099,9 @@ plot_rc_clupop <- rc_clu_pop %>%
   scale_x_discrete(labels = label_cluster) 
 
 plot_rc_clupop
-pdf(file=paste0(di, "/images/plot_rc_clupop.pdf"), height = 4, width = 4.5)
-plot_rc_clupop
-dev.off()
+# pdf(file=paste0(di, "/images/plot_rc_clupop.pdf"), height = 4, width = 4.5)
+# plot_rc_clupop
+# dev.off()
 ```
 
 ```{r}
@@ -928,8 +1119,80 @@ plot_rc_clu_event <- rc_clu_event %>%
         legend.position = "none")
 
 plot_rc_clu_event
-pdf(file=paste0(di, "/images/plot_rc_clu_event.pdf"), height = 2.8, width = 4.5)
-plot_rc_clu_event
+# pdf(file=paste0(di, "/images/plot_rc_clu_event.pdf"), height = 2.8, width = 4.5)
+# plot_rc_clu_event
+# dev.off()
+```
+
+
+## Relative Resilience 
+```{r}
+rrs_clu_pop  <- rbind(rrs_summer[[1]], rrs_spring[[1]], rrs_annual[[1]])
+rrs_event  <- rbind(rrs_summer[[2]], rrs_spring[[2]], rrs_annual[[2]])
+rrs_clu_event  <- rbind(rrs_summer[[3]], rrs_spring[[3]], rrs_annual[[3]])
+```
+
+```{r} 
+dodge <- position_dodge(width = 0.3)
+micolor <- '#455883'
+
+plot_rrs_event <- rrs_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=4, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Relative Resilience') + 
+  theme(text = element_text(size=20),
+        legend.position = "none")
+
+plot_rrs_event
+pdf(file=paste0(di, "/images/plot_rrs_event.pdf"), height = 4, width = 4.5)
+plot_rrs_event
+dev.off()
+```
+
+
+```{r}
+label_cluster <- c('N' = 'Northern slope',
+                   'S' = 'Southern slope')
+
+plot_rrs_clupop <- rrs_clu_pop %>% 
+  ggplot(aes(x=clu_pop, y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  theme_bw() + xlab('') + 
+  ylab('Relative Resilience') + 
+  theme(text = element_text(size=20),
+        legend.position = "none") + 
+  scale_x_discrete(labels = label_cluster) 
+
+plot_rrs_clupop
+pdf(file=paste0(di, "/images/plot_rrs_clupop.pdf"), height = 4, width = 4.5)
+plot_rrs_clupop
+dev.off()
+```
+
+```{r}
+plot_rrs_clu_event <- rrs_clu_event %>% 
+  ggplot(aes(x=as.factor(event), y=lsmean, shape=season)) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), 
+                color=micolor, size=.5,width=.15, position = dodge) +
+  geom_point(aes(shape=season), colour=micolor, 
+             size=3, position = dodge) +
+  facet_wrap(~clu_pop, labeller = as_labeller(label_cluster))+
+  theme_bw() + xlab('') + 
+  ylab('Relative Resilience') + 
+  theme(text = element_text(size=16),
+        strip.background = element_rect(fill = "white"),
+        legend.position = "none")
+
+plot_rrs_clu_event
+pdf(file=paste0(di, "/images/plot_rrs_clu_event.pdf"), height = 2.8, width = 4.5)
+plot_rrs_clu_event
 dev.off()
 ```
 
