@@ -454,6 +454,3 @@ traj_plot_pop
 # traj_plot_pop
 # dev.off()
 ```
-
-
-

@@ -400,7 +400,7 @@ traj <- anomalias_season %>% group_by(pop, composite, y) %>%
   summarise(mean = mean(anomaly),
             sd = sd(anomaly))
 
-traj %>% filter(composite == 'annual') %>% 
+traj_plot <- traj %>% filter(composite == 'annual') %>% 
   group_by(y) %>% 
   summarise(meanOfmean = mean(mean), 
             sdOfmean = sd(mean),
@@ -418,12 +418,23 @@ traj %>% filter(composite == 'annual') %>%
   theme_bw() + xlab('mean') + ylab('variance') + 
   theme(strip.background = element_rect(fill = "white"), 
         legend.position="none") 
+
+traj_plot
 ```
 
 <img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
 
 ``` r
-traj %>% filter(composite == 'annual') %>% 
+pdf(file=paste0(di, "/images/traj_plot.pdf"), height = 6, width =6)
+traj_plot
+dev.off()
+```
+
+    ## quartz_off_screen 
+    ##                 2
+
+``` r
+traj_plot_pop <- traj %>% filter(composite == 'annual') %>% 
   mutate(clu_pop = as.factor(ifelse(pop %in% c(1,2,3,4,5), 'N', 'S'))) %>% 
   group_by(clu_pop,y) %>% 
   summarise(meanOfmean = mean(mean), 
@@ -443,6 +454,14 @@ traj %>% filter(composite == 'annual') %>%
   theme_bw() + xlab('mean') + ylab('variance') + 
   theme(strip.background = element_rect(fill = "white"), 
         legend.position="none") 
+
+traj_plot_pop
 ```
 
 <img src="explore_anomalies_files/figure-markdown_github/unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+
+``` r
+# pdf(file=paste0(di, "/images/traj_plot_pop.pdf"), height = 6, width =10)
+# traj_plot_pop
+# dev.off()
+```

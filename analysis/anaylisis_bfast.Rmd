@@ -1,0 +1,56 @@
+---
+title: "Explore anomalies"
+author: "AJ Perez-Luque (@ajpelu)"
+date: "2017 Jan"
+output:  
+  md_document:
+    variant: markdown_github
+---
+```{r, echo=FALSE, message=FALSE}
+require(knitr)
+opts_chunk$set(fig.align='center', fig.width = 14, message = FALSE, warning = FALSE) 
+```
+
+```{r wd, echo=FALSE}
+#---------------------------------
+# machine <- 'ajpelu'
+machine <- 'ajpeluLap'
+di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
+#---------------------------------
+```
+
+
+```{r packages, warning=FALSE, message=FALSE}
+library("dplyr")
+library("ggplot2")
+library("bfast") # Break for Additive Season and Trend 
+```
+
+## Read data and Prepare Data 
+```{r}
+# Read data 
+iv <- read.csv(file=paste(di, "/data/iv_composite.csv", sep=""), header = TRUE, sep = ',')
+```
+
+
+```{r}
+pixel <- iv %>% filter(iv_malla_modi_id==194324) %>% 
+  dplyr::select(evi, date) 
+
+pixelts <- ts(pixel$evi, star=c(2000, 4), frequency = 23)
+
+fit <- bfast(pixelts, season="harmonic", max.iter=1, breaks = 5) 
+
+fit <- bfast(pixelts, h=0.1, season="harmonic", max.iter=5, breaks = 5)
+plot(fit)
+plot(fit, ANOVA=TRUE)$slope
+
+str(fit)
+?bfastmonitor
+
+
+
+pix <- as.ts(zoo(pixel$evi, pixel$date))
+m <- bfastmonitor(pix, star=c(2000, 13))
+plot(m)
+```
