@@ -22,7 +22,7 @@ library("dplyr")
 library("lubridate")
 library("ggplot2")
 library("knitr")
-library('printr')
+# library('printr')
 source(paste0(di,"/R/getComposite.R"))
 ```
 
@@ -90,7 +90,7 @@ kable(n_images_pixel)
 ```{r}
 # Table of QA
 rawdata %>% group_by(summQA) %>% 
-  summarise(npixels = dplyr::n()) %>% 
+  summarise(npixels = n()) %>% 
   mutate(freq = round((npixels / sum(npixels)*100),2),
          QA = plyr::mapvalues(summQA, c(0, 1, 2, 3), c("Good Data", "Marginal data", "Snow/Ice", "Cloudy")))
 ```
