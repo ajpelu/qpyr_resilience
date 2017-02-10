@@ -10,13 +10,14 @@ output:
   
 ```{r wd, echo=FALSE}
 #---------------------------------
-machine <- 'ajpelu'
-# machine <- 'ajpeluLap'
+#machine <- 'ajpelu'
+machine <- 'ajpeluLap'
 di <- paste('/Users/', machine, '/Dropbox/phd/phd_repos/qpyr_resilience', sep='')
 #---------------------------------
 ```
 
 ```{r packages, warning=FALSE}
+library("plyr")
 library("dplyr")
 library("lubridate")
 library("ggplot2")
@@ -63,7 +64,7 @@ rawdata <- read.csv(file=paste(di, "/data_raw/evi/iv_raw_2016.csv", sep= ""), he
 ```
 
 ## Some metadata of the time series 
-### Temporal range of the Time series 
+### Temporal range of the Time series 
 ```{r}
 # Get temporal range of the data
 # Start date
@@ -85,6 +86,15 @@ n_images_pixel <- rawdata %>%
 kable(n_images_pixel)
 ```
 
+#### Summary table of layer summaryQA 
+```{r}
+# Table of QA
+rawdata %>% group_by(summQA) %>% 
+  summarise(npixels = dplyr::n()) %>% 
+  mutate(freq = round((npixels / sum(npixels)*100),2),
+         QA = plyr::mapvalues(summQA, c(0, 1, 2, 3), c("Good Data", "Marginal data", "Snow/Ice", "Cloudy")))
+```
+  
 
 ## Prepare data 
 ### Get the composite of the images and the season
